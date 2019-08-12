@@ -1,0 +1,30 @@
+{
+  "name": "standup",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "tasks_yesterday": {
+      "type": "string",
+      "required": true
+    },
+    "tasks_today": {
+      "type": "string",
+      "required": true
+    },
+    "blockers": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,212 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+  font-family: Avenir, Geneva, sans-serif;
+  color: #222;
+}
+
+body {
+  padding: 1.5em 1.5em 0.5em 1.5em;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25em;
+}
+
+header .date {
+  font-size: 1.25em;
+  margin-left: 0.25em;
+}
+
+main {
+  min-width: 250px;
+}
+
+.link-btn, .link-btn:visited {
+  background-color: #8b0000;
+  color: #fff;
+  box-sizing: border-box;
+  padding: 0.25em 1em;
+  border: 1px solid #800000;
+  border-radius: 0.25em;
+  text-decoration: none;
+}
+
+.link-btn:hover {
+  background-color: #990000
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-column-gap: 1.25em;
+}
+
+.card {
+  background-color: #edf5f4;
+  border-radius: 8px;
+  text-align: center;
+  padding-bottom: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.card ul {
+  padding-top: 0.75em
+}
+
+.card ul li{
+  border-bottom: thin solid #dfe6e4;
+  padding: 0.5em;
+  list-style-type: none;
+}
+
+.card ul li:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0em;
+}
+
+.card-heading {
+  background-color: #000;
+  border-radius: 8px 8px 0px 0px;
+  color: #fff;
+  font-size: 1.25em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5em
+}
+
+@supports (letter-spacing: 0.25cap) {
+  .card-heading, .login-container > h1, .auth > p {
+    letter-spacing: 0.1cap;
+  }
+}
+
+.percentage {
+  font-size: 4em;
+  padding: 0.25em 0em;
+}
+
+.fraction {
+  font-size: 1.65em;
+  color: #949997;
+}
+
+.card ul.standup-links li {
+  padding: 0px;
+}
+
+.standup-links li a, .standup-links li a:visited {
+  display: block;
+  padding: 0.5em;
+  color: #222;
+  text-decoration: none;
+  background-color: none;
+}
+
+.standup-links li a:hover {
+  background-color: #dfe6e4;
+}
+
+.login-container {
+  width: 80%;
+  max-width: 500px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 600px) {
+  .login-container {
+    width: 100%;
+  }
+}
+
+.login-container > h1 {
+  text-align: center;  
+  font-size: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.login-container form {
+  background-color: #edf5f4;
+  border-radius: 8px;
+  padding: 2em 0.75em;
+  margin-bottom: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-container form input {
+  width: 100%;
+  padding: 0.75em;
+  margin: 10px;
+  font-size: 15px;
+}
+
+.login-container form input[type=submit] {
+  width: 45%;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0.3em;
+}
+
+.auth {
+  padding: 0.5em;
+  width: 100%;
+}
+
+.auth > p {
+  font-size: 0.8em;
+  margin-bottom: 1em;
+}
+
+a.google, a.google:visited {
+  width: 191px;
+  height: 46px;
+  display: block;
+  margin: auto;
+  background-image: url("img/btn_google_signin_light_normal_web.png");
+}
+
+a.google:hover {
+  background-image: url("img/btn_google_signin_light_focus_web.png");
+}
+
+a.google:active {
+  background-image: url("img/btn_google_signin_light_pressed_web.png");
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.standup-card {
+  margin-bottom: 0.5em;
+}
+
+.standup-card-title {
+  background-color: #000;
+  border-radius: 5px 5px 0px 0px;
+  color: #fff;
+  padding: 0.25em 0.5em;
+}
+
+.standup-card-content {
+  margin: 0.75em 0.25em;
+}
+
+.standup-question {
+  font-size: 1.05em;
+  font-weight: bold;
+}
