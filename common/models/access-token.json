@@ -1,16 +1,16 @@
 {
-    "name": "accessToken",
-    "plural": "accessTokens",
-    "base": "AccessToken",
-    "properties": {},
-    "validations": [],
-    "relations": {
-      "user": {
-        "type": "belongsTo",
-        "model": "user",
-        "foreignKey": "userId"
-      }
-    },
-    "acls": [],
-    "methods": []
-  }
+  "name": "accessToken",
+  "plural": "accessTokens",
+  "base": "AccessToken",
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": []
+}

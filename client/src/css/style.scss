@@ -1,3 +1,11 @@
+$default-text: #222;
+$default-text-light: #fff;
+$default-red: #8b0000;
+$default-red-darker: #800000;
+$default-red-lighter: #990000;
+$default-gray: #edf5f4;
+$default-gray-darker: #dfe6e4;
+
 * {
   padding: 0;
   margin: 0;
@@ -7,7 +15,7 @@
 html {
   font-size: 15px;
   font-family: Avenir, Geneva, sans-serif;
-  color: #222;
+  color: $default-text;
 }
 
 body {
@@ -31,17 +39,17 @@ main {
 }
 
 .link-btn, .link-btn:visited {
-  background-color: #8b0000;
-  color: #fff;
+  background-color: $default-red;
+  color: $default-text-light;
   box-sizing: border-box;
   padding: 0.25em 1em;
-  border: 1px solid #800000;
+  border: 1px solid $default-red-darker;
   border-radius: 0.25em;
   text-decoration: none;
 }
 
 .link-btn:hover {
-  background-color: #990000
+  background-color: $default-red-lighter;
 }
 
 .grid {
@@ -51,7 +59,7 @@ main {
 }
 
 .card {
-  background-color: #edf5f4;
+  background-color: $default-gray;
   border-radius: 8px;
   text-align: center;
   padding-bottom: 1.25em;
@@ -63,7 +71,7 @@ main {
 }
 
 .card ul li{
-  border-bottom: thin solid #dfe6e4;
+  border-bottom: thin solid $default-gray-darker;
   padding: 0.5em;
   list-style-type: none;
 }
@@ -76,7 +84,7 @@ main {
 .card-heading {
   background-color: #000;
   border-radius: 8px 8px 0px 0px;
-  color: #fff;
+  color: $default-text-light;
   font-size: 1.25em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -106,13 +114,13 @@ main {
 .standup-links li a, .standup-links li a:visited {
   display: block;
   padding: 0.5em;
-  color: #222;
+  color: $default-text;
   text-decoration: none;
   background-color: none;
 }
 
 .standup-links li a:hover {
-  background-color: #dfe6e4;
+  background-color: $default-gray-darker;
 }
 
 .login-container {
@@ -135,7 +143,7 @@ main {
 }
 
 .login-container form {
-  background-color: #edf5f4;
+  background-color: $default-gray;
   border-radius: 8px;
   padding: 2em 0.75em;
   margin-bottom: 0.5em;
@@ -173,15 +181,15 @@ a.google, a.google:visited {
   height: 46px;
   display: block;
   margin: auto;
-  background-image: url("img/btn_google_signin_light_normal_web.png");
+  background-image: url("../img/btn_google_signin_light_normal_web.png");
 }
 
 a.google:hover {
-  background-image: url("img/btn_google_signin_light_focus_web.png");
+  background-image: url("../img/btn_google_signin_light_focus_web.png");
 }
 
 a.google:active {
-  background-image: url("img/btn_google_signin_light_pressed_web.png");
+  background-image: url("../img/btn_google_signin_light_pressed_web.png");
 }
 
 .flex-center {
@@ -198,7 +206,7 @@ a.google:active {
 .standup-card-title {
   background-color: #000;
   border-radius: 5px 5px 0px 0px;
-  color: #fff;
+  color: $default-text-light;
   padding: 0.25em 0.5em;
 }
 

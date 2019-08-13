@@ -4,11 +4,12 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 var session = require('express-session');
 var express = require('express');
-// var axios = require('axios');
-// var path = require('path');
+var path = require('path');
 require('dotenv').config();
 
+
 var app = module.exports = loopback();
+
 var loopbackPassport = require('loopback-component-passport');
 var PassportConfigurator = loopbackPassport.PassportConfigurator;
 var passportConfigurator = new PassportConfigurator(app);
@@ -42,6 +43,7 @@ app.middleware('session', session({
   saveUninitialized: true,
   resave: true,
 }));
+
 passportConfigurator.init();
 
 app.use(flash());
@@ -57,13 +59,26 @@ for (var s in config) {
   c.session = c.session !== false;
   passportConfigurator.configureProvider(s, c);
 }
+
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
-app.get('/auth/account', ensureLoggedIn('/login'), function(req, res, next) {
-  res.json({user: req.user, url: req.url});
+app.get('/', (req, res) => {
+  res.redirect('/login');
 });
 
-app.get('/auth/logout', function(req, res, next) {
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/login.html'));
+});
+
+app.get('/admin', ensureLoggedIn('/login'), (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
+app.get('/standup/:id', ensureLoggedIn('/login'), (req, res) => {
+  res.redirect('/admin');
+});
+
+app.get('/admin/logout', (req, res, next) => {
   req.logout();
   res.redirect('/');
 });
@@ -81,5 +96,5 @@ app.start = function() {
 };
 
 if (require.main === module) {
-  app.start();
+    app.start();
 }

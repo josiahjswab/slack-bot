@@ -1,20 +1,6 @@
 {
   "db": {
-    "database": "student-standups",
     "name": "db",
-    "localStorage": "",
-    "file": "my_data.json",
-    "connector": "mongodb"
-  },
-  "mongod": {
-    "host": "localhost",
-    "port": 27017,
-    "url": "mongodb://localhost:27017/student-standups",
-    "database": "student-standups",
-    "password": "",
-    "name": "mongod",
-    "user": "",
-    "useNewUrlParser": true,
-    "connector": "mongodb"
+    "connector": "memory"
   }
 }

@@ -14,50 +14,35 @@
       "./mixins"
     ]
   },
-  "User": {
-    "dataSource": "mongod"
+  "user": {
+    "dataSource": "db",
+    "public": true
   },
-  "AccessToken": {
-    "dataSource": "mongod",
+  "accessToken": {
+    "dataSource": "db",
+    "public": false
+  },
+  "userCredential": {
+    "dataSource": "db",
+    "public": false
+  },
+  "userIdentity": {
+    "dataSource": "db",
     "public": false
   },
   "ACL": {
-    "dataSource": "mongod",
+    "dataSource": "db",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "mongod",
+    "dataSource": "db",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "mongod",
+    "dataSource": "db",
     "public": false
-  },
-  "lb": {
-    "dataSource": "mongod",
-    "public": true
-  },
-  "student": {
-    "dataSource": "mongod",
-    "public": true
-  },
-  "standup": {
-    "dataSource": "mongod",
-    "public": true
-  },
-  "accessToken": {
-    "dataSource": "mongod",
-    "public": true
-  },
-  "userCredential": {
-    "dataSource": "mongod",
-    "public": true
-  },
-  "userIdentity": {
-    "dataSource": "mongod",
-    "public": true
   }
 }
