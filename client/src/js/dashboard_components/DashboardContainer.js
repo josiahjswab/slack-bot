@@ -6,7 +6,7 @@ function DashboardContainer(props) {
     <React.Fragment>
       <header>
         <p className='date'>August 9</p>
-        <a href='#' className='link-btn'>Logout</a>
+        <a href='/logout' className='link-btn'>Logout</a>
       </header>
        <main className='grid'>
          <div className='grid-column'>

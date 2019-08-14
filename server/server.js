@@ -75,10 +75,10 @@ app.get('/admin', ensureLoggedIn('/login'), (req, res, next) => {
 });
 
 app.get('/standup/:id', ensureLoggedIn('/login'), (req, res) => {
-  res.redirect('/admin');
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-app.get('/admin/logout', (req, res, next) => {
+app.get('/logout', (req, res, next) => {
   req.logout();
   res.redirect('/');
 });

@@ -6,7 +6,7 @@ function Standups(props) {
     <React.Fragment>
       <header>
         <h1>John Doe</h1>
-        <a href='#' className='link-btn'>Logout</a>
+        <a href='/logout' className='link-btn'>Logout</a>
       </header>
       <main className='grid'>
         <div className='standup-card'>
