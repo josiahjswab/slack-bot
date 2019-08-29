@@ -1,6 +1,8 @@
 {
   "initial:before": {
-    "loopback#favicon": {}
+    "loopback#favicon": {
+      "params": "$!../favicon.ico"
+    }
   },
   "initial": {
     "compression": {},
@@ -21,12 +23,14 @@
     },
     "helmet#xssFilter": {},
     "helmet#frameguard": {
-      "params": { "action": "deny" }
+      "params": {
+        "action": "deny"
+      }
     },
     "helmet#hsts": {
       "params": {
         "maxAge": 0,
-        "includeSubdomains": true
+        "includeSubDomains": true
       }
     },
     "helmet#hidePoweredBy": {},
@@ -38,7 +42,14 @@
   },
   "session": {},
   "auth": {},
-  "parse": {},
+  "parse": {
+    "express#json": {},
+    "express#urlencoded": {
+      "params": {
+        "extended": true
+      }
+    }
+  },
   "routes": {
     "loopback#rest": {
       "paths": [

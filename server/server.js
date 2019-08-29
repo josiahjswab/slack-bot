@@ -1,22 +1,22 @@
 'use strict';
 
-var loopback = require('loopback');
-var boot = require('loopback-boot');
-var session = require('express-session');
-var express = require('express');
-var path = require('path');
-require('dotenv').config();
+const loopback = require('loopback');
+const boot = require('loopback-boot');
+const path = require('path');
+const session = require('express-session');
 
+const app = module.exports = loopback();
 
-var app = module.exports = loopback();
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-var loopbackPassport = require('loopback-component-passport');
-var PassportConfigurator = loopbackPassport.PassportConfigurator;
-var passportConfigurator = new PassportConfigurator(app);
+const loopbackPassport = require('loopback-component-passport');
+const PassportConfigurator = loopbackPassport.PassportConfigurator;
+const passportConfigurator = new PassportConfigurator(app);
 
-var flash = require('express-flash');
+const flash = require('express-flash');
 
-var config = {};
+let config = {};
 try {
   config = require('../providers.js');
 } catch (err) {
@@ -28,12 +28,6 @@ boot(app, __dirname, function(err) {
   if (err) throw err;
 });
 
-app.middleware('parse', express.json());
-
-app.middleware('parse', express.urlencoded({
-  extended: true,
-}));
-
 app.middleware('auth', loopback.token({
   model: app.models.accessToken,
 }));
@@ -43,7 +37,6 @@ app.middleware('session', session({
   saveUninitialized: true,
   resave: true,
 }));
-
 passportConfigurator.init();
 
 app.use(flash());
@@ -54,13 +47,11 @@ passportConfigurator.setupModels({
   userCredentialModel: app.models.userCredential,
 });
 
-for (var s in config) {
-  var c = config[s];
+for (let s in config) {
+  let c = config[s];
   c.session = c.session !== false;
   passportConfigurator.configureProvider(s, c);
 }
-
-var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
 app.get('/', (req, res) => {
   res.redirect('/login');
@@ -70,15 +61,76 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/login.html'));
 });
 
-app.get('/admin', ensureLoggedIn('/login'), (req, res, next) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+app.get('/auth', (req, res) => {
+  const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.redirect(`/dashboard?auth_token=${token}`);
+      } else {
+        res.redirect('/login');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
 });
 
-app.get('/standup/:id', ensureLoggedIn('/login'), (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+app.get('/dashboard', (req, res) => {
+  const token = req.query.auth_token;
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
+      } else {
+        res.redirect('/login');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
+});
+
+app.post('/dashboard', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  app.models.User.login({
+    email: email,
+    password: password,
+  }, 'user', function(err, token) {
+    if (err) {
+      return res.status(401).redirect('/login');
+    }
+    token = token.toJSON();
+    res.redirect(`/dashboard/?auth_token=${token.id}`);
+  });
+});
+
+app.get('/student-summary/:id', (req, res) => {
+  const token = req.query.auth_token;
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
+      } else {
+        res.redirect('/login');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
 });
 
 app.get('/logout', (req, res, next) => {
+  if (req.query.auth_token) {
+    app.models.accessToken.destroyAll({
+      id: req.query.auth_token,
+    });
+  };
   req.logout();
   res.redirect('/');
 });
@@ -86,15 +138,44 @@ app.get('/logout', (req, res, next) => {
 app.start = function() {
   return app.listen(function() {
     app.emit('started');
-    var baseUrl = app.get('url').replace(/\/$/, '');
+    const baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
     if (app.get('loopback-component-explorer')) {
-      var explorerPath = app.get('loopback-component-explorer').mountPath;
+      const explorerPath = app.get('loopback-component-explorer').mountPath;
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
   });
 };
 
 if (require.main === module) {
-    app.start();
+  app.start();
+}
+
+function ensureAuthorized(authToken) {
+  return app.models.accessToken.find({'where': {id: authToken}})
+    .then(tokens => {
+      if (tokens.length > 0) {
+        return app.models.user.find({'where': {id: tokens[0].userId}})
+          .then(users => {
+            if (users.length > 0) {
+              return app.models.RoleMapping.find(
+                {'where': {principalId: users[0].id}})
+                .then(roleMaps => {
+                  if (roleMaps.length > 0) {
+                    return 'AUTHORIZED';
+                  } else {
+                    // role map does not exist for user. User is unauthorized
+                    return 'UNAUTHORIZED';
+                  }
+                });
+            } else {
+              // there is no user associated with this access token
+              return 'UNAUTHORIZED';
+            }
+          });
+      } else {
+        // no access token exists with this id.
+        return 'UNAUTHORIZED';
+      }
+    });
 }

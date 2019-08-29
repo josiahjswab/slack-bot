@@ -1,54 +1,113 @@
-import React from 'react';
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import React, { Component } from 'react';
+import DataSection from './DataSection';
+import Roster from './Roster';
+import {
+  calculateDashboardCheckinData,
+  calculateDashboardStandupsData } from '../utilities'; 
 
-function DashboardContainer(props) {
-  return (
-    <React.Fragment>
-      <header>
-        <p className='date'>August 9</p>
-        <a href='/logout' className='link-btn'>Logout</a>
-      </header>
-       <main className='grid'>
-         <div className='grid-column'>
-           <section className='card'>
-             <h2 className='card-heading'>Completed Standups</h2>
-             <p className='percentage'>75%</p>
-             <p className='fraction'>12 / 16</p>
-           </section>
-           <section className='card'>
-             <h2 className='card-heading'>Delinquents</h2>
-             <ul>
-               <li>John Doe</li>
-               <li>Student 1</li>
-               <li>Student 2</li>
-               <li>Student 3</li>
-             </ul>
-           </section>
-         </div>
-         <section className='card grid-column'>
-           <h2 className='card-heading'>View standups for:</h2>
-           <ul className='standup-links'>
-             <li><Link to='/standup/1'>John Doe</Link></li>
-             <li><Link to='/standup/1'>Student 2</Link></li>
-             <li><Link to='/standup/1'>Student 3</Link></li>
-             <li><Link to='/standup/1'>Student 4</Link></li>
-             <li><Link to='/standup/1'>student 5</Link></li>
-             <li><Link to='/standup/1'>student 6</Link></li>
-             <li><Link to='/standup/1'>student 7</Link></li>
-             <li><Link to='/standup/1'>student 8</Link></li>
-             <li><Link to='/standup/1'>student 9</Link></li>
-             <li><Link to='/standup/1'>student 10</Link></li>
-             <li><Link to='/standup/1'>student 11</Link></li>
-             <li><Link to='/standup/1'>student 12</Link></li>
-             <li><Link to='/standup/1'>student 13</Link></li>
-             <li><Link to='/standup/1'>student 14</Link></li>
-             <li><Link to='/standup/1'>student 15</Link></li>
-             <li><Link to='/standup/1'>student 16</Link></li>
-           </ul>
-         </section>
-       </main>
-     </React.Fragment>
-  );
+class DashboardContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      students: [],
+      allStandups: [],
+      activeCheckins: []
+    }
+    this.getAuthToken = this.getAuthToken.bind(this);
+  }
+
+  getAuthToken() {
+    return this.props
+    .location
+    .search
+    .replace(/^(.*?)\auth_token=/, '');
+  }
+  
+  componentDidMount(){
+    fetch(`/api/students?access_token=${ this.getAuthToken() }`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ students: data });
+      })
+      .catch(err => console.log(err));
+    
+    fetch(`/api/standups?access_token=${ this.getAuthToken() }`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ allStandups: data });
+      })
+      .catch(err => console.log(err));
+
+    fetch(`/api/checkins/active?access_token=${ this.getAuthToken() }`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ activeCheckins: data });
+      })
+      .catch(err => console.log(err));
+  }
+
+  render() {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const today = new Date();
+    const dayOfWeek = days[today.getDay()];
+    const month = months[today.getMonth()];
+    const dayOfMonth = today.getDate();
+
+    let standupsData;
+    let checkinData;
+    if(this.state.students.length > 0) {
+      standupsData = calculateDashboardStandupsData(
+        this.state.allStandups,
+        this.state.students
+      );
+      checkinData = calculateDashboardCheckinData(
+        this.state.activeCheckins,
+        this.state.students
+      );
+    }
+
+    return (
+      <React.Fragment>
+        <header>
+          <p className='date'>{`${ dayOfWeek }, ${ month } ${ dayOfMonth }`}</p>
+          <ul className='navigation'>
+            <li>
+              <a 
+                className='link-btn'
+                href={`${ process.env.BASE_URL }logout?auth_token=${ this.getAuthToken() }`}
+              >Logout
+              </a>
+            </li>
+          </ul>
+        </header>
+        <main className='wrapper dashboard-wrapper'>
+          <div className='data-section-container-flex'>
+            <DataSection
+              title='time in class'
+              data={ checkinData ? checkinData.summary : undefined }
+              delinquents={ checkinData ? checkinData.delinquents : undefined }
+              delinquentTitle = 'absentees'
+            />
+            <DataSection
+              title='standups'
+              data={ standupsData ? standupsData.summary : undefined }
+              delinquents={ standupsData ? standupsData.delinquents : undefined }
+            />
+          </div>
+          <div className='grid-column'>
+            <Roster
+              students={ this.state.students }
+              auth_token={ this.getAuthToken() }
+            />
+          </div>
+        </main>
+      </React.Fragment>
+    );
+  }
 }
 
 export default DashboardContainer;

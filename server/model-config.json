@@ -14,8 +14,35 @@
       "./mixins"
     ]
   },
-  "user": {
+  "ACL": {
+    "dataSource": "mongod",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "mongod",
+    "public": true,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "mongod",
+    "public": false
+  },
+  "log": {
     "dataSource": "db",
+    "public": true
+  },
+  "student": {
+    "dataSource": "mongod",
+    "public": true
+  },
+  "standup": {
+    "dataSource": "mongod",
+    "public": true
+  },
+  "user": {
+    "dataSource": "mongod",
     "public": true
   },
   "accessToken": {
@@ -30,19 +57,8 @@
     "dataSource": "db",
     "public": false
   },
-  "ACL": {
-    "dataSource": "db",
-    "public": false
-  },
-  "RoleMapping": {
-    "dataSource": "db",
-    "public": false,
-    "options": {
-      "strictObjectIDCoercion": true
-    }
-  },
-  "Role": {
-    "dataSource": "db",
-    "public": false
+  "checkin": {
+    "dataSource": "mongod",
+    "public": true
   }
 }

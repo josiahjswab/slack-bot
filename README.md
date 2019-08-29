@@ -161,7 +161,7 @@ Click the link to go to the Geolocation website.  Click the find me button, wait
 > - Type in **/standup** to trigger the standup dialog.
 (a survey form will appear with three stand up questions for the students to submit to the staff. Students can cancel the form and be prompted to remember to submit later on in the day.)
 
-- All submitted stand ups will be cleared from cashe at 11:59pm.
+- All submitted stand ups will be cleared from cache at 11:59pm.
 
 ## Back End
 
