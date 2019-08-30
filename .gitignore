@@ -12,7 +12,7 @@
 *.xml
 .cache
 .DS_Store
-.env
+.env*
 .idea
 .project
 .strong-pm
