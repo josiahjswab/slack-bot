@@ -78,12 +78,12 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
     /doorbell : https://dingdong-slack-bot.herokuapp.com/slack/doorbell \
     /checkin : https://dingdong-slack-bot.herokuapp.com/slack/checkin \
     /checkout : https://dingdong-slack-bot.herokuapp.com/slack/checkout \
-    /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup 
+    /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup
 
 6.  Add Environmental Variables to .env
 
 ### Create a local dev bot for each coder for testing
-Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots must be distinct from production bot (use your initials example: jsdingdongbot or /jsdoorbell)
+Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots must be distinct from production bot (use your initials example: jssdcs-slack-bot or /jsdoorbell)
 
 1.  Create an app at https://api.slack.com/apps
     - Add a distinct app name
@@ -106,10 +106,10 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
     - Select your bot and click ‘Add’
     - Repeat for key channel and admin reports channel
     - NOTE: Save student, key, and admin reports channel IDs for environment variables: right click on the channel and open the url (channel ID will be at the end of the url after '/messages')
-    
+
 5.  Add Button and Slash Command localtunnel urls in the Slack API
     Remember - use initials for the local dev bot Slash Commands.
-    
+
     - Return to https://api.slack.com/apps
     - ‘Interactive Components’\
     Request Url: {localtunnel url}/slack/interactive
@@ -122,11 +122,11 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
 6.  Add Environmental Variables to .env
 
 ### Setup Google Authentication
-1. Create a developer account on Google.
+1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
 
 2. Create your credentials and get your client id and client secret.
 
-3. Google Auth requires the following dependencies: Loopback component passport, passport, passport google auth, and passport oauth2. 
+3. Google Auth requires the following dependencies: Loopback component passport, passport, passport google auth, and passport oauth2.
 
 4. Create a providers.js in your root folder and paste this in and add your google id and secret to an env file:
 
@@ -179,16 +179,16 @@ npm run dev
 ```
 
 ## Usage
- DingDongbot lives in *Slack* 
+ sdcs-slack-bot lives in *Slack*
   Upon installation it has access to the *Current Students* (Students Channel), *Key* channel and *Admin Reports* channel (where the magic happens).
- 
+
  ## The commands are entered: ##
  >in the *message input* in any sdcs slack channel.
- 
-**Type in** 
-> **/doorbell** 
-- To ring the bell (This sends a message to the *key* channel - alerting the staff to open front door). 
-- A *"Got in"* button will be displayed in a private channel to the user, this is pressed to notify the staff that the user is or is not in the building. 
+
+**Type in**
+> **/doorbell**
+- To ring the bell (This sends a message to the *key* channel - alerting the staff to open front door).
+- A *"Got in"* button will be displayed in a private channel to the user, this is pressed to notify the staff that the user is or is not in the building.
 
 > **/checkin**
 - To check in.
@@ -196,7 +196,7 @@ npm run dev
 - This creates a timestamp on the server, the user will also be sent a reminder by 9:00am to checkin, if they haven't before hand.
 
 > **/checkout**
-- To check out. 
+- To check out.
 - This creates a timestamp on the server, the user will also be sent a reminder by 5:50PM to checkout before they leave.
 - Click the link to go to the Geolocation website.  Click the find me button, wait for the coordinates to appear, and then click submit to check out.
 - If they haven't fully checked out by 6:15pm another reminder will be sent (Are you still here?) with two buttons (Yes/No).
@@ -225,5 +225,5 @@ Loopback used for server setup. Please view common/models folder for models/rela
         - roleId: \< the id of the admin role created on server boot >
 3.  You should now be able to log in to the site with your Google credentials
 
-:copyright: 2019 NOWW/SDCS
+:copyright: 2019 San Diego Code School
 
