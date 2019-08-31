@@ -124,7 +124,7 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
 ### Setup Google Authentication
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
 
-2. Create your credentials and get your client id and client secret.
+2. Get your client id and client secret by selecting create credentials and then selecting Oauth Client Id in the dropdown menu.
 
 3. Google Auth requires the following dependencies: Loopback component passport, passport, passport google auth, and passport oauth2.
 
