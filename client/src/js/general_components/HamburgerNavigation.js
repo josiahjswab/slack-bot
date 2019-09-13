@@ -19,6 +19,11 @@ function HamburgerNavigation(props) {
           >Dashboard
           </a>
         </li>
+				<li onClick={props.openStudentEditWindow()}>
+					<div className='link-btn'>
+						Edit Student
+					</div>
+				</li>
       </ul>
     </React.Fragment>
   );

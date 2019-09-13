@@ -184,9 +184,61 @@ function calculateIndividualCheckinData(checkins) {
   ]);
 }
 
+function calculateIndividualWakatimeData(wakatimes) {
+  if (wakatimes.length == 0) { return undefined; }
+  // total time spent in classroom
+  let totalSeconds = wakatimes.reduce((accumulator, wakatime) => {
+    return accumulator + wakatime.duration;
+  }, 0);
+  let totalHours = Math.round(totalSeconds) / (60 * 60);
+
+  // weekly average = daily average * 7, but only if student has already been
+  // enrolled for at least one week
+  const dayOne = new Date(wakatimes[0].date);
+  const dayOneMidnight = new Date(
+    `${dayOne.getFullYear()}-
+    ${dayOne.getMonth() + 1}-
+    ${dayOne.getDate()}`
+  );
+  const totalDaysEnrolled =
+    Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
+  let weeklyAverageHours;
+  if (totalDaysEnrolled <= 7) {
+    weeklyAverageHours = totalHours;
+  } else {
+    weeklyAverageHours = Math.round(totalHours / totalDaysEnrolled * 7);
+	}
+
+  // time spent in coding in the last seven days
+  const wakatimesLastSevenDays = wakatimes.filter(wakatime => {
+    return new Date(wakatime.date) > sevenDaysAgoMidnight;
+  });
+  let timeSpentLastSevenDays = wakatimesLastSevenDays.reduce((accumulator, wakatime) => {
+      return accumulator + wakatime.duration;
+    }, 0);
+  timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
+
+  return ([
+    {
+      featured: `${timeSpentLastSevenDays.toFixed(2)}`,
+      measurement: 'hrs',
+      footer: '7 days',
+    }, {
+      featured: `${weeklyAverageHours.toFixed(2)}`,
+      measurement: 'hrs',
+      footer: 'weekly average',
+    }, {
+      featured: `${totalHours.toFixed(2)}`,
+      measurement: 'hrs',
+      footer: 'total',
+    },
+  ]);
+}
+
 module.exports = {
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateIndividualStandupsData,
-  calculateIndividualCheckinData,
+	calculateIndividualCheckinData,
+	calculateIndividualWakatimeData
 };

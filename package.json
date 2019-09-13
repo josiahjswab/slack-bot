@@ -6,7 +6,7 @@
     "node": ">=6"
   },
   "scripts": {
-    "build": "NODE_ENV=production parcel build client/src/html/index.html client/src/html/login.html",
+    "build": "parcel build client/src/html/index.html client/src/html/login.html",
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
     "start": "npm run build && node .",
@@ -20,6 +20,7 @@
     "babel-loader": "^8.0.6",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
+    "dotenv": "^8.1.0",
     "express-flash": "0.0.2",
     "express-session": "^1.16.2",
     "helmet": "^3.10.0",

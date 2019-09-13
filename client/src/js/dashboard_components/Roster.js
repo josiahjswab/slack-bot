@@ -1,10 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 function Roster(props) {
   return(
     <section className='roster'>
-      <h2 className='section-label'>View data for</h2>
       <ul className='student-links box'>
         { props.students.map(student => {
           const link = `/student-summary/${ student.id }?auth_token=${ props.auth_token }`;

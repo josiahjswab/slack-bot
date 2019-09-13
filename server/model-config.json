@@ -60,5 +60,9 @@
   "checkin": {
     "dataSource": "mongod",
     "public": true
+  },
+  "wakatime": {
+    "dataSource": "mongod",
+    "public": true
   }
 }

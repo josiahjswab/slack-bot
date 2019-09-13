@@ -271,7 +271,51 @@ module.exports = (app) => {
         console.log('in checkOutCache, an error calling Promise.all to checkout students');
         console.log(err);
       });
-  });
+	});
+	
+	const getDailyWakatimeData = schedule.scheduleJob({hour: 8}, () => {
+		let secondsInADay = 1000 * 60 * 60 * 24;
+		let time = new Date(new Date() - secondsInADay); //gets yesterday
+		let year = time.getFullYear();
+		let date = time.getDate();
+		let month = time.getMonth() + 1;
+		let formattedDate = `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")}`;
+
+		app.models.student.find({where: {is_inactive: {neq: true}}})
+		.then(students => {
+			students.forEach(student => {
+				if(student.wakatime_key){
+					getWakatimeDuration(student.slack_id, student.wakatime_key);
+				}
+			})
+		})
+
+		function getWakatimeDuration(slack_id, key){
+			axios({
+				'method': 'get',
+				'url': `https://wakatime.com/api/v1/users/current/durations?date=${formattedDate}`,
+				'headers': {
+					'Authorization': `Basic ${Buffer.from(key).toString('base64')}`
+				}
+			})
+			.then(res => {
+				saveToDatabase(slack_id, Date.now()-secondsInADay, res.data.data.reduce((sum, codingPeriod) => {
+					return sum + codingPeriod.duration;
+				}, 0))
+			})
+			.catch(e => {
+				console.log(e);
+			})
+	
+			function saveToDatabase(slack_id, date, duration){
+				app.models.wakatime.create({
+					'duration': duration,
+					'slack_id': slack_id,
+					'date': date
+				});
+			}
+		}
+	})
 
   function doorbell(user, channel) {
     var params = {

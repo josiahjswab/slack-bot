@@ -24,7 +24,6 @@ function DataSection(props) {
   
   return(
     <section className='data-section data-section-flex'>
-      <h2 className='section-label'>{ props.title }</h2>
       <div className='data-container'>
         { boxes }
       </div>

@@ -26,7 +26,8 @@ body {
 
 header {
   display: flex;
-  justify-content: space-between;
+	justify-content: space-between;
+	flex-wrap: wrap;
   margin-bottom: 1.25em;
 }
 
@@ -42,11 +43,20 @@ main {
   margin-left: 0.5em;
   border: 1px solid $default-red-darker;
   border-radius: 0.25em;
-  text-decoration: none;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .link-btn:hover {
   background-color: $default-red-lighter;
+}
+
+.toggleContent-closed {
+  display: none
+}
+
+.toggleContent-open {
+  display: block
 }
 
 .box {
@@ -213,6 +223,10 @@ a.google:active {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.inactiveStudentsWrapper{
+	max-width: 400px;
+}
+
 .dashboard-wrapper {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -252,11 +266,21 @@ a.google:active {
   align-items: center;
 }
 
+.section-title{
+	display: flex;
+	justify-content: space-between;
+}
+
 .section-label {
   font-size: 0.9em;
   text-transform: uppercase;
   letter-spacing: 0.025em;
   font-weight: bold;
+}
+
+.section-label a{
+	color: black;
+	text-decoration: none;
 }
 
 .data {
@@ -346,15 +370,96 @@ a.google:active {
   font-weight: bold;
 }
 
+.add-edit-student-window {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	background-color: #eeeeee88;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.add-edit-student-container{
+	background-color: #edf5f4;
+	border: 2px solid black;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.add-edit-student-row{
+	width: 300px;
+	height: 40px;
+	box-sizing: border-box;
+	margin: 5px 10px;
+	padding: 5px 5px 0px 5px;
+	display: flex;
+	justify-content: space-around;
+	align-content: center;
+}
+
+.add-edit-student-row .link-btn{
+	height: 27px;
+}
+
+.error-message{
+	color: red;
+	height: max-content;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.datasection-button {
+  text-align: center;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  float: right;
+  background-color: white;
+  color: black;
+  border: 1px #555555;
+}
+
 @media (max-width: 320px) {
   .data-container {
     grid-template-columns: 1fr;
   }
 }
 
+@media (max-width: 500px){
+	header{
+		justify-content: center;
+	}
+}
+
+@media (max-width: 604px){
+  .mobile-display {
+    display: block;
+  }
+
+  .big-display{
+    display: none;
+  }
+}
+
 @media (min-width: 605px) {
   .data-section-container-flex {
     column-count: 2;
+  }
+
+  .big-display {
+    display: block;
+  }
+
+  .mobile-display{
+    display: none;
   }
 
   .standup-container {
@@ -395,8 +500,6 @@ a.google:active {
   }
 }
 
-@media (min-width: 1095px) {
-  .dashboard-wrapper {
-    grid-template-columns: 2fr 1fr;
-  }
+.toggleContent-closed {
+  display: none
 }

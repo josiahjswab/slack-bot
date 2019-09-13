@@ -4,7 +4,7 @@ const loopback = require('loopback');
 const boot = require('loopback-boot');
 const path = require('path');
 const session = require('express-session');
-
+require('dotenv').config()
 const app = module.exports = loopback();
 
 app.set('view engine', 'ejs');
@@ -105,11 +105,27 @@ app.post('/dashboard', (req, res) => {
       return res.status(401).redirect('/login');
     }
     token = token.toJSON();
-    res.redirect(`/dashboard/?auth_token=${token.id}`);
+    res.redirect(`/dashboard?auth_token=${token.id}`);
   });
 });
 
 app.get('/student-summary/:id', (req, res) => {
+  const token = req.query.auth_token;
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
+      } else {
+        res.redirect('/login');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
+});
+
+app.get('/inactive', (req, res) => {
   const token = req.query.auth_token;
   ensureAuthorized(token)
     .then(response => {

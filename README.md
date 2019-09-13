@@ -39,6 +39,8 @@ ADMIN_PASSWORD=<password for the user that is generated on server boot>
 
 NODE_ENV=<development or production>
 
+TZ="America/Tijuana"
+
 Optional
 EXTERNAL_LOGGING= <truthy - only runs if value is present>
 EXTERNAL_LOGGING_URL= <url to send external logs>
@@ -122,9 +124,10 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
 6.  Add Environmental Variables to .env
 
 ### Setup Google Authentication
+
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
 
-2. Get your client id and client secret by selecting create credentials and then selecting Oauth Client Id in the dropdown menu.
+2. Get your client id and client secret by selecting create credentials and then selecting Oauth Client Id in the dropdown menu (https://console.developers.google.com/apis/credentials).
 
 3. Google Auth requires the following dependencies: Loopback component passport, passport, passport google auth, and passport oauth2.
 
@@ -226,4 +229,3 @@ Loopback used for server setup. Please view common/models folder for models/rela
 3.  You should now be able to log in to the site with your Google credentials
 
 :copyright: 2019 San Diego Code School
-
