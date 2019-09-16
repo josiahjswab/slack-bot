@@ -1,21 +1,22 @@
 'use strict';
 
 const today = new Date();
-const todayMidnight = new Date(
-  `${today.getFullYear()}-
-  ${today.getMonth() + 1}-
-  ${today.getDate()}`
-);
-const tomorrowMidnight = new Date(
-  `${today.getFullYear()}-
-  ${today.getMonth() + 1}-
-  ${today.getDate() + 1}`
-);
-const sevenDaysAgoMidnight = new Date(
-  `${today.getFullYear()}-
-  ${today.getMonth() + 1}-
-  ${today.getDate() - 6}`
-);
+
+function offsetDate(initialDate, dayOffset) {
+  return new Date(initialDate.setDate(initialDate.getDate() + dayOffset));
+}
+
+function midnight(date) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+}
+
+const todayMidnight = midnight(new Date(today));
+const tomorrowMidnight = midnight(offsetDate(new Date(today), 1));
+const sevenDaysAgoMidnight = midnight(offsetDate(new Date(today), -6));
 
 const millisecondsToHours = 1000 * 60 * 60;
 const millisecondsToDays = 1000 * 60 * 60 * 24;
@@ -71,7 +72,7 @@ function calculateDashboardCheckinData(activeCheckins, students) {
 }
 
 function calculateIndividualStandupsData(standups) {
-  if (standups.length == 0) { return undefined; }
+  if (standups.length === 0) { return undefined; }
 
   // standups completed in the last seven days
   const standupsLastSevenDays = standups.filter(standup => {
@@ -93,11 +94,7 @@ function calculateIndividualStandupsData(standups) {
 
   // standups completed during entire enrollment (assuming standup submitted on day 1)
   const dayOne = new Date(standups[standups.length - 1].date);
-  const dayOneMidnight = new Date(
-    `${dayOne.getFullYear()}-
-    ${dayOne.getMonth() + 1}-
-    ${dayOne.getDate()}`
-  );
+  const dayOneMidnight = midnight(dayOne);
   const totalDaysEnrolled =
     Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
   const standupsDates = standups.map(standup => {
@@ -126,7 +123,7 @@ function calculateIndividualStandupsData(standups) {
 }
 
 function calculateIndividualCheckinData(checkins) {
-  if (checkins.length == 0) { return undefined; }
+  if (checkins.length === 0) { return undefined; }
 
   // total time spent in classroom
   checkins.forEach(checkin => {
@@ -143,11 +140,7 @@ function calculateIndividualCheckinData(checkins) {
   // weekly average = daily average * 7, but only if student has already been
   // enrolled for at least one week
   const dayOne = new Date(checkins[0].checkin_time);
-  const dayOneMidnight = new Date(
-    `${dayOne.getFullYear()}-
-    ${dayOne.getMonth() + 1}-
-    ${dayOne.getDate()}`
-  );
+  const dayOneMidnight = midnight(dayOne);
   const totalDaysEnrolled =
     Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
   let weeklyAverageHours;
