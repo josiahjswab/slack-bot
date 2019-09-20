@@ -53,7 +53,7 @@ module.exports = (app) => {
       // Send POST request
       axios({
         method: 'post',
-        url: process.env.API_ROOT + '/company',
+        url: process.env.API_ROOT,
         headers: {
           'X-API-Key': process.env.X_API_KEY,
           'X-User-Id': process.env.X_USER_ID,
