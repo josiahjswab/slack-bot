@@ -35,6 +35,13 @@ main {
   min-width: 200px;
 }
 
+.header-name {
+  display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+  margin-bottom: 1.25em;
+}
+
 .link-btn, .link-btn:visited {
   display: block;
   background-color: $default-red;
@@ -123,6 +130,7 @@ main {
   padding-top: 60px;
   background-color: #000;
   display: none;
+  flex-grow: 1;
 }
 
 .visible {
@@ -418,13 +426,15 @@ a.google:active {
 
 .datasection-button {
   text-align: center;
-  font-size: 0.9em;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
   float: right;
-  background-color: white;
-  color: black;
-  border: 1px #555555;
+  display: block;
+  background-color: $default-red;
+  color: $default-text-light;
+  padding: 0.1em 0.5em 0.1em 0.5em;
+  border: 0.5px $default-red-darker;
+  border-radius: 0.25em;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 @media (max-width: 320px) {
@@ -439,27 +449,9 @@ a.google:active {
 	}
 }
 
-@media (max-width: 604px){
-  .mobile-display {
-    display: block;
-  }
-
-  .big-display{
-    display: none;
-  }
-}
-
 @media (min-width: 605px) {
   .data-section-container-flex {
     column-count: 2;
-  }
-
-  .big-display {
-    display: block;
-  }
-
-  .mobile-display{
-    display: none;
   }
 
   .standup-container {
@@ -479,9 +471,14 @@ a.google:active {
     position: inherit;
     width: inherit;
     height: inherit;
-    padding-top: inherit;
-    background-color: transparent;
-    display: inherit;
+		padding-top: inherit;
+		padding-bottom: 10px;
+		background-color: transparent;
+		display: flex;
+  }
+
+  .dashboard-link{
+    margin-right: auto;
   }
 }
 
@@ -500,6 +497,16 @@ a.google:active {
   }
 }
 
-.toggleContent-closed {
-  display: none
+.toggleContent-hidden {
+  display: none;
+}
+
+.hours-container {
+  display: grid;
+  grid-gap: $grid-gap-smaller;
+  grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+}
+
+.pointer {
+  cursor: pointer;
 }

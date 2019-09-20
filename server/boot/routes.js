@@ -13,24 +13,19 @@ module.exports = (app) => {
     .then(response => {
       let studentsFromDb = response;
       studentsFromDb.forEach(student => {
-        students.push(
-          {
-            slack_id: student.slack_id,
-            id: student.id,
-            submitted: false,
-            reported: false,
-            questionOne: 'What did you do since Yesterday?',
-            yesterday: '',
-            questionTwo: 'What will you do Today?',
-            today: '',
-            questionThree: 'Anything blocking your progress?',
-            blockers: '',
-            date: null,
-          }
-        );
+        addStudentToStudentsArray(student);
       });
     })
     .catch(err => console.log(err));
+
+  app.models.student.observe('after save', (context, callback) => {
+    if (context.isNewInstance) {
+      addStudentToStudentsArray(context.instance);
+    } else {
+			updateStudentInArray(context.instance);
+		}
+    callback();
+  })
 
   app.post('/slack/doorbell', (req, res) => {
     res.send('Ringing the doorbell');
@@ -42,13 +37,50 @@ module.exports = (app) => {
     res.status(200).send('');
   });
 
+  app.post('/slack/register', (req, res) => {
+    handleEvent(req.body, 'register');
+    res.status(200).send('');
+  });
+
+  app.post('/slack/events', (req, res) => {
+    if (req.body.type === 'url_verification') {
+      res.json(req.body.challenge);
+      return;
+    }
+    if (req.body.event.type === 'team_join') {
+      res.send('OK');
+      let userInfo = req.body.event.user;
+      // Send POST request
+      axios({
+        method: 'post',
+        url: process.env.API_ROOT + '/company',
+        headers: {
+          'X-API-Key': process.env.X_API_KEY,
+          'X-User-Id': process.env.X_USER_ID,
+          'X-Business-Id': process.env.X_BUSINESS_ID
+        },
+        data: {
+          slack_id: userInfo.id,
+          real_name: userInfo.real_name,
+          email: userInfo.profile.email
+        }
+      })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  })
+
   app.post('/slack/checkin', (req, res) => {
-    const {user_id, channel_id} = req.body;
+    const { user_id, channel_id } = req.body;
     res.send(`Click the link to confirm your location to check in: ${process.env.BASE_URL}getGeo?user=${user_id}&channel=${channel_id}&checkin=true`);
   });
 
   app.post('/slack/checkout', (req, res) => {
-    const {user_id, channel_id} = req.body;
+    const { user_id, channel_id } = req.body;
     res.send(`Click the link to confirm your location to check out: ${process.env.BASE_URL}getGeo?user=${user_id}&channel=${channel_id}&checkin=false`);
   });
 
@@ -74,7 +106,14 @@ module.exports = (app) => {
           handleEvent(body, 'submitStandup');
         }
         res.send('');
-        break;
+				break;
+			case 'registerNewStudent':
+				saveNewStudentToDatabase(body.user.id, body.user.name, body.submission.wakatime_key, 'FREE');
+				res.send('');
+				axios.post(body.response_url, {
+					'text': "You have been registered, thank you!"
+				})
+				break;
       default:
         res.send('Not sure what you were trying to do here...');
         break;
@@ -95,15 +134,15 @@ module.exports = (app) => {
   });
 
   app.get('/getGeo', (req, res) => {
-    const {user, channel, checkin} = req.query;
-    res.render('index', {user, channel, checkin, token: process.env.token});
+    const { user, channel, checkin } = req.query;
+    res.render('index', { user, channel, checkin, token: process.env.token });
   });
 
   const handleEvent = (body, command) => {
-  /* the variable on the left represents the response from a slash command, and
-  the variables on the right are coming from an interactive command  */
+    /* the variable on the left represents the response from a slash command, and
+    the variables on the right are coming from an interactive command  */
 
-    const user = body.user_id ||  body.user.id;
+    const user = body.user_id || body.user.id;
     const channel = body.channel_id || body.channel.id;
 
     const loc = {
@@ -132,66 +171,94 @@ module.exports = (app) => {
         break;
       case 'checkout':
         checkOut(user, loc, channel);
-        break;
+				break;
+			case 'register':
+				registerNewStudent(body);
+				break;
       default:
         break;
     }
   };
 
   // 9:00am
-  const morningReminder = schedule.scheduleJob({hour: 9, minute: 0}, () => {
-    app.models.checkin.active((err, response) => {
-      if(err) {
+  const morningReminder = schedule.scheduleJob({ hour: 9, minute: 0 }, () => {
+    app.models.student.reminder((err, activeResponse) => {
+      if (err) {
         console.log(err);
       }
       else {
-        let checkedInStudents = response;
-        bot.getUsers()
-          .then( users => {
-            users.members.forEach(user => {
-              if( checkedInStudents.filter(e=>e.slack_id===user.id).length > 0 ) {
-                bot.postEphemeral(
-                  process.env.STUDENTS_CHANNEL,
-                  user.id,
-                  ':alarm_clock: Don\'t forget to check in'
-                );
-              }
-            });
-          });
+        let activeStudents = activeResponse;
+        app.models.checkin.active((err, response) => {
+          if (err) {
+            console.log(err);
+          }
+          else {
+            let checkedInStudents = response;
+						let filteredActiveStudents = activeStudents.filter(student => {
+							return checkedInStudents.filter(checkedIn => student.slack_id === checkedIn.slack_id).length == 0;
+						})
+            bot.getUsers()
+              .then(users => {
+                users.members.forEach(user => {
+                  if (filteredActiveStudents.filter(student => student.slack_id === user.id).length > 0) {
+                    bot.postEphemeral(
+											process.env.STUDENTS_CHANNEL,
+											user.id,
+											':alarm_clock: Don\'t forget to check in'
+										);
+                  };
+                });
+              })
+              .catch(err => {
+                console.log('error in checkinReminder');
+                console.log(err);
+              });
+          };
+        });
       }
-    });
+    })
   });
 
-  // 5:50pm
-  const earlyCheckOutReminder = schedule.scheduleJob({hour: 17, minute: 50}, () => {
-    app.models.checkin.active((err, response) => {
-      if(err) {
+  //5:50pm
+  const earlyCheckoutReminder = schedule.scheduleJob({ hour: 17, minute: 50 }, () => {
+    app.models.student.reminder((err, activeResponse) => {
+      if (err) {
         console.log(err);
       }
       else {
-        let checkedInStudents = response;
-        bot.getUsers()
-          .then( users => {
-            users.members.forEach(user => {
-              if( checkedInStudents.filter(e=>e.slack_id===user.id).length > 0 ) {
-                bot.postEphemeral(
-                  process.env.STUDENTS_CHANNEL,
-                  user.id,
-                  ':alarm_clock: Don\'t forget to check out before you leave'
-                  );
-              }
-            });
-          })
-          .catch(err=>{
-            console.log('error in earlyCheckOutReminder');
+        let activeStudents = activeResponse;
+        app.models.checkin.active((err, response) => {
+          if (err) {
             console.log(err);
-          });
+          }
+          else {
+            let checkedInStudents = response;
+            bot.getUsers()
+              .then(users => {
+                users.members.forEach(user => {
+                  if (checkedInStudents.filter(e => e.slack_id === user.id).length > 0) {
+                    if (activeStudents.filter(s => s.slack_id === user.id).length > 0) {
+                      bot.postEphemeral(
+                        process.env.STUDENTS_CHANNEL,
+                        user.id,
+                        ':alarm_clock: Don\'t forget to check out before you leave'
+                      );
+                    };
+                  };
+                });
+              })
+              .catch(err => {
+                console.log('error in earlyCheckOutReminder');
+                console.log(err);
+              });
+          };
+        });
       }
-    });
+    })
   });
 
   // 6:15pm
-  const lateCheckOutReminder = schedule.scheduleJob({hour: 18, minute: 15}, () => {
+  const lateCheckOutReminder = schedule.scheduleJob({ hour: 18, minute: 15 }, () => {
     var message = {
       'attachments': [
         {
@@ -220,33 +287,44 @@ module.exports = (app) => {
       ],
     };
 
-    app.models.checkin.active((err, response) => {
-      if(err) {
+    app.models.student.reminder((err, activeResponse) => {
+      if (err) {
         console.log(err);
       }
       else {
-        let checkedInStudents = response;
-        bot.getUsers()
-          .then( users => {
-            users.members.forEach(user => {
-              if( checkedInStudents.filter(e=>e.slack_id===user.id).length > 0 ) {
-                bot.postEphemeral(process.env.STUDENTS_CHANNEL, user.id, '', message);
-              }
-            });
-          })
-          .catch(err=>{
-            console.log('error in lateCheckOutReminder');
+        let activeStudents = activeResponse;
+        console.log(activeStudents)
+        app.models.checkin.active((err, response) => {
+          if (err) {
             console.log(err);
-          });
+          }
+          else {
+            let checkedInStudents = response;
+            bot.getUsers()
+              .then(users => {
+                users.members.forEach(user => {
+                  if (checkedInStudents.filter(e => e.slack_id === user.id).length > 0) {
+                    if (activeStudents.filter(s => s.slack_id === user.id).length > 0) {
+                      bot.postEphemeral(process.env.STUDENTS_CHANNEL, user.id, '', message);
+                    };
+                  };
+                });
+              })
+              .catch(err => {
+                console.log('error in lateCheckOutReminder');
+                console.log(err);
+              });
+          };
+        });
       }
     });
   });
 
   // 6:20pm
-  const checkOutCache = schedule.scheduleJob({hour: 18, minute: 20}, () => {
+  const checkOutCache = schedule.scheduleJob({ hour: 18, minute: 20 }, () => {
     let checkouts = [];
     app.models.checkin.active((err, response) => {
-      if(err) {
+      if (err) {
         console.log('in checkOutCache, an error calling app.models.checkin.active');
         console.log(err);
       }
@@ -254,68 +332,84 @@ module.exports = (app) => {
         checkouts = response.map(checkin => {
           return app.models.checkin.updateAll(
             { id: checkin.id },
-            { checkout_time: new Date(),
-              hours: (new Date() - new Date(checkin.checkin_time)) / (1000*60*60)
+            {
+              checkout_time: new Date(),
+              hours: (new Date() - new Date(checkin.checkin_time)) / (1000 * 60 * 60)
               // (milliseconds in a sec) * (seconds in a min) * (minutes in an hour)
             }
           )
-          .catch(err=>{
-            console.log('in checkOutCache, an error calling app.models.checkin.updateAll()');
-            console.log(err);
-          })
+            .catch(err => {
+              console.log('in checkOutCache, an error calling app.models.checkin.updateAll()');
+              console.log(err);
+            })
         });
       }
     });
     Promise.all(checkouts)
-      .catch(err=>{
+      .catch(err => {
         console.log('in checkOutCache, an error calling Promise.all to checkout students');
         console.log(err);
       });
-	});
-	
-	const getDailyWakatimeData = schedule.scheduleJob({hour: 8}, () => {
-		let secondsInADay = 1000 * 60 * 60 * 24;
-		let time = new Date(new Date() - secondsInADay); //gets yesterday
-		let year = time.getFullYear();
-		let date = time.getDate();
-		let month = time.getMonth() + 1;
-		let formattedDate = `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")}`;
+  });
 
-		app.models.student.find({where: {is_inactive: {neq: true}}})
-		.then(students => {
-			students.forEach(student => {
-				if(student.wakatime_key){
-					getWakatimeDuration(student.slack_id, student.wakatime_key);
-				}
-			})
-		})
+  const getDailyWakatimeData = schedule.scheduleJob({ hour: 2 }, () => {
+    let secondsInADay = 1000 * 60 * 60 * 24;
+    let time = new Date(new Date() - secondsInADay); //gets yesterday
+    let year = time.getFullYear();
+    let date = time.getDate();
+    let month = time.getMonth() + 1;
+    let formattedDate = `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")}`;
+    let generator;
+    const studentTypesToFind = ['PAID', 'JOBSEEKER'];
 
-		function getWakatimeDuration(slack_id, key){
-			axios({
-				'method': 'get',
-				'url': `https://wakatime.com/api/v1/users/current/durations?date=${formattedDate}`,
-				'headers': {
-					'Authorization': `Basic ${Buffer.from(key).toString('base64')}`
-				}
-			})
-			.then(res => {
-				saveToDatabase(slack_id, Date.now()-secondsInADay, res.data.data.reduce((sum, codingPeriod) => {
-					return sum + codingPeriod.duration;
-				}, 0))
-			})
-			.catch(e => {
-				console.log(e);
-			})
-	
-			function saveToDatabase(slack_id, date, duration){
-				app.models.wakatime.create({
-					'duration': duration,
-					'slack_id': slack_id,
-					'date': date
-				});
-			}
-		}
-	})
+    let formattedTypesArray = studentTypesToFind.map(type => {
+      return { type: { eq: type } }
+    })
+
+    app.models.student.find({ where: { or: formattedTypesArray } })
+      .then(students => {
+        generator = studentsGenerator(students);
+        getWakatimeDuration(generator.next());
+      })
+
+    function* studentsGenerator(students) {
+      for (let i = 0; i < students.length; i++) {
+        yield students[i];
+      }
+    }
+
+    function getWakatimeDuration(student) {
+      if (student.done) {
+        return;
+      }
+
+      axios({
+        'method': 'get',
+        'url': `https://wakatime.com/api/v1/users/current/durations?date=${formattedDate}`,
+        'headers': {
+          'Authorization': `Basic ${Buffer.from(student.value.wakatime_key).toString('base64')}`
+        }
+      })
+        .then(res => {
+          saveToDatabase(student.value.slack_id, Date.now() - secondsInADay, res.data.data.reduce((sum, codingPeriod) => {
+            return sum + codingPeriod.duration;
+          }, 0))
+          getWakatimeDuration(generator.next());
+        })
+        .catch(e => {
+          console.log(e);
+          getWakatimeDuration(generator.next());
+        })
+
+      function saveToDatabase(slack_id, date, duration) {
+        app.models.wakatime.create({
+          'duration': duration,
+          'slack_id': slack_id,
+          'date': date
+        });
+      }
+    }
+  })
 
   function doorbell(user, channel) {
     var params = {
@@ -390,9 +484,9 @@ module.exports = (app) => {
           },
         },
       })
-      .catch(err => {
-        console.log(`error in standup was ${err}`);
-      });
+        .catch(err => {
+          console.log(`error in standup was ${err}`);
+        });
     } else {
       var params = {
         icon_emoji: ':smiley:',
@@ -429,22 +523,22 @@ module.exports = (app) => {
     };
     let newDate = new Date();
 
-    const addStandup = app.models.student.find({'where': {'slack_id': user}})
-    .then(student => {
-      app.models.standup.create({
-        'slack_id': user,
-        'date': newDate,
-        'tasks_yesterday': submission.yesterday,
-        'tasks_today': submission.today,
-        'blockers': submission.blockers,
-        'studentId': student[0].id,
-      });
-    })
-    .catch(err => console.log(err));
+    const addStandup = app.models.student.find({ 'where': { 'slack_id': user } })
+      .then(student => {
+        app.models.standup.create({
+          'slack_id': user,
+          'date': newDate,
+          'tasks_yesterday': submission.yesterday,
+          'tasks_today': submission.today,
+          'blockers': submission.blockers,
+          'studentId': student[0].id,
+        });
+      })
+      .catch(err => console.log(err));
 
     const updateStudentStandup = app.models.student.updateAll(
-      {slack_id: user},
-      {'date-of-last-standup': newDate})
+      { slack_id: user },
+      { 'date-of-last-standup': newDate })
       .catch(err => console.log(err));
 
     Promise.all([addStandup, updateStudentStandup])
@@ -457,10 +551,10 @@ module.exports = (app) => {
   function checkIn(slackId, loc, channel) {
     // check the active checkins to see if the current user is already checked in
     app.models.checkin.active((err, response) => {
-      if(err) {
+      if (err) {
         console.log(err);
       }
-      else if( response.filter(e => e.slack_id === slackId).length > 0 ){
+      else if (response.filter(e => e.slack_id === slackId).length > 0) {
         var params = {
           icon_emoji: ':x:',
         };
@@ -474,7 +568,7 @@ module.exports = (app) => {
         // post message "you have checked in"
         const isNearby =
           (loc.lat && loc.long) && (Math.abs(loc.lat - process.env.LAT) <
-          0.0001 && Math.abs(loc.long - process.env.LONG) < 0.0001);
+            0.0001 && Math.abs(loc.long - process.env.LONG) < 0.0001);
 
         app.models.checkin
           .create({
@@ -485,36 +579,36 @@ module.exports = (app) => {
           })
           .then(response => {
             app.models.log.checkIn(
-              slackId, loc.lat, loc.long, (err,resp) => {
-              if(err) {
-                console.log(err);
-                var params = {
-                  icon_emoji: ':x:',
-                };
-                bot.postEphemeral(channel, slackId, 'You have already checked in!', params);
-              }
-              else{
-                var params = {
-                  icon_emoji: ':heavy_check_mark:',
-                };
-                bot.postEphemeral(
-                  channel,
-                  slackId,
-                  'You have checked in!',
-                  params);
-                if (process.env.EXTERNAL_LOGGING) {
-                  axios.post(process.env.EXTERNAL_LOGGING_URL,
-                    {
-                      slackId,
-                      method: 'checkin',
-                      loc,
-                      isNearby,
-                      token: process.env.EXTERNAL_LOGGING_TOKEN,
-                    }
-                  );
-                };
-              }
-            });
+              slackId, loc.lat, loc.long, (err, resp) => {
+                if (err) {
+                  console.log(err);
+                  var params = {
+                    icon_emoji: ':x:',
+                  };
+                  bot.postEphemeral(channel, slackId, 'You have already checked in!', params);
+                }
+                else {
+                  var params = {
+                    icon_emoji: ':heavy_check_mark:',
+                  };
+                  bot.postEphemeral(
+                    channel,
+                    slackId,
+                    'You have checked in!',
+                    params);
+                  if (process.env.EXTERNAL_LOGGING) {
+                    axios.post(process.env.EXTERNAL_LOGGING_URL,
+                      {
+                        slackId,
+                        method: 'checkin',
+                        loc,
+                        isNearby,
+                        token: process.env.EXTERNAL_LOGGING_TOKEN,
+                      }
+                    );
+                  };
+                }
+              });
 
           })
           .catch(err => {
@@ -531,12 +625,12 @@ module.exports = (app) => {
   function checkOut(slackId, loc, channel, penalty = 'none') {
     let checkouts = [];
     app.models.checkin.active((err, response) => {
-      if(err) {
+      if (err) {
         console.log(err);
       }
       else {
         let userCheckedIn = response.filter(e => e.slack_id === slackId);
-        if (userCheckedIn.length === 0){
+        if (userCheckedIn.length === 0) {
           var params = {
             icon_emoji: ':x:',
           };
@@ -545,7 +639,7 @@ module.exports = (app) => {
         else {
           const isNearby = (loc.lat && loc.long) &&
             (Math.abs(loc.lat - process.env.LAT) < 0.0001 &&
-            Math.abs(loc.long - process.env.LONG) < 0.0001);
+              Math.abs(loc.long - process.env.LONG) < 0.0001);
           if (penalty === 'none' && !isNearby) {
             penalty = 'notAtSchool';
           }
@@ -553,13 +647,14 @@ module.exports = (app) => {
           checkouts = userCheckedIn.map(checkin => {
             return app.models.checkin.updateAll(
               { id: checkin.id },
-              { checkout_time: new Date(),
+              {
+                checkout_time: new Date(),
                 hours: (new Date() - new Date(checkin.checkin_time)) /
-                (1000 * 60 * 60),
+                  (1000 * 60 * 60),
                 // (milliseconds in a sec) * (seconds in a min) * (minutes in an hour)
               }
             )
-            .catch(err=>console.log(err));
+              .catch(err => console.log(err));
           });
 
           var params = {
@@ -569,12 +664,12 @@ module.exports = (app) => {
             channel,
             slackId,
             penalty === 'timeout' ?
-            ':warning: You have been automatically checked out.' :
-            'You have checked out!',
+              ':warning: You have been automatically checked out.' :
+              'You have checked out!',
             params);
 
           if (process.env.EXTERNAL_LOGGING) {
-            axios.post( process.env.EXTERNAL_LOGGING_URL, {
+            axios.post(process.env.EXTERNAL_LOGGING_URL, {
               slackId,
               method: 'checkout',
               loc,
@@ -586,7 +681,64 @@ module.exports = (app) => {
       }
     });
     Promise.all(checkouts).then().catch(err => console.log(err));
-  };
+	};
+	
+	function registerNewStudent(user, channel){
+		let currentStudent = students.find(s => {
+      return s.slack_id === user.user_id;
+		});
+		
+    if (currentStudent === undefined) {
+      axios({
+        'method': 'post',
+        'url': 'https://slack.com/api/dialog.open',
+        'headers': {
+          'Authorization': 'Bearer ' + process.env.OAUTH_ACCESS_TOKEN,
+          'content-type': 'application/json',
+        },
+        'data': {
+          'trigger_id': user.trigger_id,
+          'dialog': {
+            'callback_id': 'registerNewStudent',
+            'title': 'Register',
+            'submit_label': 'Submit',
+            'notify_on_cancel': false,
+            'elements': [
+              {
+                'type': 'textarea',
+                'label': 'Please enter your Wakatime API key (if known):',
+								'name': 'wakatime_key',
+								'optional': true
+              }
+            ],
+          },
+        },
+			})
+      .catch(err => {
+        console.log(`error in register was ${err}`);
+      });
+    } else {
+      var params = {
+        icon_emoji: ':smiley:',
+      };
+      bot.postEphemeral(
+        user.channel_id,
+        user.user_id,
+        'You are already registered!',
+        params);
+    }
+	}
+
+	function saveNewStudentToDatabase(slack_id, name, wakatime_key, type){
+		app.models.student.create({
+			slack_id,
+			name,
+			wakatime_key,
+			type 
+		}, (err, result) => {
+			addStudentToStudentsArray(result);
+		})
+	}
 
   function adminReport() {
     students.map(reports => {
@@ -600,14 +752,14 @@ module.exports = (app) => {
           *${reports.questionThree}*
           - ${reports.blockers}
         `;
-        bot.postMessage(process.env.ADMIN_REPORTS_CHANNEL, report, {mrkdwn: true});
+        bot.postMessage(process.env.ADMIN_REPORTS_CHANNEL, report, { mrkdwn: true });
         reports.reported = true;
       }
     });
   };
 
   // resets student standups @11:59pm.
-  const standupReset = schedule.scheduleJob({hour: 23, minute: 59}, () => {
+  const standupReset = schedule.scheduleJob({ hour: 23, minute: 59 }, () => {
     students.map(reports => {
       reports.reported = false;
       reports.submitted = false;
@@ -619,28 +771,79 @@ module.exports = (app) => {
   });
 
   // 9:00am stand-up reminder
-  const earlyReminder = schedule.scheduleJob({hour: 9, minute: 15}, () => {
-    students.forEach(user => {
-      if (!user.submitted) {
-        bot.postEphemeral(
-          process.env.STUDENTS_CHANNEL,
-          user.slack_id,
-          ":alarm_clock: Don't forget to do your Stand-Up!"
-        );
+  const earlyReminder = schedule.scheduleJob({ hour: 9, minute: 15 }, () => {
+    app.models.student.reminder((err, activeResponse) => {
+      if (err) {
+        console.log(err);
       }
-    });
+      else {
+        let activeStudents = activeResponse;
+        students.forEach(user => {
+          if (activeStudents.filter(s => s.slack_id === user.id).length > 0) {
+            if (!user.submitted) {
+              bot.postEphemeral(
+                process.env.STUDENTS_CHANNEL,
+                user.slack_id,
+                ":alarm_clock: Don't forget to do your Stand-Up!"
+              );
+            }
+          }
+        })
+      };
+    })
   });
 
   // 1:00pm stand-up reminder
-  const lateReminder = schedule.scheduleJob({hour: 13, minute: 0}, () => {
-    students.forEach(user => {
-      if (!user.submitted) {
-        bot.postEphemeral(
-          process.env.STUDENTS_CHANNEL,
-          user.slack_id,
-          ":alarm_clock: Don't forget to do your Stand-Up!"
-        );
+  const lateReminder = schedule.scheduleJob({ hour: 13, minute: 0 }, () => {
+    app.models.student.reminder((err, activeResponse) => {
+      if (err) {
+        console.log(err);
       }
+      else {
+        let activeStudents = activeResponse;
+        students.forEach(user => {
+          if (activeStudents.filter(s => s.slack_id === user.id).length > 0) {
+            if (!user.submitted) {
+              bot.postEphemeral(
+                process.env.STUDENTS_CHANNEL,
+                user.slack_id,
+                ":alarm_clock: Don't forget to do your Stand-Up!"
+              );
+            }
+          }
+        })
+      };
     });
   });
+
+  function addStudentToStudentsArray(student) {
+    students.push(
+      {
+        slack_id: student.slack_id,
+        id: student.id,
+        submitted: false,
+        reported: false,
+        questionOne: 'What did you do since Yesterday?',
+        yesterday: '',
+        questionTwo: 'What will you do Today?',
+        today: '',
+        questionThree: 'Anything blocking your progress?',
+        blockers: '',
+        date: null,
+        type: student.type
+      }
+    );
+	}
+	
+	function updateStudentInArray(student){
+		for(let i = 0; i < students.length; i++){
+			if(student.id.equals(students[i].id)){
+				students[i] = {
+					...students[i],
+					slack_id: student.slack_id,
+					type: student.type
+				}
+			}
+		}
+	}
 }

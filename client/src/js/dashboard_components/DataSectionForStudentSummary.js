@@ -2,6 +2,7 @@ import React from 'react';
 import DataBox from './DataBox';
 import Delinquents from './Delinquents';
 
+
 function handleClickDataToCSV(data) {
   //transfer student data into CSV file
   if(data.length){
@@ -57,7 +58,7 @@ function DataSectionForStudentSummary(props) {
   return(
     <section className='data-section data-section-flex'>
       <h2 className='section-label inline-block'>{ props.title }</h2> 
-      <button className='datasection-button' onClick={() => handleClickDataToCSV(props.dataToDownload)}>download</button>
+      <button className='datasection-button' onClick={() => handleClickDataToCSV(props.dataToDownload)}>Download</button>
       <div className='data-container'>
         { boxes }
       </div>

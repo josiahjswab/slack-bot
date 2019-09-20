@@ -12,18 +12,18 @@ function HamburgerNavigation(props) {
           >Logout
           </a>
         </li>
-        <li>
-          <a
-            className='link-btn'
-            href={`${ process.env.BASE_URL }dashboard?auth_token=${ props.auth_token }`}
-          >Dashboard
-          </a>
-        </li>
 				<li onClick={props.openStudentEditWindow()}>
 					<div className='link-btn'>
 						Edit Student
 					</div>
-				</li>
+        </li>
+        <li className='dashboard-link'>
+      <a
+        className='link-btn'
+        href={`${ process.env.BASE_URL }dashboard?auth_token=${ props.auth_token }`}
+      >Dashboard
+      </a>
+    </li>
       </ul>
     </React.Fragment>
   );

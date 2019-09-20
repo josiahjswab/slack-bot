@@ -18,9 +18,9 @@
 			"type": "string",
 			"required": false
 		},
-		"is_inactive": {
-			"type": "boolean",
-			"require": false
+		"type": {
+			"type": "string",
+			"require": true
 		}
   },
   "validations": [],

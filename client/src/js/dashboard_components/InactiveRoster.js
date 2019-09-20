@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import DataSection from './DataSection';
 import Roster from './Roster';
-import {
-	calculateDashboardCheckinData,
-	calculateDashboardStandupsData
-} from '../utilities';
 import EditStudent from './EditStudent.js';
 
 class DashboardContainer extends Component {
@@ -17,6 +12,7 @@ class DashboardContainer extends Component {
 			saveErrorMessage: '',
 			display: {}
 		}
+		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
 		this.getAuthToken = this.getAuthToken.bind(this);
 		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
 		this.saveStudentData = this.saveStudentData.bind(this);
@@ -75,7 +71,10 @@ class DashboardContainer extends Component {
 	}
 
 	componentDidMount() {
-		const inactiveStudentFilter = JSON.stringify({ "where": { "is_inactive": true } })
+		const formattedInactiveStudentTypes = this.inactiveStudentTypes.map(type => {
+			return {"type": type};
+		})
+		const inactiveStudentFilter = JSON.stringify({"where": {"or": formattedInactiveStudentTypes}});
 		fetch(`/api/students?access_token=${this.getAuthToken()}&filter=${inactiveStudentFilter}`)
 			.then(response => response.json())
 			.then(data => {

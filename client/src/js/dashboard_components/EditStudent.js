@@ -7,6 +7,7 @@ export default class EditStudent extends React.Component{
 			is_inactive: false
 		}
 		this.save = this.save.bind(this);
+		this.studentTypes = ['FREE', 'PAID', 'JOBSEEKER', 'ALUMNI', 'DISABLED'];
 	}
 
 	save(){
@@ -14,7 +15,7 @@ export default class EditStudent extends React.Component{
 			name: document.getElementById('student-name').value,
 			slack_id: document.getElementById('student-slack-id').value,
 			wakatime_key: document.getElementById('student-wakatime-key').value,
-			is_inactive: document.getElementById('student-is-inactive').checked
+			type: document.getElementById('student-type').value
 		}
 
 		if(this.props.studentData.id){
@@ -43,7 +44,7 @@ export default class EditStudent extends React.Component{
 			name: '',
 			wakatime_key: '',
 			slack_id: '',
-			is_inactive: false
+			type: 'FREE'
 		}
 
 		return(
@@ -65,9 +66,14 @@ export default class EditStudent extends React.Component{
 						</label>
 					</div>
 					<div className='add-edit-student-row'>
-						<label>Student is inactive: 
-							<input id='student-is-inactive' type="checkbox"
-								onClick={(e) => this.toggleInactive(e.target.checked)} checked={this.state.is_inactive} />
+						<label>Student type: 
+							<select id='student-type' defaultValue={studentData.type}>
+								{
+									this.studentTypes.map(type => {
+										return <option value={type} key={type}>{type}</option>
+									})
+								}
+							</select>
 						</label>
 					</div>
 					<div className='add-edit-student-row'>

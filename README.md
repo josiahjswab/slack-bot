@@ -23,6 +23,11 @@ ADMIN_REPORTS_CHANNEL=< admin reports channel ID>
 SLACK_URL= <base url for Slack Workspace>
 BASE_URL= <server host base url>
 
+API_ROOT=<base url for API recieving new user info related to event hook>
+X_API_KEY=<API key for above transaction>
+X_USER_ID=<user ID for above transaction>
+X_BUSINESS_ID=<business ID for above transaction>
+
 TEST_USER_ID= <any user ID in knock channel>
 
 LAT= <Latitude for checkin/checkout location>
@@ -80,7 +85,19 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
     /doorbell : https://dingdong-slack-bot.herokuapp.com/slack/doorbell \
     /checkin : https://dingdong-slack-bot.herokuapp.com/slack/checkin \
     /checkout : https://dingdong-slack-bot.herokuapp.com/slack/checkout \
-    /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup
+    /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup \
+		/register : https://dingdong-slack-bot.herokuapp.com/slack/register \
+    - 'OAuth & Permissions'
+        - Permission Scopes:
+            chat:write:bot
+            users:read
+            users:read.email
+            bot
+            commands
+    - 'Event Subscriptions'
+        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address. 
+        - Subscribe to Bot Events
+           'team_join'
 
 6.  Add Environmental Variables to .env
 
@@ -119,7 +136,19 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
     /{initials}doorbell : {localtunnel url}/slack/{initials}doorbell\
     /{initials}checkin : {localtunnel url}/slack/{initials}checkin\
     /{initials}checkout : {localtunnel url}/slack/{initials}checkout\
-    /{initials}standup : {localtunnel url}/slack/{initials}standup
+    /{initials}standup : {localtunnel url}/slack/{initials}standup \
+		/register : https://dingdong-slack-bot.herokuapp.com/slack/register \
+    - 'OAuth & Permissions'
+        - Permission Scopes:
+            chat:write:bot
+            users:read
+            users:read.email
+            bot
+            commands
+    - 'Event Subscriptions'
+        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
+        - Subscribe to Bot Events
+           'team_join'
 
 6.  Add Environmental Variables to .env
 

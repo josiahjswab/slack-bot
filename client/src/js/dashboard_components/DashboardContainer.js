@@ -3,7 +3,8 @@ import DataSection from './DataSection';
 import Roster from './Roster';
 import {
   calculateDashboardCheckinData,
-  calculateDashboardStandupsData } from '../utilities'; 
+  calculateDashboardStandupsData
+} from '../utilities';
 import EditStudent from './EditStudent.js';
 
 class DashboardContainer extends Component {
@@ -12,12 +13,13 @@ class DashboardContainer extends Component {
     this.state = {
       students: [],
       allStandups: [],
-			activeCheckins: [],
-			showStudentEditWindow: false,
-			editedStudentInfo: {},
-			saveErrorMessage: '',
+      activeCheckins: [],
+      showStudentEditWindow: false,
+      editedStudentInfo: {},
+      saveErrorMessage: '',
       display: {}
-    }
+		}
+		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
 		this.getAuthToken = this.getAuthToken.bind(this);
 		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
 		this.saveStudentData = this.saveStudentData.bind(this);
@@ -34,59 +36,62 @@ class DashboardContainer extends Component {
 
   getAuthToken() {
     return this.props
-    .location
-    .search
-    .replace(/^(.*?)\auth_token=/, '');
-	}
-	
-	showStudentEditWindow(studentInfo){
-		this.setState({
-			studentInfo,
-			showStudentEditWindow: true
-		});
-	}
+      .location
+      .search
+      .replace(/^(.*?)\auth_token=/, '');
+  }
 
-	hideStudentEditWindow(event, override){
-		if(event.target === event.currentTarget || override){
-			this.setState({
-				showStudentEditWindow: false
-			})
-		}
-	}
+  showStudentEditWindow(studentInfo) {
+    this.setState({
+      studentInfo,
+      showStudentEditWindow: true
+    });
+  }
 
-	saveStudentData(studentData){
-		fetch(`/api/students?access_token=${ this.getAuthToken() }`, {
-			method: 'POST',
-			headers: {
-					'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(studentData)
+  hideStudentEditWindow(event, override) {
+    if (event.target === event.currentTarget || override) {
+      this.setState({
+        showStudentEditWindow: false
+      })
+    }
+  }
+
+  saveStudentData(studentData) {
+    fetch(`/api/students?access_token=${this.getAuthToken()}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(studentData)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(response => {
+        if (response.error) {
+          throw response.error.message
+        } else {
+          this.setState({
+            students: [...this.state.students, response].sort((a, b) =>
+              a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1),
+            showStudentEditWindow: false,
+            saveErrorMessage: null
+          })
+        }
+      })
+      .catch(err => {
+        this.setState({
+          saveErrorMessage: err
+        })
+      })
+  }
+
+  componentDidMount() {
+    const formattedInactiveStudentTypes = this.inactiveStudentTypes.map(type => {
+			return {"type": {"neq": type}};
 		})
-		.then(response => {
-			return response.json();
-		})
-		.then(response => {
-			if(response.error){
-				throw response.error.message
-			} else {
-				this.setState({
-					students: [...this.state.students, response].sort((a, b) => 
-						a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1),
-					showStudentEditWindow: false,
-					saveErrorMessage: null
-				})
-			}
-		})
-		.catch(err => {
-			this.setState({
-				saveErrorMessage: err
-			})
-		})
-	}
-  
-  componentDidMount(){
-		const activeStudentFilter = JSON.stringify({"where": {"is_inactive": {"neq": true}}})
-    fetch(`/api/students?access_token=${ this.getAuthToken() }&filter=${activeStudentFilter}`)
+		const inactiveStudentFilter = JSON.stringify({"where": {"and": formattedInactiveStudentTypes}});
+    fetch(`/api/students?access_token=${ this.getAuthToken() }&filter=${inactiveStudentFilter}`)
       .then(response => response.json())
       .then(data => {
         const sorted = data.sort((a, b) => 
@@ -132,16 +137,16 @@ class DashboardContainer extends Component {
         this.state.activeCheckins,
         this.state.students
       );
-		}
-		
-		let editStudentWindow = null;
+    }
 
-		if(this.state.showStudentEditWindow){
-			editStudentWindow = <EditStudent studentData={this.state.editedStudentInfo} 
-																				closeWindow={() => this.hideStudentEditWindow}
-																				save={this.saveStudentData}
-																				errorMessage={this.state.saveErrorMessage}/>
-		}
+    let editStudentWindow = null;
+
+    if (this.state.showStudentEditWindow) {
+      editStudentWindow = <EditStudent studentData={this.state.editedStudentInfo}
+        closeWindow={() => this.hideStudentEditWindow}
+        save={this.saveStudentData}
+        errorMessage={this.state.saveErrorMessage} />
+    }
 
     return (
       <React.Fragment>
@@ -155,46 +160,42 @@ class DashboardContainer extends Component {
               >Logout
               </a>
             </li>
-						<li className='add-student link-btn' onClick={() => this.showStudentEditWindow({})}>
-							Add New Student
+            <li className='add-student link-btn' onClick={() => this.showStudentEditWindow({})}>
+              Add New Student
 						</li>
           </ul>
         </header>
-				{editStudentWindow}
+        {editStudentWindow}
         <main className='wrapper dashboard-wrapper'>
           <div className='data-section-container-flex'>
-            <h2 className='section-label big-display'>Time in Class</h2>
-            <span className='mobile-display' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
-            <div id="demo" className={this.state.display[1] ? "toggleContent-closed" : "toggleContent-open"}>
-
-              <DataSection
-                title='time in class'
-                data={checkinData ? checkinData.summary : undefined}
-                delinquents={checkinData ? checkinData.delinquents : undefined}
-                delinquentTitle='absentees'
-              />
+            <div className='data-section data-section-flex'>
+              <span className='section-label pointer' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
+                <div className={this.state.display[1] ? "toggleContent-hidden" : ""}>
+                  <DataSection
+                  data={checkinData ? checkinData.summary : undefined}
+                  delinquents={checkinData ? checkinData.delinquents : undefined}
+                  delinquentTitle='absentees'
+                  />
+                </div>
             </div>
-
-            <h2 className='section-label big-display'>Standups</h2>
-            <span className='mobile-display' onClick={() => this.toggle(2)}><h2>Standups</h2></span>
-            <div id="demo" className={this.state.display[2] ? "toggleContent-closed" : "toggleContent-open"}>
-              <DataSection
-                title='standups'
-                data={standupsData ? standupsData.summary : undefined}
-                delinquents={standupsData ? standupsData.delinquents : undefined}
-              />
+            <div className='data-section data-section-flex'>
+                <span className='section-label pointer' onClick={() => this.toggle(2)}><h2>Standups</h2></span>
+                  <div className={this.state.display[2] ? "toggleContent-hidden" : ""}>
+                      <DataSection
+                      data={standupsData ? standupsData.summary : undefined}
+                      delinquents={standupsData ? standupsData.delinquents : undefined}
+                      />
+                  </div>
             </div>
-
           </div>
           <div>
-						<div className='section-title'>
-							<h2 className='section-label big-display'>View data for</h2>
-							<span className='mobile-display' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
-							<h2 className='section-label'>
-								<a href={`inactive?auth_token=${ this.getAuthToken() }`}>View Inactive</a>
-							</h2>
-						</div>
-            <div className={this.state.display[3] ? "toggleContent-closed" : "toggleContent-open"}>
+            <div className='section-title'>
+              <span className='section-label pointer' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
+              <h2 className='section-label'>
+                <a href={`inactive?auth_token=${this.getAuthToken()}`}>View Inactive</a>
+              </h2>
+            </div>
+            <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>
               <Roster
                 students={this.state.students}
                 auth_token={this.getAuthToken()}
