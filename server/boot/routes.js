@@ -19,10 +19,11 @@ module.exports = (app) => {
     .catch(err => console.log(err));
 
   app.models.student.observe('after save', (context, callback) => {
+    console.log(JSON.stringify(context));
     if (context.isNewInstance) {
       addStudentToStudentsArray(context.instance);
     } else {
-			updateStudentInArray(context.instance);
+      updateStudentInArray(context.instance);
 		}
     callback();
   })
@@ -359,18 +360,12 @@ module.exports = (app) => {
     let date = time.getDate();
     let month = time.getMonth() + 1;
     let formattedDate = `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")}`;
-    let generator;
+    let studentQueue;
     const studentTypesToFind = ['PAID', 'JOBSEEKER'];
 
     let formattedTypesArray = studentTypesToFind.map(type => {
       return { type: { eq: type } }
     })
-
-    app.models.student.find({ where: { or: formattedTypesArray } })
-      .then(students => {
-        generator = studentsGenerator(students);
-        getWakatimeDuration(generator.next());
-      })
 
     function* studentsGenerator(students) {
       for (let i = 0; i < students.length; i++) {
@@ -378,12 +373,21 @@ module.exports = (app) => {
       }
     }
 
+
+    function saveToDatabase(slack_id, date, duration) {
+      app.models.wakatime.create({
+        'duration': duration,
+        'slack_id': slack_id,
+        'date': date
+      });
+    }
+
     function getWakatimeDuration(student) {
       if (student.done) {
         return;
       }
 
-      axios({
+      return axios({
         'method': 'get',
         'url': `https://wakatime.com/api/v1/users/current/durations?date=${formattedDate}`,
         'headers': {
@@ -394,22 +398,22 @@ module.exports = (app) => {
           saveToDatabase(student.value.slack_id, Date.now() - secondsInADay, res.data.data.reduce((sum, codingPeriod) => {
             return sum + codingPeriod.duration;
           }, 0))
-          getWakatimeDuration(generator.next());
+          getWakatimeDuration(studentQueue.next());
         })
         .catch(e => {
           console.log(e);
-          getWakatimeDuration(generator.next());
-        })
-
-      function saveToDatabase(slack_id, date, duration) {
-        app.models.wakatime.create({
-          'duration': duration,
-          'slack_id': slack_id,
-          'date': date
+          getWakatimeDuration(studentQueue.next());
         });
-      }
     }
-  })
+
+    app.models.student.find({ where: { or: formattedTypesArray } })
+    .then(students => {
+      studentQueue = studentsGenerator(students);
+      getWakatimeDuration(studentQueue.next());
+    })
+    .catch(errGettingWakatime => console.log(errGettingWakatime));
+
+  });
 
   function doorbell(user, channel) {
     var params = {
@@ -523,7 +527,7 @@ module.exports = (app) => {
     };
     let newDate = new Date();
 
-    const addStandup = app.models.student.find({ 'where': { 'slack_id': user } })
+    app.models.student.find({ 'where': { 'slack_id': user } })
       .then(student => {
         app.models.standup.create({
           'slack_id': user,
@@ -534,18 +538,11 @@ module.exports = (app) => {
           'studentId': student[0].id,
         });
       })
+      .then(response => {
+        bot.postEphemeral(channel, user, 'Have a great day!', params);
+        adminReport();
+      })
       .catch(err => console.log(err));
-
-    const updateStudentStandup = app.models.student.updateAll(
-      { slack_id: user },
-      { 'date-of-last-standup': newDate })
-      .catch(err => console.log(err));
-
-    Promise.all([addStandup, updateStudentStandup])
-      .catch(err => console.log(err));
-
-    bot.postEphemeral(channel, user, 'Have a great day!', params);
-    adminReport();
   };
 
   function checkIn(slackId, loc, channel) {
@@ -682,12 +679,12 @@ module.exports = (app) => {
     });
     Promise.all(checkouts).then().catch(err => console.log(err));
 	};
-	
+
 	function registerNewStudent(user, channel){
 		let currentStudent = students.find(s => {
       return s.slack_id === user.user_id;
 		});
-		
+
     if (currentStudent === undefined) {
       axios({
         'method': 'post',
@@ -734,7 +731,7 @@ module.exports = (app) => {
 			slack_id,
 			name,
 			wakatime_key,
-			type 
+			type
 		}, (err, result) => {
 			addStudentToStudentsArray(result);
 		})
@@ -834,10 +831,10 @@ module.exports = (app) => {
       }
     );
 	}
-	
+
 	function updateStudentInArray(student){
 		for(let i = 0; i < students.length; i++){
-			if(student.id.equals(students[i].id)){
+      if(student.id.equals(students[i].id)){
 				students[i] = {
 					...students[i],
 					slack_id: student.slack_id,

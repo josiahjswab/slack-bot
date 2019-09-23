@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "server/server.js",
   "engines": {
-    "node": ">=6"
+    "node": ">=10"
   },
   "scripts": {
     "build": "parcel build client/src/html/index.html client/src/html/login.html",
