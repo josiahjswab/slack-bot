@@ -453,7 +453,6 @@ module.exports = (app) => {
       return s.slack_id === userSlackId
     });
 
-    if (currentStudent != undefined && !currentStudent.submitted) {
       axios({
         'method': 'post',
         'url': 'https://slack.com/api/dialog.open',
@@ -491,16 +490,6 @@ module.exports = (app) => {
         .catch(err => {
           console.log(`error in standup was ${err}`);
         });
-    } else {
-      var params = {
-        icon_emoji: ':smiley:',
-      };
-      bot.postEphemeral(
-        channel,
-        userSlackId,
-        'You have already submitted your standup for today.',
-        params);
-    }
   };
 
   function cancelStandup(user, channel) {
