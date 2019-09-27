@@ -251,10 +251,13 @@ Loopback used for server setup. Please view common/models folder for models/rela
 
 2.  Grant the new user admin privilege using either `/explorer` or your MongoDB instance:
     - If in explorer, log in with the admin credentials you created on server boot and set the access token with the response id.
+    - Go to /users, do a GET request, copy the "id" field of the only user(you) that the db should have.
     - Create a new RoleMapping:
+        - Go to /RoleMapping
+        - POST /Rolemapping    
         - principalType: "USER"
-        - principalId: \< the id of the user created in step 1 >
-        - roleId: \< the id of the admin role created on server boot >
+        - principalId: \< the user id copied from /users db >
+        - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google credentials
 
 :copyright: 2019 San Diego Code School

@@ -19,7 +19,6 @@ module.exports = (app) => {
     .catch(err => console.log(err));
 
   app.models.student.observe('after save', (context, callback) => {
-    console.log(JSON.stringify(context));
     if (context.isNewInstance) {
       addStudentToStudentsArray(context.instance);
     } else {
@@ -38,10 +37,21 @@ module.exports = (app) => {
     res.status(200).send('');
   });
 
+  app.post('/slack/stats', (req, res) => {
+    handleEvent(req.body, 'stats');
+    res.status(200).send('');
+  });
+
   app.post('/slack/register', (req, res) => {
     handleEvent(req.body, 'register');
     res.status(200).send('');
   });
+
+  app.post('/slack/wakatime', (req, res) => {
+    handleEvent(req.body, 'wakatime');
+    res.status(200).send('');
+  });
+
 
   app.post('/slack/events', (req, res) => {
     if (req.body.type === 'url_verification') {
@@ -114,7 +124,14 @@ module.exports = (app) => {
 				axios.post(body.response_url, {
 					'text': "You have been registered, thank you!"
 				})
-				break;
+        break;
+        case 'registerWakatimeKey':
+        saveWakatimeKey(body.user.id, body.submission.wakatime_key);
+        res.send('');
+        axios.post(body.response_url, {
+          'text': 'Your API key has been stored. Thank you!'
+        });
+        break;
       default:
         res.send('Not sure what you were trying to do here...');
         break;
@@ -175,7 +192,13 @@ module.exports = (app) => {
 				break;
 			case 'register':
 				registerNewStudent(body);
-				break;
+        break;
+      case 'stats':
+				getStudentStats(body);
+        break;
+      case 'wakatime':
+        registerWakatimeKey(body);
+        break;
       default:
         break;
     }
@@ -669,6 +692,59 @@ module.exports = (app) => {
     Promise.all(checkouts).then().catch(err => console.log(err));
 	};
 
+  function registerWakatimeKey(user, channel) {
+    axios({
+        'method': 'post',
+        'url': 'https://slack.com/api/dialog.open',
+        'headers': {
+          'Authorization': 'Bearer ' + process.env.OAUTH_ACCESS_TOKEN,
+          'content-type': 'application/json',
+        },
+        'data': {
+          'trigger_id': user.trigger_id,
+          'dialog': {
+            'callback_id': 'registerWakatimeKey',
+            'title': 'Register',
+            'submit_label': 'Submit',
+            'notify_on_cancel': false,
+            'elements': [{
+              'type': 'textarea',
+              'label': 'Please enter your Wakatime API key (if known):',
+              'name': 'wakatime_key',
+              'optional': true
+            }],
+          },
+        },
+      })
+      .catch(err => {
+        console.log(`error in register was ${err}`);
+      });
+  }
+
+  function saveWakatimeKey(slackId, key) {
+    app.models.student.find({
+        where: {
+          slack_id: slackId
+        }
+      })
+      .then(result => {
+        result[0].updateAttributes({
+          wakatime_key: key
+        }, (err, instance) => {
+          if (err) {
+            console.log(err)
+          };
+          console.log(instance);
+          console.log('api key update logged');
+        })
+      })
+      .catch(err => console.log(err));
+    (err, result) => {
+      addStudentToStudentsArray(result);
+    }
+  }
+
+
 	function registerNewStudent(user, channel){
 		let currentStudent = students.find(s => {
       return s.slack_id === user.user_id;
@@ -724,7 +800,28 @@ module.exports = (app) => {
 		}, (err, result) => {
 			addStudentToStudentsArray(result);
 		})
-	}
+  }
+  
+  function getStudentStats(user, channel){
+    let currentStudent = user.user_id;
+    
+    let params = {
+      icon_emoji: ':smiley:',
+    };
+
+    app.models.checkin.hoursPerWeek(currentStudent, (err,result)=>{
+      app.models.wakatime.getHours(currentStudent, (err,result2)=>{
+        app.models.standup.getStats(currentStudent, (err,result3)=>{
+          bot.postEphemeral(
+          user.channel_id,
+          user.user_id,
+          `${result} ${result2} ${result3}`,
+          params);
+    })
+  })
+})
+
+  }
 
   function adminReport() {
     students.map(reports => {

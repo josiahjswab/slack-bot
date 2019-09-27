@@ -175,6 +175,8 @@ class DashboardContainer extends Component {
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={checkinData ? checkinData.delinquents : undefined}
                   delinquentTitle='absentees'
+                  students={this.state.students}
+                  auth_token={this.getAuthToken()}
                   />
                 </div>
             </div>
@@ -184,6 +186,8 @@ class DashboardContainer extends Component {
                       <DataSection
                       data={standupsData ? standupsData.summary : undefined}
                       delinquents={standupsData ? standupsData.delinquents : undefined}
+                      students={this.state.students}
+                      auth_token={this.getAuthToken()}
                       />
                   </div>
             </div>

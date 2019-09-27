@@ -8,6 +8,7 @@ module.exports = function (Student) {
       })
       .catch(err => console.log(err));
   };
+
   Student.remoteMethod(
     'reminder', {
     http: {
@@ -16,6 +17,6 @@ module.exports = function (Student) {
     },
     returns: { arg: 'data', type: ['student'], root: true },
   }
-  );
+  )
 
 };

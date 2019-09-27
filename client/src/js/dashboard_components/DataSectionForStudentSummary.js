@@ -34,7 +34,6 @@ function handleClickDataToCSV(data) {
   }
 }
 
-//new component with download function for StudentSummary component 
 function DataSectionForStudentSummary(props) {
   let delinquents;
   let boxes;

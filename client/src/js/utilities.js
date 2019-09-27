@@ -124,13 +124,12 @@ function calculateIndividualStandupsData(standups) {
 
 function calculateIndividualCheckinData(checkins) {
   if (checkins.length === 0) { return undefined; }
-
   // total time spent in classroom
   checkins.forEach(checkin => {
     if (!checkin.checkout_time) {
       checkin.hours = (new Date() - new Date(checkin.checkin_time)) /
         millisecondsToHours;
-    }
+      }
   });
   let totalHours = checkins.reduce((accumulator, checkin) => {
     return accumulator + checkin.hours;
@@ -159,6 +158,17 @@ function calculateIndividualCheckinData(checkins) {
       return accumulator + checkin.hours;
     }, 0);
   timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays);
+  //missed checkins in the last seven days
+  const completedCheckinsLastSevenDays = checkins.filter(checkin => {
+    return new Date(checkin.checkin_time) > sevenDaysAgoMidnight;
+  });
+  let missedCheckinsLastSevenDays =
+      completedCheckinsLastSevenDays.reduce((accumulator, checkin) => {
+       if(checkin.checkin_time && checkin.checkout_time){accumulator+=2};
+       if(checkin.checkin_time && checkin.checkout_time==null){accumulator++};
+       return accumulator;
+    }, 0);
+  missedCheckinsLastSevenDays = Math.round(14 - missedCheckinsLastSevenDays);
 
   return ([
     {
@@ -173,7 +183,11 @@ function calculateIndividualCheckinData(checkins) {
       featured: `${totalHours}`,
       measurement: 'hrs',
       footer: 'total',
-    },
+    }, {
+      featured: `${missedCheckinsLastSevenDays}`,
+      measurement: '',
+      footer: 'weekly missed checkins'
+    }
   ]);
 }
 

@@ -30,9 +30,9 @@ function StandupAndCheckin(props) {
       <p className='standup-card-title'>{ date }</p>
  
       <div className='hours-container'>
-        <p className='standup-response'><strong>In: </strong>{ checkinTime ? checkinTime : '-' }</p>
-        <p className='standup-response'><strong>Out: </strong>{ checkoutTime ? checkoutTime : '-' }</p>
-        <p className='standup-response'><strong>Hrs: </strong>{ hours ? hours.toFixed(2) : '-' }</p>
+        <p className={`standup-response ${ !checkinTime ? 'missing-info' : '' } `}><strong>In: </strong>{ checkinTime ? checkinTime : 'missed' }</p>
+        <p className={`standup-response ${ !checkoutTime ? 'missing-info' : '' } `}><strong>Out: </strong>{ checkoutTime ? checkoutTime : 'missed' }</p>
+        <p className='standup-response'><strong>Hrs: </strong>{ hours ? hours.toFixed(2) : 'none' }</p>
       </div>
 
       <div className='standup-card-content'>
