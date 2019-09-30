@@ -161,7 +161,7 @@ class DashboardContainer extends Component {
               </a>
             </li>
             <li className='add-student link-btn' onClick={() => this.showStudentEditWindow({})}>
-              Add New Student
+              Add Student
 						</li>
           </ul>
         </header>
