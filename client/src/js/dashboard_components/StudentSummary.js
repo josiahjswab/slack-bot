@@ -179,12 +179,12 @@ class Standups extends Component {
 
     return (
       <React.Fragment>
+				<HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
+					auth_token={ this.getAuthToken() }/>
+        {editStudentWindow}
         <div className='header-name'>
 					<h1>{ this.state.name }</h1>
 				</div>
-				<HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
-					auth_token={ this.getAuthToken() }/>
-				{editStudentWindow}
         <main className='wrapper'>
           <div className='data-section-container-grid'>
             <DataSectionForStudentSummary title='time in class' data={checkinData}
