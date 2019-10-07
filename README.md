@@ -10,7 +10,7 @@ Install all dependencies:
 $ npm install
 ```
 
-Add environment variables to `.env`. See engineers for credentials. The STUDENTS_CHANNEL is where the students make requests from. The KEY_CHANNEL is where the staff is alerted if somebody rings the door. The ADMIN_REPORTS_CHANNEL is where the staff can view the daily standups that have been submitted.
+Add environment variables to a new file named `.env`. See engineers for credentials. The STUDENTS_CHANNEL is where the students make requests from. The KEY_CHANNEL is where the staff is alerted if somebody rings the door. The ADMIN_REPORTS_CHANNEL is where the staff can view the daily standups that have been submitted.
 
 ```
 OAUTH_ACCESS_TOKEN=
@@ -56,7 +56,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
 ### Create a production bot
 
 1.  Create an app at https://api.slack.com/apps
-    - Add a distinct app name
+    - Add a distinct app name 
 
 2.  Create a bot in ‘Bot Users’
     - Add a distinct bot Display Name
@@ -87,6 +87,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
     /checkout : https://dingdong-slack-bot.herokuapp.com/slack/checkout \
     /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup \
 		/register : https://dingdong-slack-bot.herokuapp.com/slack/register \
+        /wakatime : https://dingdong-slack-bot.herokuapp.com/slack/wakatime \
     - 'OAuth & Permissions'
         - Permission Scopes:
             chat:write:bot
@@ -130,14 +131,15 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
     Remember - use initials for the local dev bot Slash Commands.
 
     - Return to https://api.slack.com/apps
-    - ‘Interactive Components’\
+    - ‘Interactive Components’
     Request Url: {localtunnel url}/slack/interactive
-    - ‘Slash Commands’\
-    /{initials}doorbell : {localtunnel url}/slack/{initials}doorbell\
-    /{initials}checkin : {localtunnel url}/slack/{initials}checkin\
-    /{initials}checkout : {localtunnel url}/slack/{initials}checkout\
-    /{initials}standup : {localtunnel url}/slack/{initials}standup \
-		/register : https://dingdong-slack-bot.herokuapp.com/slack/register \
+    - ‘Slash Commands’
+    /{initials}doorbell : {localtunnel url}/slack/doorbell
+    /{initials}checkin : {localtunnel url}/slack/checkin
+    /{initials}checkout : {localtunnel url}/slack/checkout
+    /{initials}standup : {localtunnel url}/slack/standup
+    /{initials}wakatime : {localtunnel url}/slack/wakatime
+	/register : https://dingdong-slack-bot.herokuapp.com/slack/register
     - 'OAuth & Permissions'
         - Permission Scopes:
             chat:write:bot
@@ -146,7 +148,7 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
             bot
             commands
     - 'Event Subscriptions'
-        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
+        - https://dingdong-slack-bot.herokuapp.com/slack/events -- this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
         - Subscribe to Bot Events
            'team_join'
 
@@ -183,12 +185,12 @@ module.exports = {
 
 6. Copy the redirect uri that it's telling you is not authorized, go back to your Google developers control panel, click on the app that you created, scroll down to authorized redirect uris, and paste the uri you copied from before. Click save. Sometimes it doesn't save the first time and needs to be pasted in again.
 
-7. Once youve done that you should have a fully functioning Google Authorization button for your app. Everytime the uri changes you will have to add that new uri to the authorized uri list.
+7. Once you've done that you should have a fully functioning Google Authorization button for your app. Every time the uri changes you will have to add that new uri to the authorized uri list.
 
 ## Start Server
 ### Production Server
 ```
-npm run start
+npm start
 ```
 
 ### Dev Server
@@ -199,16 +201,17 @@ npm install -g localtunnel
 
 2.  Run Local Tunnel
 ```
-lt --port 3000 --subdomain <devsubdomain>
+lt --port 3000 --subdomain <devsubdomain> 
 ```
 3.  Run Dev Server (on 2nd terminal)
 ```
-npm run start
+npm start
 ```
-&emsp;&emsp;or to have parcel watch your files for changes
+-- or, to have parcel watch your files for changes:
 ```
 npm run dev
 ```
+```(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
 
 ## Usage
  sdcs-slack-bot lives in *Slack*
@@ -225,7 +228,7 @@ npm run dev
 > **/checkin**
 - To check in.
 - A link to the geolocation landing page to verify location and checkin ability will be displayed. Click the link to go to the Geolocation website.  Click the find me button, wait for the coordinates to appear, and then click submit to check in.
-- This creates a timestamp on the server, the user will also be sent a reminder by 9:00am to checkin, if they haven't before hand.
+- This creates a timestamp on the server, the user will also be sent a reminder by 9:00am to checkin, if they haven't beforehand.
 
 > **/checkout**
 - To check out.
@@ -238,12 +241,12 @@ npm run dev
 
 > **/standup**
 - To trigger the standup dialog.
-- A survey form will appear with three stand up questions for the students to submit to the staff. Students can cancel the form and be prompted to remember to submit later on in the day.
-- All submitted stand ups will be cleared from cache at 11:59pm.
+- A survey form will appear with three standup questions for the students to submit to the staff. Students can cancel the form and be prompted to remember to submit later on in the day.
+- All submitted standups will be cleared from cache at 11:59pm.
 
 ## Back End
 
-Loopback used for server setup. Please view common/models folder for models/relationships.
+Loopback is used for server setup. Please view common/models folder for models/relationships.
 
 ### Authorizing Google Authenticated Users
 1.  Create a new user associated with your Google account:

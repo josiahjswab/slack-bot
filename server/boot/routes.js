@@ -152,8 +152,20 @@ module.exports = (app) => {
   });
 
   app.get('/getGeo', (req, res) => {
-    const { user, channel, checkin } = req.query;
-    res.render('index', { user, channel, checkin, token: process.env.token });
+    const { user, channel, checkin, notatschool } = req.query;
+    res.render('index', { user, channel, checkin, token: process.env.token, notatschool });
+  });
+
+
+  app.post('/submitNotAtSchool', (req, res) => {
+    if (req.body.token == process.env.token || '0'){
+      if (req.body.checkin === 'true') {
+        handleEvent(req.body, 'notAtSchool');
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(401);
+      }
+    }
   });
 
   const handleEvent = (body, command) => {
@@ -198,6 +210,9 @@ module.exports = (app) => {
         break;
       case 'wakatime':
         registerWakatimeKey(body);
+        break;
+      case 'notAtSchool':
+        notAtSchool(body);
         break;
       default:
         break;
@@ -344,7 +359,7 @@ module.exports = (app) => {
     });
   });
 
-  // 6:20pm
+  // auto-checkout at 6:20pm
   const checkOutCache = schedule.scheduleJob({ hour: 18, minute: 20 }, () => {
     let checkouts = [];
     app.models.checkin.active((err, response) => {
@@ -358,7 +373,8 @@ module.exports = (app) => {
             { id: checkin.id },
             {
               checkout_time: new Date(),
-              hours: (new Date() - new Date(checkin.checkin_time)) / (1000 * 60 * 60)
+              hours: (((new Date() - new Date(checkin.checkin_time)) / (1000 * 60 * 60)) - 4),
+              auto_checkout: true
               // (milliseconds in a sec) * (seconds in a min) * (minutes in an hour)
             }
           )
@@ -376,9 +392,9 @@ module.exports = (app) => {
       });
   });
 
-  const getDailyWakatimeData = schedule.scheduleJob({ hour: 2 }, () => {
+  const getDailyWakatimeData = schedule.scheduleJob({ hour: 15, minute: 14}, () => {
     let secondsInADay = 1000 * 60 * 60 * 24;
-    let time = new Date(new Date() - secondsInADay); //gets yesterday
+    let time = new Date(new Date() - secondsInADay);
     let year = time.getFullYear();
     let date = time.getDate();
     let month = time.getMonth() + 1;
@@ -390,19 +406,16 @@ module.exports = (app) => {
       return { type: { eq: type } }
     })
 
+    app.models.student.find({ where: { or: formattedTypesArray } })
+      .then(students => {
+        studentQueue = studentsGenerator(students);
+        getWakatimeDuration(studentQueue.next());
+      })
+
     function* studentsGenerator(students) {
       for (let i = 0; i < students.length; i++) {
         yield students[i];
       }
-    }
-
-
-    function saveToDatabase(slack_id, date, duration) {
-      app.models.wakatime.create({
-        'duration': duration,
-        'slack_id': slack_id,
-        'date': date
-      });
     }
 
     function getWakatimeDuration(student) {
@@ -410,7 +423,7 @@ module.exports = (app) => {
         return;
       }
 
-      return axios({
+      axios({
         'method': 'get',
         'url': `https://wakatime.com/api/v1/users/current/durations?date=${formattedDate}`,
         'headers': {
@@ -426,17 +439,17 @@ module.exports = (app) => {
         .catch(e => {
           console.log(e);
           getWakatimeDuration(studentQueue.next());
+        })
+
+      function saveToDatabase(slack_id, date, duration) {
+        app.models.wakatime.create({
+          'duration': duration,
+          'slack_id': slack_id,
+          'date': date
         });
+      }
     }
-
-    app.models.student.find({ where: { or: formattedTypesArray } })
-    .then(students => {
-      studentQueue = studentsGenerator(students);
-      getWakatimeDuration(studentQueue.next());
-    })
-    .catch(errGettingWakatime => console.log(errGettingWakatime));
-
-  });
+  })
 
   function doorbell(user, channel) {
     var params = {
@@ -692,6 +705,28 @@ module.exports = (app) => {
     Promise.all(checkouts).then().catch(err => console.log(err));
 	};
 
+function notAtSchool(user, channel){
+
+  app.models.checkin
+          .create({
+            checkin_time: new Date(),
+            checkout_time: new Date(),
+            slack_id: user.user_id,
+            hours: 0,
+            notAtSchool: true
+          })
+
+ let params = {
+     icon_emoji: ':smiley:',
+     };
+
+  bot.postEphemeral(
+      user.channel_id,
+      user.user_id,
+      `Not at school status has been logged. Have a nice day!`,
+      params);
+}
+
   function registerWakatimeKey(user, channel) {
     axios({
         'method': 'post',
@@ -704,14 +739,14 @@ module.exports = (app) => {
           'trigger_id': user.trigger_id,
           'dialog': {
             'callback_id': 'registerWakatimeKey',
-            'title': 'Register',
+            'title': 'Add Wakatime Key',
             'submit_label': 'Submit',
             'notify_on_cancel': false,
             'elements': [{
               'type': 'textarea',
-              'label': 'Please enter your Wakatime API key (if known):',
+              'label': 'Please enter your Wakatime API key:',
               'name': 'wakatime_key',
-              'optional': true
+              'optional': false
             }],
           },
         },
@@ -801,10 +836,10 @@ module.exports = (app) => {
 			addStudentToStudentsArray(result);
 		})
   }
-  
+
   function getStudentStats(user, channel){
     let currentStudent = user.user_id;
-    
+
     let params = {
       icon_emoji: ':smiley:',
     };

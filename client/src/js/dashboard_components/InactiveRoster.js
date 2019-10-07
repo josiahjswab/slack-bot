@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Roster from './Roster';
 import EditStudent from './EditStudent.js';
+let studentsData;
 
 class DashboardContainer extends Component {
 	constructor(props) {
@@ -12,10 +13,10 @@ class DashboardContainer extends Component {
 			saveErrorMessage: '',
 			display: {}
 		}
-		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
 		this.getAuthToken = this.getAuthToken.bind(this);
 		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
 		this.saveStudentData = this.saveStudentData.bind(this);
+		this.getViewByType = this.getViewByType.bind(this);
 	}
 
 	getAuthToken() {
@@ -32,13 +33,25 @@ class DashboardContainer extends Component {
 		});
 	}
 
-	hideStudentEditWindow(event, override) {
+	getViewByType(e){
+
+		let typeFilter = e.target.value
+
+		let filtered = studentsData.filter(student => student.type === typeFilter)
+
+		this.setState({
+		  students: filtered
+		})
+
+	 	}
+
+		hideStudentEditWindow(event, override) {
 		if (event.target === event.currentTarget || override) {
 			this.setState({
 				showStudentEditWindow: false
-			})
+				})
+			}
 		}
-	}
 
 	saveStudentData(studentData) {
 		fetch(`/api/students?access_token=${this.getAuthToken()}`, {
@@ -70,17 +83,15 @@ class DashboardContainer extends Component {
 			})
 	}
 
+
 	componentDidMount() {
-		const formattedInactiveStudentTypes = this.inactiveStudentTypes.map(type => {
-			return {"type": type};
-		})
-		const inactiveStudentFilter = JSON.stringify({"where": {"or": formattedInactiveStudentTypes}});
-		fetch(`/api/students?access_token=${this.getAuthToken()}&filter=${inactiveStudentFilter}`)
+		fetch(`/api/students?access_token=${this.getAuthToken()}`)
 			.then(response => response.json())
 			.then(data => {
 				const sorted = data.sort((a, b) =>
 					a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
 				this.setState({ students: sorted });
+				studentsData = sorted;
 			})
 			.catch(err => console.log(err));
 	}
@@ -123,13 +134,21 @@ class DashboardContainer extends Component {
 								href={`${process.env.BASE_URL}dashboard?auth_token=${this.getAuthToken()}`}
 							>
 								Dashboard
-          		</a>
+          			</a>
 						</li>
 					</ul>
 				</header>
 				{editStudentWindow}
-				<main className='inactiveStudentsWrapper'>
-					<h2 className='section-label big-display'>Inactive Students:</h2>
+				<main className='typeStudentsWrapper'>
+					<h2 className='section-label big-display'>Students:
+					<select onChange={this.getViewByType}>
+							<option value={"PAID"}>PAID</option>
+							<option value={"ALUMNI"}>ALUMNI</option>
+							<option value={"JOBSEEKER"}>JOBSEEKER</option>
+							<option value={'DISABLED'}>DISABLED</option>
+							<option value={'FREE'}>FREE</option>
+						</select>
+					</h2>
 					<Roster
 						students={this.state.students}
 						auth_token={this.getAuthToken()}

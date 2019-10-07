@@ -62,8 +62,8 @@ function calculateDashboardCheckinData(activeCheckins, students) {
   return {
     summary: [
       {
-        featured: `${ checkinPercent }%`,
-        fraction: `${ activeCheckins.length } / ${ students.length }`,
+        featured: `${checkinPercent}%`,
+        fraction: `${activeCheckins.length} / ${students.length}`,
         footer: 'checked in',
       },
     ],
@@ -111,25 +111,25 @@ function calculateIndividualStandupsData(standups) {
 
   return ([
     {
-      featured: `${ weekOfStandupsPercent }%`,
-      fraction: `${ uniqueStandupsLastSevenDays.length } / 7`,
-      footer: '7 days',
+      featured: `${weekOfStandupsPercent}%`,
+      fraction: `${uniqueStandupsLastSevenDays.length} / 7`,
+      footer: 'past 7 days',
     }, {
-      featured: `${ averageStandupPercent }%`,
-      fraction: `${ uniqueDaysWithStandups.length } / ${ totalDaysEnrolled }`,
-      footer: 'average',
+      featured: `${averageStandupPercent}%`,
+      fraction: `${uniqueDaysWithStandups.length} / ${totalDaysEnrolled}`,
+      footer: 'total average',
     },
   ]);
 }
 
 function calculateIndividualCheckinData(checkins) {
-  if (checkins.length === 0) { return undefined; }
+  if (checkins.length === 0) { return null; }
   // total time spent in classroom
   checkins.forEach(checkin => {
     if (!checkin.checkout_time) {
       checkin.hours = (new Date() - new Date(checkin.checkin_time)) /
         millisecondsToHours;
-      }
+    }
   });
   let totalHours = checkins.reduce((accumulator, checkin) => {
     return accumulator + checkin.hours;
@@ -162,13 +162,11 @@ function calculateIndividualCheckinData(checkins) {
   const completedCheckinsLastSevenDays = checkins.filter(checkin => {
     return new Date(checkin.checkin_time) > sevenDaysAgoMidnight;
   });
-  let missedCheckinsLastSevenDays =
+  let autoCheckoutsLastSevenDays =
       completedCheckinsLastSevenDays.reduce((accumulator, checkin) => {
-       if(checkin.checkin_time && checkin.checkout_time){accumulator+=2};
-       if(checkin.checkin_time && checkin.checkout_time==null){accumulator++};
+       if(checkin.auto_checkout){accumulator++};
        return accumulator;
     }, 0);
-  missedCheckinsLastSevenDays = Math.round(14 - missedCheckinsLastSevenDays);
 
   return ([
     {
@@ -184,15 +182,36 @@ function calculateIndividualCheckinData(checkins) {
       measurement: 'hrs',
       footer: 'total',
     }, {
-      featured: `${missedCheckinsLastSevenDays}`,
+      featured: `${autoCheckoutsLastSevenDays}`,
       measurement: '',
-      footer: 'weekly missed checkins'
+      footer: 'weekly auto-checkouts'
     }
   ]);
 }
 
-function calculateIndividualWakatimeData(wakatimes) {
-  if (wakatimes.length == 0) { return undefined; }
+function calculateIndividualWakatimeData(wt) {
+  const wakatimeDates = wt.map(wakatime => {
+    const wakatimeDate = new Date(wakatime.date);
+    let wakatimedateobj = new Object();
+      wakatimedateobj.date = `${wakatimeDate.getFullYear()}-
+      ${wakatimeDate.getMonth() + 1}-
+      ${wakatimeDate.getDate()}`
+      wakatimedateobj.duration = `${wakatime.duration}`
+      return wakatimedateobj
+  });
+  //filters out duplicate object entries
+  function getUniqueDates(arr, comp) {
+    const unique = arr
+         .map(e => e[comp])
+       // store the keys of the unique objects
+      .map((e, i, final) => final.indexOf(e) === i && i)
+      // eliminate the dead keys & store unique objects
+      .filter(e => arr[e]).map(e => arr[e]);
+     return unique;
+  }
+let wakatimes = getUniqueDates(wakatimeDates,'date') 
+
+  if (wakatimes.length == 0) { return null; }
   // total time spent in classroom
   let totalSeconds = wakatimes.reduce((accumulator, wakatime) => {
     return accumulator + wakatime.duration;
@@ -213,17 +232,20 @@ function calculateIndividualWakatimeData(wakatimes) {
   if (totalDaysEnrolled <= 7) {
     weeklyAverageHours = totalHours;
   } else {
-    weeklyAverageHours = Math.round(totalHours / totalDaysEnrolled * 7);
-	}
+    weeklyAverageHours = Math.round((totalHours / totalDaysEnrolled) * 7);
+  }
 
   // time spent in coding in the last seven days
   const wakatimesLastSevenDays = wakatimes.filter(wakatime => {
     return new Date(wakatime.date) > sevenDaysAgoMidnight;
   });
   let timeSpentLastSevenDays = wakatimesLastSevenDays.reduce((accumulator, wakatime) => {
-      return accumulator + wakatime.duration;
-    }, 0);
+    return accumulator + wakatime.duration;
+  }, 0);
   timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
+ 
+  // wakatimeDates.map(d =>{if(!date[d.date]){date[d.date]==d.duration}})
+  // console.log(date);
 
   return ([
     {
@@ -246,6 +268,6 @@ module.exports = {
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateIndividualStandupsData,
-	calculateIndividualCheckinData,
-	calculateIndividualWakatimeData
+  calculateIndividualCheckinData,
+  calculateIndividualWakatimeData
 };

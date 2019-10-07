@@ -58,6 +58,24 @@ main {
   background-color: $default-red-lighter;
 }
 
+.secondary-btn, .secondary-btn:visited {
+  display: block;
+  background-color: lightgray;
+  background-image: linear-gradient(lightgray, whitesmoke);
+  color: black;
+  padding: 0.25em 1em;
+  margin-left: 0.5em;
+  border: 1px solid gray;
+  border-radius: 0.25em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background-color: whitesmoke;
+  background-image: linear-gradient(white, whitesmoke);
+}
+
 .toggleContent-closed {
   display: none
 }
@@ -231,7 +249,7 @@ a.google:active {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.inactiveStudentsWrapper{
+.typeStudentsWrapper{
 	max-width: 400px;
 }
 
@@ -428,13 +446,20 @@ a.google:active {
   text-align: center;
   float: right;
   display: block;
-  background-color: $default-red;
-  color: $default-text-light;
-  padding: 0.1em 0.5em 0.1em 0.5em;
-  border: 0.5px $default-red-darker;
+  background-color: lightgray;
+  background-image: linear-gradient(lightgray, whitesmoke);
+  color: black;
+  padding: 0.1em;
+  margin-left: 0.5em;
+  border: 1px solid gray;
   border-radius: 0.25em;
 	text-decoration: none;
 	cursor: pointer;
+}
+
+.datasection-button:hover {
+  background-color: whitesmoke;
+  background-image: linear-gradient(white, whitesmoke);
 }
 
 @media (max-width: 320px) {

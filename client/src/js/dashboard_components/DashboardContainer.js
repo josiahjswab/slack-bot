@@ -196,7 +196,7 @@ class DashboardContainer extends Component {
             <div className='section-title'>
               <span className='section-label pointer' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
               <h2 className='section-label'>
-                <a href={`inactive?auth_token=${this.getAuthToken()}`}>View Inactive</a>
+                <a href={`inactive?auth_token=${this.getAuthToken()}`}>View by Type</a>
               </h2>
             </div>
             <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>

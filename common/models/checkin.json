@@ -10,6 +10,10 @@
       "type": "string",
       "required": true
     },
+    "auto_checkout": {
+      "type": "Boolean",
+      "default": false
+    },
     "checkin_time": {
       "type": "date",
       "required": true
@@ -20,6 +24,10 @@
     "hours": {
       "type": "number",
       "default": 0
+    },
+    "notAtSchool": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

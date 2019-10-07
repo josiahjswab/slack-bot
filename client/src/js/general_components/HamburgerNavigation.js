@@ -13,7 +13,7 @@ function HamburgerNavigation(props) {
           </a>
         </li>
 				<li onClick={props.openStudentEditWindow()}>
-					<div className='link-btn'>
+					<div className='secondary-btn'>
 						Edit Student
 					</div>
         </li>

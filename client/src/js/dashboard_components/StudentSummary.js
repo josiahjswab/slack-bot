@@ -65,10 +65,9 @@ class Standups extends Component {
 
     for (let i = 0; i < data.length; i++) {
       let date = new Date(data[i].date || data[i].checkin_time);
-      let formattedDate =
-        (date.getFullYear().toString())
-        + "/" + (date.getMonth() + 1).toString().padStart(2, '0')
-        + "/" + (date.getDate().toString()).padStart(2, '0');
+      let formattedDate = (date.getMonth() + 1).toString().padStart(2, '0')
+      + "/" + (date.getDate().toString()).padStart(2, '0')
+      + "/" + (date.getFullYear().toString());
 
       if (!dateObject[formattedDate]) {
         dateObject[formattedDate] = {}
