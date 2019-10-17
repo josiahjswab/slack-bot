@@ -122,7 +122,20 @@ class DashboardContainer extends Component {
     const { dispatch } = this.props;
     const students = this.state.students;
     dispatch(addStudentToStore(students));
+    console.log(this.state.students);
   }
+
+  // getViewByType(e){
+
+	// 	let typeFilter = e.target.value
+
+	// 	let filtered = studentsData.filter(student => student.type === typeFilter)
+
+	// 	this.setState({
+	// 	  students: filtered
+	// 	})
+
+	// }
 
   render() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
@@ -205,9 +218,17 @@ class DashboardContainer extends Component {
           <div>
             <div className='section-title'>
               <span className='section-label pointer' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
-              <h2 className='section-label'>
+              <select onChange={this.getViewByType}>
+                <option value={"PAID"}>Select</option>
+                <option value={"PAID"}>PAID</option>
+                <option value={"ALUMNI"}>ALUMNI</option>
+                <option value={"JOBSEEKER"}>JOBSEEKER</option>
+                <option value={'DISABLED'}>DISABLED</option>
+                <option value={'FREE'}>FREE</option>
+						  </select>
+              {/* <h2 className='section-label'>
                 <a href={`inactive?auth_token=${this.getAuthToken()}`}>View by Type</a>
-              </h2>
+              </h2> */}
             </div>
             <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>
               <Roster
