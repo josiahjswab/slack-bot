@@ -3,6 +3,7 @@ import React from 'react';
 function AdminLogin(props) {
   return(
     <React.Fragment>
+    <p className='happy'></p>
       <h1>Admin Dashboard</h1>
       <form action='/dashboard' method='post'>
         <input type='text' name='email' placeholder='Email' />
@@ -12,6 +13,8 @@ function AdminLogin(props) {
       <div className='auth'>
         <p>Log in using your account on:</p>
         <a href='auth/google' className='google'></a>
+        <p>
+        </p>
       </div>
     </React.Fragment>
   );

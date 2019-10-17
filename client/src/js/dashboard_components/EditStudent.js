@@ -50,24 +50,11 @@ export default class EditStudent extends React.Component{
 		return(
 			<div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
 				<div className='add-edit-student-container'>
-					<div className='add-edit-student-row'>
-						<label>Student Name:<br />
-							<input id='student-name' type="text" defaultValue={studentData.name} />
-						</label>
-					</div>
-					<div className='add-edit-student-row'>
-						<label>Slack ID:<br />
-							<input id='student-slack-id' type="text" defaultValue={studentData.slack_id} />
-						</label>
-					</div>
-					<div className='add-edit-student-row'>
-						<label>Wakatime API Key:<br />
-							<input id='student-wakatime-key' type="text" defaultValue={studentData.wakatime_key} />
-						</label>
-					</div>
-					<div className='add-edit-student-row'>
-						<label>Student type: 
-							<select id='student-type' defaultValue={studentData.type}>
+					<br></br>
+				<div className='add-edit-student-row'>
+						<label id='pop' >Student type: 
+							<br></br>
+							<select className='soda' id='student-type' defaultValue={studentData.type}>
 								{
 									this.studentTypes.map(type => {
 										return <option value={type} key={type}>{type}</option>
@@ -76,9 +63,37 @@ export default class EditStudent extends React.Component{
 							</select>
 						</label>
 					</div>
+					<br></br>
 					<div className='add-edit-student-row'>
-						<button className='link-btn' onClick={() => this.props.save(this.save())}>Save</button>
-						<button className='link-btn' onClick={this.props.closeWindow(event, true)}>Cancel</button>
+						<label>Student Name:<br />
+							<input id='student-name' type="text" defaultValue={studentData.name} />
+						</label>
+					</div>
+					<br></br>
+					<div className='add-edit-student-row'>
+						<label>Slack ID:<br />
+							<input id='student-slack-id' type="text" defaultValue={studentData.slack_id} />
+						</label>
+					</div>
+					<br></br>
+					<div className='add-edit-student-row'>
+						<label>Wakatime API Key:<br />
+							<input id='student-wakatime-key' type="text" defaultValue={studentData.wakatime_key} />
+						</label>
+					</div>
+					<br></br>
+					<div className='add-edit-student-row'>
+						<label>Github Id:<br />
+							<input id='student-wakatime-key' type="text" defaultValue={studentData.wakatime_key} />
+						</label>
+					</div>
+					<br></br>
+					<br></br>
+					
+					<div className='add-edit-student-row'>
+						
+						<button id='attic' className='' onClick={this.props.closeWindow(event, true)}>Cancel</button>
+						<button id='position' className='' onClick={() => this.props.save(this.save())}>Save</button>
 					</div>
 					{
 						this.props.errorMessage ? <div className='add-edit-student-row error-message'>
@@ -86,6 +101,7 @@ export default class EditStudent extends React.Component{
 						</div>
 						: null
 					}
+					<br></br>
 				</div>
 			</div>
 		)

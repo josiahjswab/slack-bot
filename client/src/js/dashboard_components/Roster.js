@@ -8,7 +8,7 @@ function Roster(props) {
         { props.students.map(student => {
           const link = `/student-summary/${ student.id }?auth_token=${ props.auth_token }`;
           return (
-            <li key={ student.id } className={student.wakatime_key ? "" : "missing-info"}>
+            <li key={ student.id } className={student.wakatime_key ? "" : "glyphicon glyphicon-exclamation-sign"}>
               <Link to={ link }>{ student.name }</Link>
             </li>
           )

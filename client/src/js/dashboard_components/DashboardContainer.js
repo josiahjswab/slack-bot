@@ -151,7 +151,8 @@ class DashboardContainer extends Component {
     return (
       <React.Fragment>
         <header>
-          <p className='date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
+          <p className='date red-date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
+          
           <ul className='navigation'>
             <li>
               <a

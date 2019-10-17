@@ -38,8 +38,8 @@ function StandupAndCheckin(props) {
       <p className='standup-card-title'>{ date }</p>
  
       <div className='hours-container'>
-        <p className={`standup-response ${ !checkinTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong>In: </strong>{checkinTime ? checkinTime : 'missed' }</p>
-        <p className={`standup-response ${ !checkoutTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong>Out: </strong>{ checkoutTime ? checkoutTime : 'missed' }</p>
+        <p className={`standup-response ${ !checkinTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong className='shifting'>In: </strong>{checkinTime ? checkinTime : 'missed' }</p>
+        <p className={`standup-response ${ !checkoutTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong className='shifting'>Out: </strong>{ checkoutTime ? checkoutTime : 'missed' }</p>
         <p className='standup-response'><strong>Hrs: </strong>{ hours ? hours.toFixed(2) : 'none' }</p>
       </div>
 
