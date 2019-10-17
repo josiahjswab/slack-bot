@@ -9,8 +9,8 @@ function Delinquents(props) {
         { props.students.map(student => {
           const link = `/student-summary/${ student.id }?auth_token=${ props.auth_token }`;
           return (
-            <li id="" key={ student.slack_id } className={student.wakatime_key ? "" : "glyphicon glyphicon-signal"}>
-              <Link to={ link }>{ student.name }</Link>
+            <li id="" key={ student.slack_id } className={student.wakatime_key ? "" : "rabbit"}>
+              <Link to={link}>{student.name}</Link>
             </li>
           )
         }) }

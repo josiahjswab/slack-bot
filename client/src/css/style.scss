@@ -122,8 +122,9 @@ main {
   z-index: 1;
   top: -10px;
   width: 100%;
-  height: 3px;
+  height: 10px;
   background: inherit;
+  
 }
 
 /* Moves Line Down */
@@ -223,19 +224,20 @@ a.google, a.google:visited {
   height: 46px;
   display: block;
   margin: auto;
-  background-image: url("../img/btn_google_signin_light_normal_web.png");
+  background-size: contain;
+  background-image: url("../img/normal.png");
 }
 
 a.google:hover {
-  background-image: url("../img/btn_google_signin_light_focus_web.png");
+  background-image: url("../img/focus.png");
 }
 
 a.google:active {
-  background-image: url("../img/btn_google_signin_light_pressed_web.png");
+  background-image: url("../img/pressed.png");
 }
 
 .flex-center {
-  padding-top: 60px;
+  padding-top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -298,14 +300,19 @@ a.google:active {
 
 .section-label {
   font-size: 0.9em;
-  text-transform: uppercase;
   letter-spacing: 0.025em;
-  font-weight: bold;
 }
 
 .section-label a{
-	color: black;
-	text-decoration: none;
+  display: block;
+  background-color: #800000;
+  color: #fff;
+  border: 1px solid maroon;
+  border-radius: .25em;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 3px 6px 3px 6px;
+  
 }
 
 .data {
@@ -617,4 +624,33 @@ req.body.checkin{
 .soda {
   width: 173px;
   padding-right: 50px;
+}
+
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  max-height: .7;
+  -webkit-font-smoothing: antialiased;
+  margin-left: 10px;
+  margin-top: 10px;
+
+}
+
+#sloppy {
+  height: 30px;
+}
+
+#slip {
+  color: #800000;
+  padding-left: 10px;
+
+}
+
+.rabbit {
+  font-family: 'Glyphicon Glyphicon Signal';
+  font-family: 'Glyphicon exclamation-sign';
 }

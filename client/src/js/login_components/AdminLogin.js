@@ -11,8 +11,11 @@ function AdminLogin(props) {
         <input type='submit' value='Login' className='link-btn' />
       </form>
       <div className='auth'>
-        <p>Log in using your account on:</p>
+        <br></br>
+        
+        <br></br>
         <a href='auth/google' className='google'></a>
+        
         <p>
         </p>
       </div>

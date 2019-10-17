@@ -156,7 +156,7 @@ class DashboardContainer extends Component {
           <ul className='navigation'>
             <li>
               <a
-                className='link-btn'
+                className='link-btn' id='sloppy'
                 href={`${process.env.BASE_URL}logout?auth_token=${this.getAuthToken()}`}
               >Logout
               </a>
