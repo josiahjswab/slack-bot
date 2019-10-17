@@ -9,7 +9,7 @@ function Delinquents(props) {
         { props.students.map(student => {
           const link = `/student-summary/${ student.id }?auth_token=${ props.auth_token }`;
           return (
-            <li id="" key={ student.slack_id } className={student.wakatime_key ? "" : "rabbit"}>
+            <li id="" key={ student.slack_id } className={student.wakatime_key ? "" : "glyphicon glyphicon-info-sign + glyphicon-exclamation-sign"}>
               <Link to={link}>{student.name}</Link>
             </li>
           )
