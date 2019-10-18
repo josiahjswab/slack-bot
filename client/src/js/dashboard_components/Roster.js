@@ -10,7 +10,7 @@ function Roster(props) {
           return (
             <li id="" key={ student.slack_id } >
             <span className={student.wakatime_key ? "" : "glyphicon glyphicon-signal"}/>
-            <span className={student.github_id ? "" : "glyphicon glyphicon-exclamation-sign"}/>
+            <span className={student.github_id ? "" : "glyphicon glyphicon-cloud"}/>
               <Link to={ link }>{ student.name }</Link>
             </li>
           )

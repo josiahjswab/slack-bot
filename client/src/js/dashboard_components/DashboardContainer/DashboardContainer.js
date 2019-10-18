@@ -93,7 +93,7 @@ showConfirmAbsenteesWindow(){
       date: today,
       names: absentees
     }
-    console.log(absenceLog);
+   //console.log(absenceLog);
     fetch(`/api/students?access_token=${this.getAuthToken()}`, {
       method: 'POST',
       headers: {
@@ -184,6 +184,7 @@ showConfirmAbsenteesWindow(){
   }
 
   componentDidUpdate(){
+    console.log(this.state.studentsBeingViewed)
     const { dispatch } = this.props;
     const students = this.state.students;
     dispatch(addStudentToStore(students));
@@ -202,7 +203,6 @@ showConfirmAbsenteesWindow(){
       this.setState({
 		  studentsBeingViewed: filtered
 		})
-
   }
 }
 
@@ -240,7 +240,7 @@ showConfirmAbsenteesWindow(){
     }
      let confirmAbsenteesWindow = null;
 
-    if( this.state.showConfirmAbsenteesWindow ) {
+    if(this.state.showConfirmAbsenteesWindow ) {
       let currentAbsentees = calculateAbsentees(this.state.activeCheckins, this.state.students);
       console.log(currentAbsentees);
       confirmAbsenteesWindow = <ConfirmAbsentees absentees={currentAbsentees}
@@ -272,7 +272,7 @@ showConfirmAbsenteesWindow(){
               Add Student
             </li>
               <li className='confirm-absentees link-btn' onClick={() => this.showConfirmAbsenteesWindow()} >
-              Confirm Absences
+              Absences
             </li>
           </ul>
         </header>
