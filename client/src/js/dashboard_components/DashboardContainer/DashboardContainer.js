@@ -15,6 +15,7 @@ class DashboardContainer extends Component {
     super(props);
     this.state = {
       students: [],
+      studentsBeingViewed: [],
       allStandups: [],
       activeCheckins: [],
       showStudentEditWindow: false,
@@ -25,7 +26,8 @@ class DashboardContainer extends Component {
 		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
 		this.getAuthToken = this.getAuthToken.bind(this);
 		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
-		this.saveStudentData = this.saveStudentData.bind(this);
+    this.saveStudentData = this.saveStudentData.bind(this);
+    this.getViewByType = this.getViewByType.bind(this);
   }
 
   toggle(panelNumber) {
@@ -99,7 +101,10 @@ class DashboardContainer extends Component {
       .then(data => {
         const sorted = data.sort((a, b) => 
 				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
-        this.setState({ students: sorted });
+        this.setState({ 
+          students: sorted,
+          studentsBeingViewed: sorted
+         });
       })
       .catch(err => console.log(err));
 
@@ -122,20 +127,24 @@ class DashboardContainer extends Component {
     const { dispatch } = this.props;
     const students = this.state.students;
     dispatch(addStudentToStore(students));
-    console.log(this.state.students);
   }
 
-  // getViewByType(e){
+  getViewByType(e){
+    let typeFilter = e.target.value;
+    let filtered = this.state.students.filter(student => student.type === typeFilter);
 
-	// 	let typeFilter = e.target.value
+    if(typeFilter == 'ALL'){
+      this.setState({
+        studentsBeingViewed: this.state.students
+      })
+    }
+    else {
+      this.setState({
+		  studentsBeingViewed: filtered
+		})
 
-	// 	let filtered = studentsData.filter(student => student.type === typeFilter)
-
-	// 	this.setState({
-	// 	  students: filtered
-	// 	})
-
-	// }
+  }
+}
 
   render() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
@@ -150,14 +159,14 @@ class DashboardContainer extends Component {
 
     let standupsData;
     let checkinData;
-    if (this.state.students.length > 0) {
+    if (this.state.studentsBeingViewed.length > 0) {
       standupsData = calculateDashboardStandupsData(
         this.state.allStandups,
-        this.state.students
+        this.state.studentsBeingViewed
       );
       checkinData = calculateDashboardCheckinData(
         this.state.activeCheckins,
-        this.state.students
+        this.state.studentsBeingViewed
       );
     }
 
@@ -198,7 +207,7 @@ class DashboardContainer extends Component {
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={checkinData ? checkinData.delinquents : undefined}
                   delinquentTitle='absentees'
-                  students={this.state.students}
+                  students={this.state.studentsBeingViewed}
                   auth_token={this.getAuthToken()}
                   />
                 </div>
@@ -209,7 +218,7 @@ class DashboardContainer extends Component {
                       <DataSection
                       data={standupsData ? standupsData.summary : undefined}
                       delinquents={standupsData ? standupsData.delinquents : undefined}
-                      students={this.state.students}
+                      students={this.state.studentsBeingViewed}
                       auth_token={this.getAuthToken()}
                       />
                   </div>
@@ -219,7 +228,7 @@ class DashboardContainer extends Component {
             <div className='section-title'>
               <span className='section-label pointer' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
               <select onChange={this.getViewByType}>
-                <option value={"PAID"}>Select</option>
+                <option value={"ALL"}>ALL</option>
                 <option value={"PAID"}>PAID</option>
                 <option value={"ALUMNI"}>ALUMNI</option>
                 <option value={"JOBSEEKER"}>JOBSEEKER</option>
@@ -232,7 +241,7 @@ class DashboardContainer extends Component {
             </div>
             <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>
               <Roster
-                students={this.state.students}
+                students={this.state.studentsBeingViewed}
                 auth_token={this.getAuthToken()}
               />
             </div>
