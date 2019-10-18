@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import DataSection from '../DataSection';
 import Roster from '../Roster';
+import ConfirmAbsentees from '../ConfirmAbsentees';
 import {
   calculateDashboardCheckinData,
-  calculateDashboardStandupsData
+  calculateDashboardStandupsData, calculateAbsentees
 } from '../../utilities';
 import {
   addStudentToStore
@@ -14,6 +15,7 @@ class DashboardContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      absentees: {},
       students: [],
       studentsBeingViewed: [],
       allStandups: [],
@@ -21,13 +23,20 @@ class DashboardContainer extends Component {
       showStudentEditWindow: false,
       editedStudentInfo: {},
       saveErrorMessage: '',
-      display: {}
+      display: {},
+      showConfirmAbsenteesWindow: false,
+      absenteesErrorMessage: '',
 		}
 		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
 		this.getAuthToken = this.getAuthToken.bind(this);
 		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
     this.saveStudentData = this.saveStudentData.bind(this);
     this.getViewByType = this.getViewByType.bind(this);
+    this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
+		this.saveStudentData = this.saveStudentData.bind(this);	    this.saveStudentData = this.saveStudentData.bind(this);
+    this.hideConfirmAbsenteesWindow = this.hideConfirmAbsenteesWindow.bind(this);
+    this.showConfirmAbsenteesWindow = this.showConfirmAbsenteesWindow.bind(this);
+    this.sendAbsences = this.sendAbsences.bind(this);
   }
 
   toggle(panelNumber) {
@@ -59,6 +68,57 @@ class DashboardContainer extends Component {
         showStudentEditWindow: false
       })
     }
+  }
+
+showConfirmAbsenteesWindow(){
+    const absentees = calculateAbsentees(this.state.activeCheckins, this.state.students);
+    this.setState({
+      absentees: absentees,
+      showConfirmAbsenteesWindow: true
+    });
+  }
+
+  hideConfirmAbsenteesWindow(event, override) {
+    if (event.target === event.currentTarget || override) {
+      this.setState({
+        showConfirmAbsenteesWindow: false
+      });
+    }
+  }
+
+  sendAbsences(absentees){
+    const today = new Date();
+    const absenceLog = {
+      type: 'Absences Log',
+      date: today,
+      names: absentees
+    }
+    console.log(absenceLog);
+    fetch(`/api/students?access_token=${this.getAuthToken()}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(absenceLog)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(response => {
+        if (response.error) {
+          throw response.error.message
+        } else {
+          this.setState({
+            showConfirmAbsenteesWindow: false,
+            absenteesErrorMessage: null
+          })
+        }
+      })
+      .catch(err => {
+        this.setState({
+          absenteesErrorMessage: err
+        })
+      })
   }
 
   saveStudentData(studentData) {
@@ -178,6 +238,17 @@ class DashboardContainer extends Component {
         save={this.saveStudentData}
         errorMessage={this.state.saveErrorMessage} />
     }
+     let confirmAbsenteesWindow = null;
+
+    if( this.state.showConfirmAbsenteesWindow ) {
+      let currentAbsentees = calculateAbsentees(this.state.activeCheckins, this.state.students);
+      console.log(currentAbsentees);
+      confirmAbsenteesWindow = <ConfirmAbsentees absentees={currentAbsentees}
+        closeWindow={() => this.hideConfirmAbsenteesWindow}
+        sendAbsences={this.sendAbsences}
+        errorMessage={this.state.absenteesErrorMessage}
+        />
+    }
 
     return (
       <React.Fragment>
@@ -199,10 +270,14 @@ class DashboardContainer extends Component {
             </li>
             <li className='add-student' id='later' onClick={() => this.showStudentEditWindow({})}>
               Add Student
-						</li>
+            </li>
+              <li className='confirm-absentees link-btn' onClick={() => this.showConfirmAbsenteesWindow()} >
+              Confirm Absences
+            </li>
           </ul>
         </header>
         {editStudentWindow}
+        {confirmAbsenteesWindow}
         <main className='wrapper dashboard-wrapper'>
           <div className='data-section-container-flex'>
             <div className='data-section data-section-flex'>
