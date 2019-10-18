@@ -93,15 +93,15 @@ class DashboardContainer extends Component {
 
   componentDidMount() {
     const formattedInactiveStudentTypes = this.inactiveStudentTypes.map(type => {
-			return {"type": {"neq": type}};
-		})
-		const inactiveStudentFilter = JSON.stringify({"where": {"and": formattedInactiveStudentTypes}});
-    fetch(`/api/students?access_token=${ this.getAuthToken() }&filter=${inactiveStudentFilter}`)
+      return { "type": { "neq": type } };
+    })
+    const inactiveStudentFilter = JSON.stringify({ "where": { "and": formattedInactiveStudentTypes } });
+    fetch(`/api/students?access_token=${this.getAuthToken()}&filter=${inactiveStudentFilter}`)
       .then(response => response.json())
       .then(data => {
-        const sorted = data.sort((a, b) => 
+        const sorted = data.sort((a, b) =>
 				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
-        this.setState({ 
+        this.setState({
           students: sorted,
           studentsBeingViewed: sorted
          });
@@ -183,8 +183,13 @@ class DashboardContainer extends Component {
       <React.Fragment>
         <header>
           <p className='date red-date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
-          
+          <div className='card'>
+              <p className='' id='tank'>3.50 Class/Daily/Average/Waka</p>
+            </div>
+
           <ul className='navigation'>
+
+
             <li>
               <a
                 className='link-btn'
@@ -192,7 +197,7 @@ class DashboardContainer extends Component {
               >Logout
               </a>
             </li>
-            <li className='add-student link-btn' onClick={() => this.showStudentEditWindow({})}>
+            <li className='add-student' id='later' onClick={() => this.showStudentEditWindow({})}>
               Add Student
 						</li>
           </ul>
@@ -202,15 +207,15 @@ class DashboardContainer extends Component {
           <div className='data-section-container-flex'>
             <div className='data-section data-section-flex'>
               <span className='section-label pointer' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
-                <div className={this.state.display[1] ? "toggleContent-hidden" : ""}>
-                  <DataSection
+              <div className={this.state.display[1] ? "toggleContent-hidden" : ""}>
+                <DataSection
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={checkinData ? checkinData.delinquents : undefined}
                   delinquentTitle='absentees'
                   students={this.state.studentsBeingViewed}
                   auth_token={this.getAuthToken()}
-                  />
-                </div>
+                />
+              </div>
             </div>
             <div className='data-section data-section-flex'>
                 <span className='section-label pointer' onClick={() => this.toggle(2)}><h2>Standups</h2></span>

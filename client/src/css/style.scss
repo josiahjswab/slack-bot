@@ -122,7 +122,7 @@ main {
   z-index: 1;
   top: -10px;
   width: 100%;
-  height: 10px;
+  height: 3px;
   background: inherit;
   
 }
@@ -558,8 +558,6 @@ a.google:active {
   display: flex;
 }
 
-
-
 #position {
   display: block;
   background-color: #1174ef;
@@ -592,8 +590,6 @@ a.google:active {
   background-size: contain;
   text-align: center;
   margin-bottom: 30px;
-
-  
 }
 
 req.body.checkin{
@@ -626,48 +622,69 @@ req.body.checkin{
   padding-right: 50px;
 }
 
-.glyphicon {
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: 'Glyphicons Halflings';
-  font-style: normal;
-  font-weight: normal;
-  max-height: .7;
-  -webkit-font-smoothing: antialiased;
-  margin-left: 10px;
-  margin-top: 10px;
-
-}
-
 #sloppy {
   height: 30px;
 }
 
 #slip {
   color: #800000;
-  padding-left: 8px;
-
+  padding-left: 10px;
 }
 
-// .rabbit {
-//   font-family: 'glyphicon glyphicon-signal';
-// }
-
-.glyphicon-exclamation-sign:before {
+.glyphicon-signal {
   font-family: "Glyphicons Halflings" !important;
-  font-size: 15px !important;
   color: #800000 !important;
   margin-bottom: -7px !important;
-  float: right;
-  margin-top: 3px;
-  margin-right: 342px;
+  float: left;
+  margin-top: 7px;
+  margin-left: 10px;
 }
 
-.glyphicon-info-sign:after {
+.glyphicon-exclamation-sign {
   font-family: "Glyphicons Halflings" !important;
-  font-size: 9px !important;
-  color: #1F6689 !important;
+  color: #800000 !important;
   margin-bottom: -7px !important;
   float: left;
+  margin-top: 7px;
+  margin-left: 10px;
+}
+
+#tree {
+  margin-right: 1px;
+}
+
+.shirt {
+  display: block;
+  background-color: $default-red;
+  color: $default-text-light;
+  padding: 0.25em 1em;
+  border: 1px solid $default-red-darker;
+  border-radius: 0.25em;
+	text-decoration: none;
+  cursor: pointer;
+  margin-left: -36px;
+}
+
+.sloppy {
+  text-size-adjust: 20px;
+}
+
+#tank {
+  text-size-adjust: 20px;
+  font-size: x-large;
+  color: #800000
+}
+
+#later {
+  display: block;
+  background-color: $default-red;
+  color: $default-text-light;
+  padding: 0.25em 1em;
+  border: 1px solid $default-red-darker;
+  border-radius: 0.25em;
+	text-decoration: none;
+  cursor: pointer;
+  margin-left: -36px;
+  margin-bottom: 4px;
+  margin-top: 1px;
 }
