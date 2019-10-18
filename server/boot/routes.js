@@ -145,7 +145,7 @@ module.exports = (app) => {
       } else {
         handleEvent(req.body, 'checkout');
       }
-      res.sendStatus(200);
+      res.sendStatus( 'Congratulations! You have just checked in to the greatest code school in the world.');
     } else {
       res.sendStatus(401);
     }

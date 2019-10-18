@@ -13,13 +13,13 @@ function HamburgerNavigation(props) {
           </a>
         </li>
 				<li onClick={props.openStudentEditWindow()}>
-					<div className='secondary-btn'>
+					<div className='secondary-btn' id='tree'>
 						Edit Student
 					</div>
         </li>
         <li className='dashboard-link'>
       <a
-        className='link-btn'
+        className='shirt'
         href={`${ process.env.BASE_URL }dashboard?auth_token=${ props.auth_token }`}
       >Dashboard
       </a>
