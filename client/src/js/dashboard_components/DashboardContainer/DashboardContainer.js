@@ -271,7 +271,7 @@ showConfirmAbsenteesWindow(){
             <li className='add-student' id='later' onClick={() => this.showStudentEditWindow({})}>
               Add Student
             </li>
-              <li className='confirm-absentees link-btn' onClick={() => this.showConfirmAbsenteesWindow()} >
+              <li className='confirm-absentees' id='ring' onClick={() => this.showConfirmAbsenteesWindow()} >
               Absences
             </li>
           </ul>
@@ -305,10 +305,10 @@ showConfirmAbsenteesWindow(){
             </div>
           </div>
           <div>
-            <div className='section-title'>
-              <span className='section-label pointer' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
-              <select onChange={this.getViewByType}>
-                <option value={"ALL"}>ALL</option>
+            <div className=''>
+              <span className='' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
+              <select className='sprint' onChange={this.getViewByType}>
+                <option className='' value={"ALL"}>ALL</option>
                 <option value={"PAID"}>PAID</option>
                 <option value={"ALUMNI"}>ALUMNI</option>
                 <option value={"JOBSEEKER"}>JOBSEEKER</option>

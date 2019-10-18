@@ -65,16 +65,18 @@ export default class ConfirmAbsentees extends React.Component {
     render(){
         return(
             <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
-                <div className='add-edit-student-container'>
+                <div className='slam'>
                 <h3>Students who have not checked in today: </h3>
                     <div>
                         {this.state.absentees.map((student, index) => (
-                            <AbsentStudent key={student.id} name={student.name} index={index} toggleAbsence={this.toggleAbsence}/>
+                            <AbsentStudent id='stack' key={student.id} name={student.name} index={index} toggleAbsence={this.toggleAbsence}/>
                         ))}
                     </div>
-                    <div className='add-edit-student-row'>
-                        <button className='link-btn' onClick={() => this.confirmAbsentees(this.state.absentees)}>Confirm Absences</button>
-                        <button className='link-btn' onClick={this.props.closeWindow(event, true)}>Cancel</button>
+                    <br></br>
+                    <br></br>
+                    <div className=''>
+                        <button className='' id='cap' onClick={() => this.confirmAbsentees(this.state.absentees)}>Confirm Absences</button>
+                        <button className='' id='cap1' onClick={this.props.closeWindow(event, true)}>Cancel</button>
                     </div>
                 </div>
             </div>
