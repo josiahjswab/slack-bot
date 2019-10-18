@@ -15,7 +15,11 @@ export default class EditStudent extends React.Component{
 			name: document.getElementById('student-name').value,
 			slack_id: document.getElementById('student-slack-id').value,
 			wakatime_key: document.getElementById('student-wakatime-key').value,
-			type: document.getElementById('student-type').value
+			type: document.getElementById('student-type').value,
+			github_id: document.getElementById('student-github-id').value
+
+
+
 		}
 
 		if(this.props.studentData.id){
@@ -43,6 +47,7 @@ export default class EditStudent extends React.Component{
 		let studentData = this.props.studentData || {
 			name: '',
 			wakatime_key: '',
+			github_id: '',
 			slack_id: '',
 			type: 'FREE'
 		}
@@ -83,8 +88,8 @@ export default class EditStudent extends React.Component{
 					</div>
 					<br></br>
 					<div className='add-edit-student-row'>
-						<label>Github Id:<br />
-							<input id='student-wakatime-key' type="text" defaultValue={studentData.wakatime_key} />
+						<label>GitHub Id:<br />
+						<input id='student-github-id' type="text" defaultValue={studentData.github_id} />
 						</label>
 					</div>
 					<br></br>
