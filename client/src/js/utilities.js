@@ -48,6 +48,16 @@ function calculateDashboardStandupsData(standups, students) {
   };
 }
 
+function calculateAbsentees(activeCheckins, students) {
+  // assumes a student cannot have more than one active checkin
+  const absentees = students.filter(student => {
+    return !activeCheckins.some(checkin => {
+      return student.slack_id === checkin.slack_id;
+    });
+  });
+  return absentees;
+}
+
 function calculateDashboardCheckinData(activeCheckins, students) {
   // assumes a student cannot have more than one active checkin
   const checkinPercent =
@@ -209,7 +219,7 @@ function calculateIndividualWakatimeData(wt) {
       .filter(e => arr[e]).map(e => arr[e]);
      return unique;
   }
-let wakatimes = getUniqueDates(wakatimeDates,'date') 
+let wakatimes = getUniqueDates(wakatimeDates,'date')
 
   if (wakatimes.length == 0) { return null; }
   // total time spent in classroom
@@ -243,7 +253,7 @@ let wakatimes = getUniqueDates(wakatimeDates,'date')
     return accumulator + wakatime.duration;
   }, 0);
   timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
- 
+
   // wakatimeDates.map(d =>{if(!date[d.date]){date[d.date]==d.duration}})
   // console.log(date);
 
@@ -265,6 +275,7 @@ let wakatimes = getUniqueDates(wakatimeDates,'date')
 }
 
 module.exports = {
+  calculateAbsentees,
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateIndividualStandupsData,

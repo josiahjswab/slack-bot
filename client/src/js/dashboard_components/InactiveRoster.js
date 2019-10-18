@@ -43,7 +43,7 @@ class DashboardContainer extends Component {
 		  students: filtered
 		})
 
-	 	}
+	}
 
 		hideStudentEditWindow(event, override) {
 		if (event.target === event.currentTarget || override) {
@@ -94,7 +94,9 @@ class DashboardContainer extends Component {
 				studentsData = sorted;
 			})
 			.catch(err => console.log(err));
+			
 	}
+
 
 	render() {
 		const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
@@ -141,7 +143,8 @@ class DashboardContainer extends Component {
 				{editStudentWindow}
 				<main className='typeStudentsWrapper'>
 					<h2 className='section-label big-display'>Students:
-					<select onChange={this.getViewByType}>
+						<select onChange={this.getViewByType}>
+							<option value={"PAID"}>Select</option>
 							<option value={"PAID"}>PAID</option>
 							<option value={"ALUMNI"}>ALUMNI</option>
 							<option value={"JOBSEEKER"}>JOBSEEKER</option>
