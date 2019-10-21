@@ -7,7 +7,7 @@ import {
   calculateIndividualStandupsData,
   calculateIndividualWakatimeData
 } from '../utilities';
-import EditStudent from './EditStudent.js';
+import EditStudent from './EditStudent';
 
 class Standups extends Component {
   constructor(props) {
@@ -109,7 +109,6 @@ class Standups extends Component {
 
   componentDidMount() {
     const id = this.props.location.pathname.replace('/student-summary/', '');
-
     fetch(`/api/students/${id}?access_token=${this.getAuthToken()}`)
       .then(response => response.json())
       .then(student => {
@@ -163,7 +162,7 @@ class Standups extends Component {
           {`${this.state.name} has not submitted any standups and has not checked in.`}
         </div>
 		}
-		
+
 		function sortByDate(a, b){
 			return a[0] < b[0] ? 1 : -1;
 		};
@@ -181,7 +180,7 @@ class Standups extends Component {
 				<HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
 					auth_token={ this.getAuthToken() }/>
         {editStudentWindow}
-        <div className='header-name'>
+        <div className='header-name student-summary-padding'>
 					<h1>{ this.state.name }</h1>
 				</div>
         <main className='wrapper'>

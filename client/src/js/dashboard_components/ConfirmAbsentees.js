@@ -1,60 +1,32 @@
 import React, { Component } from 'react';
 
-class AbsentStudent extends Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
+function AbsentStudent(student){
         return (
-            <div className='add-edit-student-row'>
-                <h4>{this.props.name}</h4>
-                <p>Absent</p>
-                <input type='checkbox' value={this.props.absent} onClick={() => this.props.toggleAbsence(this.props.index)}/>
+            <div className=''>
+                <h4 className='name-margin'>{student.name}
+                <p className='absent-padding'>Absent</p>
+                <input className='checkbox-position' type='checkbox'  />
+                </h4>
             </div>
         )
     }
-}
+
 
 export default class ConfirmAbsentees extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            absentees: []
-        }
-        this.confirmAbsentees=this.confirmAbsentees.bind(this);
-        this.toggleAbsence=this.toggleAbsence.bind(this);
-    }
+  constructor(props){
+    super(props);
+    this.state = {}
+    this.confirm = this.confirm.bind(this);
+}
+confirm(absentees){
+  console.log(this.state);
+  console.log('Absentees: ', absentees)
+}
 
-    componentDidMount(){
-        let list = this.props.absentees;
-        for(let i = 0; i < list.length; i++){
-            list[i].absent = true;
-        }
-        this.setState({
-            absentees: list
-        });
-    }
-
-    toggleAbsence(index){
-        let students = this.state.absentees;
-        if(students[index].absent !== false){
-            students[index].absent = false;
-            this.setState({
-                absentees: students
-            });
-        } else {
-            students[index].absent = true;
-            this.setState({
-                absentees: students
-            })
-        }
-        console.log(students[index]);
-    }
-
-    confirmAbsentees(absentees){
+    confirmAbsentees(absentees) {
         let names = [];
-        for(let i = 0; i < absentees.length; i++){
-            if(absentees[i].absent !== false){
+        for (let i = 0; i < absentees.length; i++) {
+            if (absentees[i].absent !== false) {
                 names.push(absentees[i].name);
             }
         }
@@ -62,24 +34,24 @@ export default class ConfirmAbsentees extends React.Component {
         this.props.sendAbsences(names);
     }
 
-    render(){
-        return(
+    render() {
+      let absentees = this.props.absentees.absentees;
+        return (
             <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
-                <div className='slam'>
-                <h3>Students who have not checked in today: </h3>
+                <div className='unchecked'>
+                    <h3 className='not-checked-in-color'>Not checked In:</h3>
+                    <br></br>
                     <div>
-                        {this.state.absentees.map((student, index) => (
-                            <AbsentStudent id='stack' key={student.id} name={student.name} index={index} toggleAbsence={this.toggleAbsence}/>
+                        {absentees.map((student) => (
+                            <AbsentStudent id='absentStud' key={student.id} name={student.name}/>
                         ))}
                     </div>
-                    <br></br>
-                    <br></br>
-                    <div className=''>
-                        <button className='' id='cap' onClick={() => this.confirmAbsentees(this.state.absentees)}>Confirm Absences</button>
-                        <button className='' id='cap1' onClick={this.props.closeWindow(event, true)}>Cancel</button>
+                    <div className='absentess-btn'>
+                        <button  id="cap" onClick={() => this.confirm(absentees)}>Confirm Absences</button>
+                        <button  id="cap1" onClick={this.props.closeWindow(event, true)}>Cancel</button>
                     </div>
                 </div>
             </div>
         )
     }
-} 
+}

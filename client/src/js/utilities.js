@@ -1,11 +1,9 @@
 'use strict';
-
 const today = new Date();
 
 function offsetDate(initialDate, dayOffset) {
   return new Date(initialDate.setDate(initialDate.getDate() + dayOffset));
 }
-
 function midnight(date) {
   return new Date(
     date.getFullYear(),
@@ -17,7 +15,6 @@ function midnight(date) {
 const todayMidnight = midnight(new Date(today));
 const tomorrowMidnight = midnight(offsetDate(new Date(today), 1));
 const sevenDaysAgoMidnight = midnight(offsetDate(new Date(today), -6));
-
 const millisecondsToHours = 1000 * 60 * 60;
 const millisecondsToDays = 1000 * 60 * 60 * 24;
 
@@ -35,7 +32,6 @@ function calculateDashboardStandupsData(standups, students) {
   });
   const todaysStandupPercent = Math.round((uniqueStandupsToday.length /
     students.length) * 100);
-
   return {
     summary: [
       {
@@ -48,27 +44,15 @@ function calculateDashboardStandupsData(standups, students) {
   };
 }
 
-function calculateAbsentees(activeCheckins, students) {
-  // assumes a student cannot have more than one active checkin
-  const absentees = students.filter(student => {
-    return !activeCheckins.some(checkin => {
-      return student.slack_id === checkin.slack_id;
-    });
-  });
-  return absentees;
-}
-
 function calculateDashboardCheckinData(activeCheckins, students) {
   // assumes a student cannot have more than one active checkin
   const checkinPercent =
     Math.round((activeCheckins.length / students.length) * 100);
-
   const absentees = students.filter(student => {
     return !activeCheckins.some(checkin => {
       return student.slack_id === checkin.slack_id;
     });
   });
-
   return {
     summary: [
       {
@@ -81,9 +65,18 @@ function calculateDashboardCheckinData(activeCheckins, students) {
   };
 }
 
+function calculateAbsentees(activeCheckins, students) {
+  // assumes a student cannot have more than one active checkin
+  const absentees = students.filter(student => {
+    return !activeCheckins.some(checkin => {
+      return student.slack_id === checkin.slack_id;
+    });
+  });
+  return {absentees: absentees};
+}
+
 function calculateIndividualStandupsData(standups) {
   if (standups.length === 0) { return undefined; }
-
   // standups completed in the last seven days
   const standupsLastSevenDays = standups.filter(standup => {
     return new Date(standup.date) > sevenDaysAgoMidnight;
@@ -91,34 +84,32 @@ function calculateIndividualStandupsData(standups) {
   const standupsLastSevenDaysDates = standupsLastSevenDays.map(standup => {
     const standupDate = new Date(standup.date);
     return (
-      `${standupDate.getFullYear()}-
-      ${standupDate.getMonth() + 1}-
-      ${standupDate.getDate()}`
+    `${standupDate.getFullYear()} - ${standupDate.getMonth() + 1} - ${standupDate.getDate()}`
     );
   });
   const uniqueStandupsLastSevenDays =
     [...new Set(standupsLastSevenDaysDates)];
 
-  const weekOfStandupsPercent =
+    const weekOfStandupsPercent =
     Math.round((uniqueStandupsLastSevenDays.length / 7) * 100);
-
   // standups completed during entire enrollment (assuming standup submitted on day 1)
   const dayOne = new Date(standups[standups.length - 1].date);
+
   const dayOneMidnight = midnight(dayOne);
   const totalDaysEnrolled =
     Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
+
   const standupsDates = standups.map(standup => {
     const standupDate = new Date(standup.date);
     return (
-      `${standupDate.getFullYear()}-
-      ${standupDate.getMonth() + 1}-
-      ${standupDate.getDate()}`
-    );
+      `${standupDate.getFullYear()}-${standupDate.getMonth() + 1}-${standupDate.getDate()}`);
   });
+
+  //const uniqueDaysWithStandups = [...new Set(standupsDates)];
   const uniqueDaysWithStandups = [...new Set(standupsDates)];
+
   const averageStandupPercent =
     Math.round((uniqueDaysWithStandups.length / totalDaysEnrolled) * 100);
-
   return ([
     {
       featured: `${weekOfStandupsPercent}%`,
@@ -131,7 +122,6 @@ function calculateIndividualStandupsData(standups) {
     },
   ]);
 }
-
 function calculateIndividualCheckinData(checkins) {
   if (checkins.length === 0) { return null; }
   // total time spent in classroom
@@ -144,6 +134,7 @@ function calculateIndividualCheckinData(checkins) {
   let totalHours = checkins.reduce((accumulator, checkin) => {
     return accumulator + checkin.hours;
   }, 0);
+
   totalHours = Math.round(totalHours);
 
   // weekly average = daily average * 7, but only if student has already been
@@ -163,6 +154,7 @@ function calculateIndividualCheckinData(checkins) {
   const checkinsLastSevenDays = checkins.filter(checkin => {
     return new Date(checkin.checkin_time) > sevenDaysAgoMidnight;
   });
+
   let timeSpentLastSevenDays =
     checkinsLastSevenDays.reduce((accumulator, checkin) => {
       return accumulator + checkin.hours;
@@ -172,12 +164,12 @@ function calculateIndividualCheckinData(checkins) {
   const completedCheckinsLastSevenDays = checkins.filter(checkin => {
     return new Date(checkin.checkin_time) > sevenDaysAgoMidnight;
   });
+
   let autoCheckoutsLastSevenDays =
       completedCheckinsLastSevenDays.reduce((accumulator, checkin) => {
        if(checkin.auto_checkout){accumulator++};
        return accumulator;
     }, 0);
-
   return ([
     {
       featured: `${timeSpentLastSevenDays}`,
@@ -198,7 +190,6 @@ function calculateIndividualCheckinData(checkins) {
     }
   ]);
 }
-
 function calculateIndividualWakatimeData(wt) {
   const wakatimeDates = wt.map(wakatime => {
     const wakatimeDate = new Date(wakatime.date);
@@ -220,12 +211,12 @@ function calculateIndividualWakatimeData(wt) {
      return unique;
   }
 let wakatimes = getUniqueDates(wakatimeDates,'date')
-
   if (wakatimes.length == 0) { return null; }
-  // total time spent in classroom
+ // total time spent in classroom
   let totalSeconds = wakatimes.reduce((accumulator, wakatime) => {
-    return accumulator + wakatime.duration;
+    return accumulator + parseInt(wakatime.duration);
   }, 0);
+
   let totalHours = Math.round(totalSeconds) / (60 * 60);
 
   // weekly average = daily average * 7, but only if student has already been
@@ -249,13 +240,12 @@ let wakatimes = getUniqueDates(wakatimeDates,'date')
   const wakatimesLastSevenDays = wakatimes.filter(wakatime => {
     return new Date(wakatime.date) > sevenDaysAgoMidnight;
   });
-  let timeSpentLastSevenDays = wakatimesLastSevenDays.reduce((accumulator, wakatime) => {
-    return accumulator + wakatime.duration;
-  }, 0);
-  timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
 
-  // wakatimeDates.map(d =>{if(!date[d.date]){date[d.date]==d.duration}})
-  // console.log(date);
+  let timeSpentLastSevenDays = wakatimesLastSevenDays.reduce((accumulator, wakatime) => {
+    return accumulator + parseInt(wakatime.duration);
+  }, 0);
+
+  timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
 
   return ([
     {
@@ -273,7 +263,6 @@ let wakatimes = getUniqueDates(wakatimeDates,'date')
     },
   ]);
 }
-
 module.exports = {
   calculateAbsentees,
   calculateDashboardCheckinData,

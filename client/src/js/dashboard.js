@@ -6,6 +6,6 @@ import store from './rootStore';
 import '../css/style.scss';
 render(
     <Provider store={ store }>
-    <DashboardApp />
+      <DashboardApp />
     </Provider>,
     document.getElementById('root'));

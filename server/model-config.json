@@ -30,7 +30,7 @@
     "public": false
   },
   "log": {
-    "dataSource": "db",
+    "dataSource": "mongod",
     "public": true
   },
   "student": {
@@ -46,15 +46,15 @@
     "public": true
   },
   "accessToken": {
-    "dataSource": "db",
+    "dataSource": "mongod",
     "public": false
   },
   "userCredential": {
-    "dataSource": "db",
+    "dataSource": "mongod",
     "public": false
   },
   "userIdentity": {
-    "dataSource": "db",
+    "dataSource": "mongod",
     "public": false
   },
   "checkin": {
@@ -62,6 +62,10 @@
     "public": true
   },
   "wakatime": {
+    "dataSource": "mongod",
+    "public": true
+  },
+  "absence": {
     "dataSource": "mongod",
     "public": true
   }

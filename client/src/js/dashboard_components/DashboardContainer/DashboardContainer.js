@@ -1,39 +1,41 @@
 import React, { Component } from 'react';
 import DataSection from '../DataSection';
 import Roster from '../Roster';
+import { Link } from 'react-router-dom'
 import ConfirmAbsentees from '../ConfirmAbsentees';
 import {
   calculateDashboardCheckinData,
   calculateDashboardStandupsData, calculateAbsentees
 } from '../../utilities';
 import {
-  addStudentToStore
+  saveStudentData,
+  getStudentData,
+  setStudentsBeingViewed,
+  getStandups,
+  getCheckins
 } from './DashboardContainerActions';
-import EditStudent from '../EditStudent.js';
+import EditStudent from '../EditStudent';
 
 class DashboardContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       absentees: {},
-      students: [],
-      studentsBeingViewed: [],
-      allStandups: [],
-      activeCheckins: [],
+      authToken: '',
       showStudentEditWindow: false,
       editedStudentInfo: {},
       saveErrorMessage: '',
       display: {},
       showConfirmAbsenteesWindow: false,
       absenteesErrorMessage: '',
-		}
-		this.inactiveStudentTypes = ['DISABLED', 'ALUMNI'];
-		this.getAuthToken = this.getAuthToken.bind(this);
-		this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
-    this.saveStudentData = this.saveStudentData.bind(this);
+    }
+    this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
+    this.handleSaveStudentData = this.handleSaveStudentData.bind(this);
+    this.setDefaultStudentType = this.setDefaultStudentType.bind(this);
+    this.getStandups = this.getStandups.bind(this);
+    this.getCheckins = this.getCheckins.bind(this);
     this.getViewByType = this.getViewByType.bind(this);
     this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
-		this.saveStudentData = this.saveStudentData.bind(this);	    this.saveStudentData = this.saveStudentData.bind(this);
     this.hideConfirmAbsenteesWindow = this.hideConfirmAbsenteesWindow.bind(this);
     this.showConfirmAbsenteesWindow = this.showConfirmAbsenteesWindow.bind(this);
     this.sendAbsences = this.sendAbsences.bind(this);
@@ -46,13 +48,6 @@ class DashboardContainer extends Component {
         [panelNumber]: !this.state.display[panelNumber]
       }
     });
-  }
-
-  getAuthToken() {
-    return this.props
-      .location
-      .search
-      .replace(/^(.*?)\auth_token=/, '');
   }
 
   showStudentEditWindow(studentInfo) {
@@ -70,8 +65,9 @@ class DashboardContainer extends Component {
     }
   }
 
-showConfirmAbsenteesWindow(){
-    const absentees = calculateAbsentees(this.state.activeCheckins, this.state.students);
+  showConfirmAbsenteesWindow() {
+    const { activeCheckins, students } = this.props;
+    const absentees = calculateAbsentees(activeCheckins, students);
     this.setState({
       absentees: absentees,
       showConfirmAbsenteesWindow: true
@@ -86,15 +82,14 @@ showConfirmAbsenteesWindow(){
     }
   }
 
-  sendAbsences(absentees){
+  sendAbsences(absentees) {
     const today = new Date();
     const absenceLog = {
       type: 'Absences Log',
       date: today,
       names: absentees
     }
-   //console.log(absenceLog);
-    fetch(`/api/students?access_token=${this.getAuthToken()}`, {
+    fetch(`/api/students?access_token=${'getAuthToken'}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -121,61 +116,61 @@ showConfirmAbsenteesWindow(){
       })
   }
 
-  saveStudentData(studentData) {
-    fetch(`/api/students?access_token=${this.getAuthToken()}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(studentData)
+  handleSaveStudentData(studentData) {
+    this.setState({
+      showStudentEditWindow: false,
+      saveErrorMessage: null
     })
-      .then(response => {
-        return response.json();
-      })
-      .then(response => {
-        if (response.error) {
-          throw response.error.message
-        } else {
-          this.setState({
-            students: [...this.state.students, response].sort((a, b) =>
-              a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1),
-            showStudentEditWindow: false,
-            saveErrorMessage: null
-          })
-        }
-      })
-      .catch(err => {
-        this.setState({
-          saveErrorMessage: err
-        })
-      })
+    const { dispatch } = this.props;
+    const { students } = this.props;
+    dispatch(saveStudentData(studentData, this.state.authToken));
+  }
+
+
+  handleGetStudents() {
+    const { dispatch } = this.props;
+    dispatch(getStudentData(this.state.authToken));
+    this.setDefaultStudentType(); // invoked here so that 'students' has time to be added to store first
+  }
+
+  setDefaultStudentType() {
+    const { dispatch } = this.props;
+    const { students } = this.props;
+    let studentsPaid = students.filter(student => student.type == 'PAID');
+    let studentsJobseeking = students.filter(student => student.type == 'JOBSEEKER');
+    let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
+    dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking));
+  }
+
+  getStandups() {
+    const { dispatch } = this.props;
+    dispatch(getStandups(this.state.authToken));
+  }
+
+  getCheckins() {
+    const { dispatch } = this.props;
+    dispatch(getCheckins(this.state.authToken));
   }
 
   componentDidMount() {
-    const formattedInactiveStudentTypes = this.inactiveStudentTypes.map(type => {
-      return { "type": { "neq": type } };
-    })
-    const inactiveStudentFilter = JSON.stringify({ "where": { "and": formattedInactiveStudentTypes } });
-    fetch(`/api/students?access_token=${this.getAuthToken()}&filter=${inactiveStudentFilter}`)
-      .then(response => response.json())
-      .then(data => {
-        const sorted = data.sort((a, b) =>
-				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
-        this.setState({
-          students: sorted,
-          studentsBeingViewed: sorted
-         });
-      })
-      .catch(err => console.log(err));
+    this.setState({ // leave this here. We want the authToken to be stored in local state.
+      authToken: this.props
+        .location
+        .search
+        .replace(/^(.*?)\auth_token=/, ''),
+    });
+    this.handleGetStudents();
+    this.getStandups();
+    this.getCheckins();
 
-    fetch(`/api/standups?access_token=${this.getAuthToken()}`)
+
+    fetch(`/api/standups?access_token=${this.state.authToken}`) // have to add Standups and Checkins to Redux
       .then(response => response.json())
       .then(data => {
         this.setState({ allStandups: data });
       })
       .catch(err => console.log(err));
-
-    fetch(`/api/checkins/active?access_token=${this.getAuthToken()}`)
+    fetch(`/api/checkins/active?access_token=${this.state.authToken}`)
       .then(response => response.json())
       .then(data => {
         this.setState({ activeCheckins: data });
@@ -183,28 +178,25 @@ showConfirmAbsenteesWindow(){
       .catch(err => console.log(err));
   }
 
-  componentDidUpdate(){
-    console.log(this.state.studentsBeingViewed)
+  getViewByType(e) {
+    const typeFilter = e.target.value;
+    const { students } = this.props;
     const { dispatch } = this.props;
-    const students = this.state.students;
-    dispatch(addStudentToStore(students));
-  }
-
-  getViewByType(e){
-    let typeFilter = e.target.value;
-    let filtered = this.state.students.filter(student => student.type === typeFilter);
-
-    if(typeFilter == 'ALL'){
-      this.setState({
-        studentsBeingViewed: this.state.students
-      })
+    let filtered = students.filter(student => student.type == typeFilter);
+    if (typeFilter == 'PAID_JOBSEEKING') {
+      let studentsPaid = students.filter(student => student.type == 'PAID');
+      let studentsJobseeking = students.filter(student => student.type == 'JOBSEEKER');
+      let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
+      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking))
+    }
+    else if (typeFilter == 'ALL') {
+      dispatch(setStudentsBeingViewed(students))
     }
     else {
-      this.setState({
-		  studentsBeingViewed: filtered
-		})
+      dispatch(setStudentsBeingViewed(filtered))
+    }
   }
-}
+
 
   render() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
@@ -219,14 +211,14 @@ showConfirmAbsenteesWindow(){
 
     let standupsData;
     let checkinData;
-    if (this.state.studentsBeingViewed.length > 0) {
+    if (this.props.studentsBeingViewed.length > 0) {
       standupsData = calculateDashboardStandupsData(
-        this.state.allStandups,
-        this.state.studentsBeingViewed
+        this.props.allStandups,
+        this.props.studentsBeingViewed
       );
       checkinData = calculateDashboardCheckinData(
-        this.state.activeCheckins,
-        this.state.studentsBeingViewed
+        this.props.activeCheckins,
+        this.props.studentsBeingViewed
       );
     }
 
@@ -235,99 +227,102 @@ showConfirmAbsenteesWindow(){
     if (this.state.showStudentEditWindow) {
       editStudentWindow = <EditStudent studentData={this.state.editedStudentInfo}
         closeWindow={() => this.hideStudentEditWindow}
-        save={this.saveStudentData}
+        save={this.handleSaveStudentData}
         errorMessage={this.state.saveErrorMessage} />
     }
-     let confirmAbsenteesWindow = null;
+    let confirmAbsenteesWindow = null;
 
-    if(this.state.showConfirmAbsenteesWindow ) {
-      let currentAbsentees = calculateAbsentees(this.state.activeCheckins, this.state.students);
-      console.log(currentAbsentees);
+    if (this.state.showConfirmAbsenteesWindow) {
+      let currentAbsentees = calculateAbsentees(this.props.activeCheckins, this.props.students);
       confirmAbsenteesWindow = <ConfirmAbsentees absentees={currentAbsentees}
         closeWindow={() => this.hideConfirmAbsenteesWindow}
-        sendAbsences={this.sendAbsences}
-        errorMessage={this.state.absenteesErrorMessage}
-        />
+      />
     }
 
     return (
       <React.Fragment>
-        <header>
-          <p className='date red-date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
-          <div className='card'>
-              <p className='' id='tank'>3.50 Class/Daily/Average/Waka</p>
+        <div className='container col-sm-12'>
+          <div className='row'>
+            <div className='col-sm-2'>
+              <div className='card'>
+                <p className='sdcs-logo' id='logo-style'></p>
+                <p className='date red-date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
+              </div>
             </div>
-
-          <ul className='navigation'>
-
-
-            <li>
-              <a
-                className='link-btn'
-                href={`${process.env.BASE_URL}logout?auth_token=${this.getAuthToken()}`}
-              >Logout
-              </a>
+            <ul className=''>
+              {/* <li className='link-btn1'
+                href={}>
+                Logout
             </li>
-            <li className='add-student' id='later' onClick={() => this.showStudentEditWindow({})}>
-              Add Student
+              */}
+            <Link className='link-btn1'
+            to={`/logout?auth_token=${this.state.authToken}`}
+          >Logout
+          </Link>
+
+              <li className='add-student' id='add-stud-btn' onClick={() => this.showStudentEditWindow({})}>
+                Add Student
             </li>
-              <li className='confirm-absentees' id='ring' onClick={() => this.showConfirmAbsenteesWindow()} >
-              Absences
+              <li className='confirm-absentees' id='absence-btn' onClick={() => this.showConfirmAbsenteesWindow()} >
+                Absences
             </li>
-          </ul>
-        </header>
-        {editStudentWindow}
-        {confirmAbsenteesWindow}
-        <main className='wrapper dashboard-wrapper'>
-          <div className='data-section-container-flex'>
-            <div className='data-section data-section-flex'>
-              <span className='section-label pointer' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
+            </ul>
+          </div>
+        </div>
+        <div className='container col-sm-12'>
+          {editStudentWindow}
+          {confirmAbsenteesWindow}
+          <div className='row'>
+            <div className='col-sm-4 student-col-size'>
+              <div className='card'>
+                <select className='type-drop' onChange={this.getViewByType}>
+                  <option value={'PAID_JOBSEEKING'}>PAID/JOBSEEK</option>
+                  <option value={'FREE'}>FREE</option>
+                  <option value={'PAID'}>PAID</option>
+                  <option value={'JOBSEEKER'}>JOBSEEKING</option>
+                  <option value={'ALUMNI'}>ALUMNI</option>
+                  <option value={'DISABLED'}>DISABLED</option>
+                  <option value={'ALL'}>ALL</option>
+                </select>
+                <div className='' onClick={() => this.toggle(3)}><h2>View data for
+          </h2>
+                </div>
+              </div>
+              <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>
+                <Roster
+                  students={this.props.studentsBeingViewed}
+                  auth_token={this.state.authToken}
+                />
+              </div>
+            </div>
+            <div className='col-sm-4 student-col-size'>
+              <span className='card' onClick={() => this.toggle(2)}><h2>Standups</h2></span>
+              <div className={this.state.display[2] ? "toggleContent-hidden" : ""}>
+                <DataSection
+                  data={standupsData ? standupsData.summary : undefined}
+                  delinquents={standupsData ? standupsData.delinquents : undefined}
+                  students={this.state.studentsBeingViewed}
+                  auth_token={this.state.authToken}
+                />
+              </div>
+            </div>
+            <div className='col-sm-4 student-col-size'>
+              <span className='card' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
               <div className={this.state.display[1] ? "toggleContent-hidden" : ""}>
                 <DataSection
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={checkinData ? checkinData.delinquents : undefined}
                   delinquentTitle='absentees'
                   students={this.state.studentsBeingViewed}
-                  auth_token={this.getAuthToken()}
+                  auth_token={this.state.authToken}
                 />
               </div>
             </div>
-            <div className='data-section data-section-flex'>
-                <span className='section-label pointer' onClick={() => this.toggle(2)}><h2>Standups</h2></span>
-                  <div className={this.state.display[2] ? "toggleContent-hidden" : ""}>
-                      <DataSection
-                      data={standupsData ? standupsData.summary : undefined}
-                      delinquents={standupsData ? standupsData.delinquents : undefined}
-                      students={this.state.studentsBeingViewed}
-                      auth_token={this.getAuthToken()}
-                      />
-                  </div>
-            </div>
           </div>
           <div>
-            <div className=''>
-              <span className='' onClick={() => this.toggle(3)}><h2>View data for</h2></span>
-              <select className='sprint' onChange={this.getViewByType}>
-                <option className='' value={"ALL"}>ALL</option>
-                <option value={"PAID"}>PAID</option>
-                <option value={"ALUMNI"}>ALUMNI</option>
-                <option value={"JOBSEEKER"}>JOBSEEKER</option>
-                <option value={'DISABLED'}>DISABLED</option>
-                <option value={'FREE'}>FREE</option>
-						  </select>
-              {/* <h2 className='section-label'>
-                <a href={`inactive?auth_token=${this.getAuthToken()}`}>View by Type</a>
-              </h2> */}
-            </div>
-            <div className={this.state.display[3] ? "toggleContent-hidden" : "toggleContent-display"}>
-              <Roster
-                students={this.state.studentsBeingViewed}
-                auth_token={this.getAuthToken()}
-              />
-            </div>
           </div>
-        </main>
-      </React.Fragment>
+        </div>
+      </React.Fragment >
     );
   }
 }

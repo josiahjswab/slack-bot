@@ -392,7 +392,8 @@ module.exports = (app) => {
       });
   });
 
-  const getDailyWakatimeData = schedule.scheduleJob({ hour: 15, minute: 14}, () => {
+  // 2:01 am
+  const getDailyWakatimeData = schedule.scheduleJob({ hour: 2, minute: 1}, () => {
     let secondsInADay = 1000 * 60 * 60 * 24;
     let time = new Date(new Date() - secondsInADay);
     let year = time.getFullYear();
@@ -450,6 +451,7 @@ module.exports = (app) => {
       }
     }
   })
+
 
   function doorbell(user, channel) {
     var params = {
@@ -955,7 +957,7 @@ function notAtSchool(user, channel){
 
 	function updateStudentInArray(student){
 		for(let i = 0; i < students.length; i++){
-      if(student.id.equals(students[i].id)){
+      if(student.id == students[i].id){
 				students[i] = {
 					...students[i],
 					slack_id: student.slack_id,

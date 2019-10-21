@@ -3,7 +3,7 @@ import React from 'react';
 function AdminLogin(props) {
   return(
     <React.Fragment>
-    <p className='happy'></p>
+    <p className='sdcs-logo' id='logo-admin-style'></p>
       <h1>Admin Dashboard</h1>
       <form action='/dashboard' method='post'>
         <input type='text' name='email' placeholder='Email' />

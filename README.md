@@ -56,7 +56,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
 ### Create a production bot
 
 1.  Create an app at https://api.slack.com/apps
-    - Add a distinct app name 
+    - Add a distinct app name
 
 2.  Create a bot in ‘Bot Users’
     - Add a distinct bot Display Name
@@ -96,7 +96,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
             bot
             commands
     - 'Event Subscriptions'
-        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address. 
+        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
         - Subscribe to Bot Events
            'team_join'
 
@@ -201,7 +201,7 @@ npm install -g localtunnel
 
 2.  Run Local Tunnel
 ```
-lt --port 3000 --subdomain <devsubdomain> 
+lt --port 3000 --subdomain <devsubdomain>
 ```
 3.  Run Dev Server (on 2nd terminal)
 ```
@@ -257,10 +257,11 @@ Loopback is used for server setup. Please view common/models folder for models/r
     - Go to /users, do a GET request, copy the "id" field of the only user(you) that the db should have.
     - Create a new RoleMapping:
         - Go to /RoleMapping
-        - POST /Rolemapping    
+        - POST /Rolemapping
         - principalType: "USER"
         - principalId: \< the user id copied from /users db >
         - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google credentials
 
 :copyright: 2019 San Diego Code School
+

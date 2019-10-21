@@ -17,15 +17,12 @@ export default class EditStudent extends React.Component{
 			wakatime_key: document.getElementById('student-wakatime-key').value,
 			type: document.getElementById('student-type').value,
 			github_id: document.getElementById('student-github-id').value
-
-
-
 		}
 
 		if(this.props.studentData.id){
 			studentData.id = this.props.studentData.id;
 		}
-		
+
 		return studentData;
 	}
 
@@ -56,10 +53,10 @@ export default class EditStudent extends React.Component{
 			<div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
 				<div className='add-edit-student-container'>
 					<br></br>
-				<div className='add-edit-student-row'>
-						<label id='pop' >Student type: 
+				<div className='student-padding'>
+						<label id='student-drop' >Student type:
 							<br></br>
-							<select className='soda' id='student-type' defaultValue={studentData.type}>
+							<select className='' id='student-type' defaultValue={studentData.type}>
 								{
 									this.studentTypes.map(type => {
 										return <option value={type} key={type}>{type}</option>
@@ -68,7 +65,6 @@ export default class EditStudent extends React.Component{
 							</select>
 						</label>
 					</div>
-					<br></br>
 					<div className='add-edit-student-row'>
 						<label>Student Name:<br />
 							<input id='student-name' type="text" defaultValue={studentData.name} />
@@ -94,10 +90,10 @@ export default class EditStudent extends React.Component{
 					</div>
 					<br></br>
 					<br></br>
-					
+
 					<div className='add-edit-student-row'>
-						
-						<button id='attic' className='' onClick={this.props.closeWindow(event, true)}>Cancel</button>
+
+						<button id='cancel-btn' className='' onClick={this.props.closeWindow(event, true)}>Cancel</button>
 						<button id='position' className='' onClick={() => this.props.save(this.save())}>Save</button>
 					</div>
 					{
