@@ -50,14 +50,14 @@ export default function DashboardContainerReducer(state = defaultState, action) 
             }
         }
 
-        case 'GET_STANDUPS': {
+        case 'GET_STANDUPS_FULFILLED': {
                 return {
                 ...state,
                 allStandups: payload
             }
         }
 
-        case 'GET_CHECKINS': {
+        case 'GET_CHECKINS_FULFILLED': {
             return {
                 ...state,
                 activeCheckins: payload

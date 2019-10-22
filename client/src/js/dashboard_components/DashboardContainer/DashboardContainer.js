@@ -131,6 +131,8 @@ class DashboardContainer extends Component {
     const { dispatch } = this.props;
     dispatch(getStudentData(this.state.authToken));
     this.setDefaultStudentType(); // invoked here so that 'students' has time to be added to store first
+    this.getStandups();
+    this.getCheckins();
   }
 
   setDefaultStudentType() {
@@ -160,8 +162,8 @@ class DashboardContainer extends Component {
         .replace(/^(.*?)\auth_token=/, ''),
     });
     this.handleGetStudents();
-    this.getStandups();
-    this.getCheckins();
+    // this.getStandups();
+    // this.getCheckins();
 
 
     fetch(`/api/standups?access_token=${this.state.authToken}`) // have to add Standups and Checkins to Redux
