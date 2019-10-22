@@ -9,7 +9,7 @@
     "build": "parcel build client/src/html/index.html client/src/html/login.html",
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
-    "start": "npm run build && node .",
+    "start": "node .",
     "test": "mocha --exit"
   },
   "dependencies": {
