@@ -172,7 +172,7 @@ class DashboardContainer extends Component {
         this.setState({ allStandups: data });
       })
       .catch(err => console.log(err));
-    fetch(`/api/checkins/active?access_token=${this.state.authToken}`)
+    fetch(`/api/checkins?access_token=${this.state.authToken}`)
       .then(response => response.json())
       .then(data => {
         this.setState({ activeCheckins: data });
@@ -214,13 +214,14 @@ class DashboardContainer extends Component {
     let standupsData;
     let checkinData;
     if (this.props.studentsBeingViewed.length > 0) {
+      const { activeCheckins, allStandups, studentsBeingViewed } = this.props;
       standupsData = calculateDashboardStandupsData(
-        this.props.allStandups,
-        this.props.studentsBeingViewed
+        allStandups,
+        studentsBeingViewed
       );
       checkinData = calculateDashboardCheckinData(
-        this.props.activeCheckins,
-        this.props.studentsBeingViewed
+        activeCheckins,
+        studentsBeingViewed
       );
     }
 

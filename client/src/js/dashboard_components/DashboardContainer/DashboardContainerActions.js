@@ -42,7 +42,7 @@ export function getStandups(authToken) {
 export function getCheckins(authToken) {
   return {
       type: 'GET_CHECKINS',
-      payload: fetch(`/api/checkins/active?access_token=${authToken}`)
+      payload: fetch(`/api/checkins?access_token=${authToken}`)
       .then(response => response.json())
       .then(data => { return data })
   }
