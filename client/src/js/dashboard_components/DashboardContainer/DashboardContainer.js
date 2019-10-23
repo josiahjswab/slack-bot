@@ -31,9 +31,6 @@ class DashboardContainer extends Component {
     }
     this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
     this.handleSaveStudentData = this.handleSaveStudentData.bind(this);
-    this.setDefaultStudentType = this.setDefaultStudentType.bind(this);
-    this.getStandups = this.getStandups.bind(this);
-    this.getCheckins = this.getCheckins.bind(this);
     this.getViewByType = this.getViewByType.bind(this);
     this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
     this.hideConfirmAbsenteesWindow = this.hideConfirmAbsenteesWindow.bind(this);
@@ -126,64 +123,29 @@ class DashboardContainer extends Component {
     dispatch(saveStudentData(studentData, this.state.authToken));
   }
 
+  componentDidMount() {
+    const { dispatch, students } = this.props;
 
-  handleGetStudents() {
-    const { dispatch } = this.props;
-    dispatch(getStudentData(this.state.authToken));
-    this.setDefaultStudentType(); // invoked here so that 'students' has time to be added to store first
-    this.getStandups();
-    this.getCheckins();
-  }
+    let authToken = this.props
+      .location
+      .search
+      .replace(/^(.*?)\auth_token=/, '');
 
-  setDefaultStudentType() {
-    const { dispatch } = this.props;
-    const { students } = this.props;
+    this.setState({ authToken });
+
+    dispatch(getStudentData(authToken))
     let studentsPaid = students.filter(student => student.type == 'PAID');
     let studentsJobseeking = students.filter(student => student.type == 'JOBSEEKER');
     let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
+
+    dispatch(getStandups(authToken));
+    dispatch(getCheckins(authToken));
     dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking));
-  }
-
-  getStandups() {
-    const { dispatch } = this.props;
-    dispatch(getStandups(this.state.authToken));
-  }
-
-  getCheckins() {
-    const { dispatch } = this.props;
-    dispatch(getCheckins(this.state.authToken));
-  }
-
-  componentDidMount() {
-    this.setState({ // leave this here. We want the authToken to be stored in local state.
-      authToken: this.props
-        .location
-        .search
-        .replace(/^(.*?)\auth_token=/, ''),
-    });
-    this.handleGetStudents();
-    // this.getStandups();
-    // this.getCheckins();
-
-
-    fetch(`/api/standups?access_token=${this.state.authToken}`) // have to add Standups and Checkins to Redux
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ allStandups: data });
-      })
-      .catch(err => console.log(err));
-    fetch(`/api/checkins?access_token=${this.state.authToken}`)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ activeCheckins: data });
-      })
-      .catch(err => console.log(err));
   }
 
   getViewByType(e) {
     const typeFilter = e.target.value;
-    const { students } = this.props;
-    const { dispatch } = this.props;
+    const { students, dispatch } = this.props;
     let filtered = students.filter(student => student.type == typeFilter);
     if (typeFilter == 'PAID_JOBSEEKING') {
       let studentsPaid = students.filter(student => student.type == 'PAID');
@@ -213,6 +175,7 @@ class DashboardContainer extends Component {
 
     let standupsData;
     let checkinData;
+
     if (this.props.studentsBeingViewed.length > 0) {
       const { activeCheckins, allStandups, studentsBeingViewed } = this.props;
       standupsData = calculateDashboardStandupsData(
@@ -220,7 +183,7 @@ class DashboardContainer extends Component {
         studentsBeingViewed
       );
       checkinData = calculateDashboardCheckinData(
-        activeCheckins,
+        activeCheckins, // all checkins for the day
         studentsBeingViewed
       );
     }
@@ -253,11 +216,6 @@ class DashboardContainer extends Component {
               </div>
             </div>
             <ul className=''>
-              {/* <li className='link-btn1'
-                href={}>
-                Logout
-            </li>
-              */}
             <Link className='link-btn1'
             to={`/logout?auth_token=${this.state.authToken}`}
           >Logout
@@ -304,7 +262,7 @@ class DashboardContainer extends Component {
                 <DataSection
                   data={standupsData ? standupsData.summary : undefined}
                   delinquents={standupsData ? standupsData.delinquents : undefined}
-                  students={this.state.studentsBeingViewed}
+                  students={this.props.studentsBeingViewed}
                   auth_token={this.state.authToken}
                 />
               </div>
@@ -316,7 +274,7 @@ class DashboardContainer extends Component {
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={checkinData ? checkinData.delinquents : undefined}
                   delinquentTitle='absentees'
-                  students={this.state.studentsBeingViewed}
+                  students={this.props.studentsBeingViewed}
                   auth_token={this.state.authToken}
                 />
               </div>
