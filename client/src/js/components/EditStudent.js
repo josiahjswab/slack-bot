@@ -4,8 +4,7 @@ export default class EditStudent extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			is_inactive: false
-		}
+			is_inactive: false	}
 		this.save = this.save.bind(this);
 		this.studentTypes = ['FREE', 'PAID', 'JOBSEEKER', 'ALUMNI', 'DISABLED'];
 	}
@@ -54,7 +53,7 @@ export default class EditStudent extends React.Component{
 				<div className='add-edit-student-container'>
 					<br></br>
 				<div className='student-padding'>
-						<label id='student-drop' >Student type:
+						<label id='student-drop' >Student type: 
 							<br></br>
 							<select className='' id='student-type' defaultValue={studentData.type}>
 								{
@@ -65,6 +64,7 @@ export default class EditStudent extends React.Component{
 							</select>
 						</label>
 					</div>
+			
 					<div className='add-edit-student-row'>
 						<label>Student Name:<br />
 							<input id='student-name' type="text" defaultValue={studentData.name} />
@@ -90,9 +90,7 @@ export default class EditStudent extends React.Component{
 					</div>
 					<br></br>
 					<br></br>
-
 					<div className='add-edit-student-row'>
-
 						<button id='cancel-btn' className='' onClick={this.props.closeWindow(event, true)}>Cancel</button>
 						<button id='position' className='' onClick={() => this.props.save(this.save())}>Save</button>
 					</div>

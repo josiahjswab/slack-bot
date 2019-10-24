@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 
 function HamburgerNavigation(props) {
+
   return (
     <React.Fragment>
       <div className='hamburger' onClick={toggleMenu}><div></div></div>
       <ul className='navigation hamburger-navigation'>
         <li>
-          <Link  className='link-btn' to={`/logout?auth_token=${props.auth_token}`}
-          >Logout
-          </Link>
+        <Link className='link-btn2' to={`/login?auth_token=${props.auth_token}`}
+        >Logout
+        </Link>
         </li>
         <li onClick={props.openStudentEditWindow()}>
           <div className='secondary-btn'>

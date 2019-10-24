@@ -10,7 +10,7 @@ function StandupAndCheckin(props) {
     notAtSchool = checkin.notAtSchool;
     autoCheckout = checkin.auto_checkout;
 	}
-	 
+
   if (standup){
     tasksYesterday = standup.tasks_yesterday;
     tasksToday = standup.tasks_today;
@@ -36,13 +36,11 @@ function StandupAndCheckin(props) {
   return(
     <div className='standup-card'>
       <p className='standup-card-title'>{ date }</p>
- 
       <div className='hours-container'>
         <p className={`standup-response ${ !checkinTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong className='shifting'>In: </strong>{checkinTime ? checkinTime : 'missed' }</p>
         <p className={`standup-response ${ !checkoutTime ? 'missing-info' : '' } ${ notAtSchool ? 'missing-info' : ''} `}><strong className='shifting'>Out: </strong>{ checkoutTime ? checkoutTime : 'missed' }</p>
         <p className='standup-response'><strong>Hrs: </strong>{ hours ? hours.toFixed(2) : 'none' }</p>
       </div>
-
       <div className='standup-card-content'>
         <p className='standup-question'>What have you done since yesterday?</p>
         <p className='standup-response'>{ tasksYesterday ? tasksYesterday : '-' }</p>

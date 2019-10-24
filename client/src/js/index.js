@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import DashboardApp from './dashboard_components/DashboardApp';
+import DashboardApp from './components/DashboardApp';
 import store from './rootStore';
-import '../css/style.scss';
+
 render(
     <Provider store={ store }>
       <DashboardApp />

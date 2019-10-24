@@ -1,9 +1,9 @@
 'use strict';
 const today = new Date();
-
 function offsetDate(initialDate, dayOffset) {
   return new Date(initialDate.setDate(initialDate.getDate() + dayOffset));
 }
+
 function midnight(date) {
   return new Date(
     date.getFullYear(),
@@ -11,13 +11,11 @@ function midnight(date) {
     date.getDate()
   );
 }
-
 const todayMidnight = midnight(new Date(today));
 const tomorrowMidnight = midnight(offsetDate(new Date(today), 1));
 const sevenDaysAgoMidnight = midnight(offsetDate(new Date(today), -6));
 const millisecondsToHours = 1000 * 60 * 60;
 const millisecondsToDays = 1000 * 60 * 60 * 24;
-
 function calculateDashboardStandupsData(standups, students) {
   const todaysStandups = standups.filter(standup => {
     return new Date(standup.date) > todayMidnight;
@@ -43,7 +41,6 @@ function calculateDashboardStandupsData(standups, students) {
     delinquents,
   };
 }
-
 function calculateDashboardCheckinData(activeCheckins, students) {
   // assumes a student cannot have more than one active checkin
   const checkinPercent =
@@ -67,16 +64,20 @@ function calculateDashboardCheckinData(activeCheckins, students) {
 
 function calculateAbsentees(activeCheckins, students) {
   // assumes a student cannot have more than one active checkin
-  const absentees = students.filter(student => {
+  var absentees = students.filter(student => {
     return !activeCheckins.some(checkin => {
       return student.slack_id === checkin.slack_id;
     });
   });
-  return {absentees: absentees};
+  absentees.map(absentee => {
+    absentee.absent = true;
+    return absentee;
+  })
+  return absentees;
 }
 
 function calculateIndividualStandupsData(standups) {
-  if (standups.length === 0) { return undefined; }
+  if (standups.length === 0) { return 0; }
   // standups completed in the last seven days
   const standupsLastSevenDays = standups.filter(standup => {
     return new Date(standup.date) > sevenDaysAgoMidnight;
@@ -93,23 +94,18 @@ function calculateIndividualStandupsData(standups) {
     const weekOfStandupsPercent =
     Math.round((uniqueStandupsLastSevenDays.length / 7) * 100);
   // standups completed during entire enrollment (assuming standup submitted on day 1)
-  const dayOne = new Date(standups[standups.length - 1].date);
+  const dayOne = new Date(standups[0].date);
 
   const dayOneMidnight = midnight(dayOne);
-  const totalDaysEnrolled =
-    Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
-
+  const totalDaysEnrolled = Math.round((tomorrowMidnight - dayOneMidnight)/ millisecondsToDays);
   const standupsDates = standups.map(standup => {
     const standupDate = new Date(standup.date);
     return (
       `${standupDate.getFullYear()}-${standupDate.getMonth() + 1}-${standupDate.getDate()}`);
   });
 
-  //const uniqueDaysWithStandups = [...new Set(standupsDates)];
   const uniqueDaysWithStandups = [...new Set(standupsDates)];
-
-  const averageStandupPercent =
-    Math.round((uniqueDaysWithStandups.length / totalDaysEnrolled) * 100);
+  const averageStandupPercent = Math.round((uniqueDaysWithStandups.length / totalDaysEnrolled) * 100);
   return ([
     {
       featured: `${weekOfStandupsPercent}%`,
@@ -122,6 +118,7 @@ function calculateIndividualStandupsData(standups) {
     },
   ]);
 }
+
 function calculateIndividualCheckinData(checkins) {
   if (checkins.length === 0) { return null; }
   // total time spent in classroom

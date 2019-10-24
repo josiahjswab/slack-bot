@@ -10,6 +10,20 @@ $grid-gap-smaller: 8px;
 
 * {
   box-sizing: border-box;
+}
+
+$default-text: #222;
+$default-text-light: #fff;
+$default-red: #8b0000;
+$default-red-darker: #800000;
+$default-red-lighter: #990000;
+$default-gray: #edf5f4;
+$default-gray-darker: #dfe6e4;
+$grid-gap: 15px;
+$grid-gap-smaller: 8px;
+
+* {
+  box-sizing: border-box;
   padding-top: 1px;
 }
 
@@ -27,7 +41,7 @@ $grid-gap-smaller: 8px;
   margin-left: -36px;
   margin-bottom: 8px;
   margin-top: 1px;
-  max-width: 36%;
+  max-width: 38%;
   float: right;
 }
 
@@ -41,7 +55,7 @@ $grid-gap-smaller: 8px;
   float: right;
   padding-left: 5px;
 }
-  
+
 #absence-btn {
   border-radius: .25em;
   cursor: pointer;
@@ -74,14 +88,14 @@ $grid-gap-smaller: 8px;
 .add-edit-student-window {
 	position: absolute;
 	width: 100%;
-	height: 100%;
 	left: 0;
 	top: 0;
 	z-index: 1;
 	background-color: #eeeeee88;
 	display: flex;
 	justify-content: center;
-	align-items: center;
+  align-items: center;
+  margin-top: 1%;
 }
 
 .add-edit-student-container{
@@ -90,7 +104,8 @@ $grid-gap-smaller: 8px;
 	border-radius: 5px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+  justify-content: space-around;
+  margin-top: 7%
 }
 
 .add-edit-student-row{
@@ -117,7 +132,7 @@ $grid-gap-smaller: 8px;
   font-size: 0.8em;
   margin-bottom: 1em;
 }
-  
+
 a.google, a.google:visited {
   width: 191px;
   height: 46px;
@@ -126,11 +141,11 @@ a.google, a.google:visited {
   background-size: contain;
   background-image: url("../img/normal.png");
 }
-  
+
 a.google:hover {
   background-image: url("../img/focus.png");
 }
-  
+
 a.google:active {
   background-image: url("../img/pressed.png");
 }
@@ -282,8 +297,10 @@ body {
 }
 
 .datasection-button:hover {
-  background-color: whitesmoke;
-  background-image: linear-gradient(white, whitesmoke);
+  background-color: #797575;
+  background-image: linear-gradient(#b9b8b8,#d4d1d1);
+  color: #000;
+  text-decoration: none;
 }
 
 .delinquents h4 {
@@ -301,7 +318,6 @@ body {
   padding: 0.25em 0em;
   min-height: 40px;
 }
-
 
 .data-container {
   min-height: 8em;
@@ -336,9 +352,6 @@ body {
   font-size: 1.15em;
   color: #777;
 }
-.roster{
-  margin-top: 0.25em;
-}
 
 .roster ul li {
   padding: 0.25em 0em;
@@ -347,23 +360,23 @@ body {
 
 .roster ul {
   padding: 0.25em 0em;
-  list-style-type: none;  
+  list-style-type: none;
 }
 
 .glyphicon-time {
   color: #990000;
   float: left;
-  margin-right: 5px;
-  margin-left: 11px;
+  margin-left: 10px;
 }
 
-.glyphicon-equalizer {
-  color: #990000;
+.gitHub {
+  background-image: url(../img/github.svg);
+  width: 14px;
+  height: 14px;
   float: left;
-  margin-right: 10px;
-  margin-left: 11px;
+  margin-left: 10px;
+  margin-top: 2px;
 }
-
 
 html {
   font-size: 15px;
@@ -390,84 +403,14 @@ header {
 }
 
 .header-name {
-  display: flex;
-	justify-content: center;
-	flex-wrap: wrap;
-  margin-bottom: 1.25em;
-}
-
-.hamburger {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
-  width: 60px;
-  height: 60px;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* Hamburger Line */
-.hamburger > div {
-  position: relative;
-  flex: none;
-  width: 100%;
-  height: 3px;
-  background: $default-red;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hamburger Lines - Top & Bottom */
-.hamburger > div::before,
-.hamburger > div::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: -10px;
-  width: 100%;
-  height: 3px;
-  background: inherit;
-}
-
-/* Moves Line Down */
-.hamburger > div::after {
-  top: 10px;
-}
-
-.hamburger {
-  display: none;
-}
-
-.hamburger-navigation {
-  position: inherit;
-  width: inherit;
-  height: inherit;
-  padding-top: inherit;
-  background-color: transparent;
-  display: flex;
-  margin-bottom: -40px;
+  text-align: center;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 header .date {
   font-size: 1.25em;
   margin-left: 3.25em;
-}
-
-.hamburger-navigation {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100vh;
-  padding-top: 12px;
-  display: none;
-  flex-grow: 1;
-  margin-top: 12px;
 }
 
 .inline-block {
@@ -483,12 +426,13 @@ header .date {
   background: $default-gray-darker;
   width: 92%;
 }
+
 .link-btn, .link-btn:visited {
   display: block;
   background-color: #990000;
-  color: $default-text-light;
+  color: #fff;
   padding: 0.25em 1em;
-  border: 1.5px solid #990000;
+  border: 1.3px solid #990000;
   border-radius: 0.25em;
 	text-decoration: none;
   cursor: pointer;
@@ -505,9 +449,9 @@ header .date {
 
 .link-btn1, .link-btn:visited {
   float: right;
-  background-color: #d3d3d3;
-  color:  #000;
-  padding: 0.25em 1em;
+  background-color: #797575;
+  color: #000;
+  padding: 2.25px 1em;
   border: 1.3px solid maroon;
   border-radius: 0.25em;
 	text-decoration: none;
@@ -517,7 +461,7 @@ header .date {
   margin-right: 15px;
   background-image: linear-gradient(#d3d3d3,#f5f5f5);
   margin-top: 1px;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
 }
 
 .link-btn1:hover {
@@ -527,8 +471,33 @@ header .date {
   text-decoration: none;
 }
 
+.link-btn2, .link-btn:visited {
+  float: right;
+  background-color: #797575;
+  color: #000;
+  padding: 2.25px 1em;
+  border: 1.3px solid maroon;
+  border-radius: 0.25em;
+	text-decoration: none;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-bottom: 1px;
+  margin-right: 15px;
+  background-image: linear-gradient(#d3d3d3,#f5f5f5);
+  margin-top: 1px;
+  padding-bottom: 3px;
+  padding-top: 4px;
+}
+
+.link-btn2:hover {
+  background-color: #797575;
+  background-image: linear-gradient(#b9b8b8,#d4d1d1);
+  color: #000;
+  text-decoration: none;
+}
+
 .login-container {
-  width: 100%;
+  width: 95%;
   max-width: 500px;
   min-width: 383px;
   letter-spacing: 0.1em;
@@ -544,15 +513,18 @@ header .date {
 .login-container form {
   background-color: $default-gray;
   border-radius: 8px;
-  padding: 2em 0.75em;
+  padding: 2em 1.75em;
   margin-bottom: 0.5em;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 // .login-container {
 //   width: 80%;
+//   margin-top: -1em;
 // }
 
 #logo-style-student-page {
@@ -587,14 +559,13 @@ header .date {
 }
 
 #logo-admin-style {
-  margin-left: 180px;
   background-image: url("../img/sdcs_logo.png");
   width: 100%;
   height: 150px;
   background-repeat: no-repeat;
   background-size: contain;
   text-align: center;
-  margin-bottom: 30px;
+  margin-left: 33% !important;
 }
 
 .login-container form input[type=submit] {
@@ -610,7 +581,7 @@ main {
 .missing-info {
   background: #fa8989;
 }
-  
+
 @media (max-width: 500px){
   header{
     justify-content: center;
@@ -629,7 +600,6 @@ main {
   }
   .dashboard-link{
     margin-right: auto;
-
   }
 }
 
@@ -661,7 +631,7 @@ main {
 
 .navigation {
   list-style-type: none;
-  display: flex;
+  // display: flex;
   flex-direction: row-reverse;
 }
 
@@ -701,9 +671,6 @@ req.body.checkin{
   padding: 30 30 30 70;
 }
 
-.roster{
-  margin-top: 0.25em;
-}
 .roster ul li {
   padding: 0.25em 0em;
   min-height: 40px;
@@ -730,7 +697,7 @@ req.body.checkin{
   list-style-type: none;
   padding-right: 50px;
 }
-  
+
 .shifting {
   padding-left: 10px;
   padding-right: 5px;
@@ -749,57 +716,55 @@ req.body.checkin{
   padding-top: 11px;
   padding-bottom: 7px;
 }
-  
+
 #slip {
   color: #990000;
   padding-left: 10px;
 }
-  
+
 .secondary-btn, .secondary-btn:visited {
-  display: block;
-  background-color: lightgray;
-  background-image: linear-gradient(lightgray, whitesmoke);
-  color: black;
+  // display: block;
+  background-color: #990000;
+  color: whitesmoke;
   padding: 0.25em 1em;
-  margin-left: 0.5em;
-  border: 1.30px solid #800000;
+  // margin-left: 0.5em;
+  border: 1.30px solid #990000;
   border-radius: 0.25em;
 	text-decoration: none;
   cursor: pointer;
-  min-width: 109px;
+  // min-width: 109px;
+  float: right;
 }
-
-
 
 .secondary-btn:hover {
-  background-color: whitesmoke;
-  background-image: linear-gradient(white, whitesmoke);
+  background-color: #800000;
+  color: whitesmoke;
+  text-decoration: none;
 }
-  
+
 .student-links li:last-of-type {
   border-bottom: none;
   padding-bottom: 0em;
   width: 100%
 }
-  
+
 .student-links li a, .student-links li a:visited {
   text-decoration: none;
   color: $default-text;
   display: block;
   float: left;
   padding: 0.5em;
-  padding-left: 22px;
 }
 
 .standup-container {
   grid-gap: $grid-gap;
   grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
 }
-  
+
 .student-links li a:hover {
   background: $default-gray-darker;
 }
-  
+
 .standup-container {
   display: grid;
   grid-gap: $grid-gap-smaller;
@@ -814,7 +779,7 @@ req.body.checkin{
   padding-left: 8px;
   padding-right: 8px;
 }
-      
+
 #student-type {
   margin-right: 30px;
   width: 171px;
@@ -837,7 +802,7 @@ req.body.checkin{
 }
 
 .student-summary-padding{
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .toggleContent-closed {
@@ -914,9 +879,13 @@ req.body.checkin{
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
 }
-    
+
 .wrapper {
   display: grid;
   grid-gap: $grid-gap-smaller;
   grid-template-columns: minmax(0, 1fr);
+}
+
+.sprite {
+  margin-left: 10px;
 }

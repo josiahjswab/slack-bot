@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import StandupAndCheckin from './StandupAndCheckin';
-import HamburgerNavigation from '../general_components/HamburgerNavigation';
+import HamburgerNavigation from './HamburgerNavigation';
 import DataSectionForStudentSummary from './DataSectionForStudentSummary';
 import {
   calculateIndividualCheckinData,
@@ -68,7 +68,6 @@ class Standups extends Component {
       let formattedDate = (date.getMonth() + 1).toString().padStart(2, '0')
       + "/" + (date.getDate().toString()).padStart(2, '0')
       + "/" + (date.getFullYear().toString());
-
       if (!dateObject[formattedDate]) {
         dateObject[formattedDate] = {}
       }
@@ -112,7 +111,7 @@ class Standups extends Component {
     fetch(`/api/students/${id}?access_token=${this.getAuthToken()}`)
       .then(response => response.json())
       .then(student => {
-        this.setState({name: student.name, editedStudentInfo: student });
+        this.setState({ name: student.name, editedStudentInfo: student });
 
         fetch(`/api/students/${student.id}/standups?access_token=${this.getAuthToken()}`)
           .then(response => response.json())
@@ -151,7 +150,6 @@ class Standups extends Component {
     let standupsData = calculateIndividualStandupsData(this.state.standups);
     let checkinData = calculateIndividualCheckinData(this.state.checkinHistory);
     let wakatimeData = calculateIndividualWakatimeData(this.state.wakatimes);
-
     if (Object.keys(this.state.dataByDate).length > 0) {
       StandupAndCheckinComponent = Object.entries(this.state.dataByDate).sort(sortByDate).map(data => (
         <StandupAndCheckin key={data[0]} date={data[0]} checkin={data[1].checkin} standup={data[1].standup} />
@@ -177,12 +175,12 @@ class Standups extends Component {
 
     return (
       <React.Fragment>
-				<HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
-					auth_token={ this.getAuthToken() }/>
+        <HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
+          auth_token={this.getAuthToken()} />
         {editStudentWindow}
-        <div className='header-name student-summary-padding'>
-					<h1>{ this.state.name }</h1>
-				</div>
+          <div className='header-name'>
+            <h1>{this.state.name}</h1>
+          </div>
         <main className='wrapper'>
           <div className='data-section-container-grid'>
             <DataSectionForStudentSummary title='time in class' data={checkinData}

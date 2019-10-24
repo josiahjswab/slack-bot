@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import DataSection from '../DataSection';
 import Roster from '../Roster';
 import { Link } from 'react-router-dom'
-import ConfirmAbsentees from '../ConfirmAbsentees';
+import ConfirmAbsentees from '../ConfirmAbsentees/index';
 import {
   calculateDashboardCheckinData,
-  calculateDashboardStandupsData, calculateAbsentees
+  calculateDashboardStandupsData,
+  calculateAbsentees
 } from '../../utilities';
 import {
   saveStudentData,
@@ -13,8 +14,9 @@ import {
   setStudentsBeingViewed,
   getStandups,
   getCheckins
-} from './DashboardContainerActions';
+} from './actions';
 import EditStudent from '../EditStudent';
+
 
 class DashboardContainer extends Component {
   constructor(props) {
@@ -63,8 +65,8 @@ class DashboardContainer extends Component {
   }
 
   showConfirmAbsenteesWindow() {
-    const { activeCheckins, students } = this.props;
-    const absentees = calculateAbsentees(activeCheckins, students);
+    const { activeCheckins, studentsBeingViewed } = this.props;
+    const absentees = calculateAbsentees(activeCheckins, studentsBeingViewed);
     this.setState({
       absentees: absentees,
       showConfirmAbsenteesWindow: true
@@ -161,7 +163,6 @@ class DashboardContainer extends Component {
     }
   }
 
-
   render() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
       'Friday', 'Saturday'];
@@ -216,8 +217,7 @@ class DashboardContainer extends Component {
               </div>
             </div>
             <ul className=''>
-            <Link className='link-btn1'
-            to={`/logout?auth_token=${this.state.authToken}`}
+            <Link className='link-btn1' to={`/login?auth_token=${ this.state.authToken}`}
           >Logout
           </Link>
 
@@ -245,7 +245,7 @@ class DashboardContainer extends Component {
                   <option value={'DISABLED'}>DISABLED</option>
                   <option value={'ALL'}>ALL</option>
                 </select>
-                <div className='' onClick={() => this.toggle(3)}><h2>View data for
+                <div className='card' onClick={() => this.toggle(3)}><h2>View data for
           </h2>
                 </div>
               </div>
