@@ -43,6 +43,7 @@ function calculateDashboardStandupsData(standups, students) {
 }
 function calculateDashboardCheckinData(activeCheckins, students) {
   // assumes a student cannot have more than one active checkin
+  // u gotta filter activeCheckins to be 'activeCheckinsToday'
   const checkinPercent =
     Math.round((activeCheckins.length / students.length) * 100);
   const absentees = students.filter(student => {

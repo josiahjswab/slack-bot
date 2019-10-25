@@ -6,7 +6,9 @@ function AdminLogin(props) {
     <React.Fragment>
       <div class="flex-center">
         <div class="login-container">
+          <div className='admin-logo-size'>
           <div id="logo-admin-style"></div>
+          </div>
           <h1>Admin Dashboard</h1>
           <form action="/dashboard" method="post">
             <input type="text" name="email" placeholder="Email" />

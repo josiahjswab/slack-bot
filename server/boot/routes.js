@@ -145,7 +145,7 @@ module.exports = (app) => {
       } else {
         handleEvent(req.body, 'checkout');
       }
-      res.sendStatus( 'Congratulations! You have just checked in to the greatest code school in the world.');
+      res.sendStatus( 'Congratulations! You have just checked into or out of San Diego Code School.');
     } else {
       res.sendStatus(401);
     }

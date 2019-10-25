@@ -121,7 +121,6 @@ class DashboardContainer extends Component {
       saveErrorMessage: null
     })
     const { dispatch } = this.props;
-    const { students } = this.props;
     dispatch(saveStudentData(studentData, this.state.authToken));
   }
 
@@ -173,21 +172,39 @@ class DashboardContainer extends Component {
     const dayOfWeek = days[today.getDay()];
     const month = months[today.getMonth()];
     const dayOfMonth = today.getDate();
+    const currentYear = today.getFullYear();
+    const monthAsNumber = today.getMonth() + 1;
 
     let standupsData;
     let checkinData;
-
-    if (this.props.studentsBeingViewed.length > 0) {
-      const { activeCheckins, allStandups, studentsBeingViewed } = this.props;
+    const { studentsBeingViewed, allStandups, activeCheckins } = this.props;
+    
+    if(allStandups.length){
       standupsData = calculateDashboardStandupsData(
         allStandups,
         studentsBeingViewed
       );
+    }
+
+    if (activeCheckins.length) {
+      let checkinsToday = [];
+      for(let i=0; i < activeCheckins.length; i++){ // this for loop filters all checkins into only checkins that happened today
+        let thisCheckin = activeCheckins[i].checkin_time;
+        let checkinDate = thisCheckin.slice(0,10);
+        let checkinYear = checkinDate.slice(0,4);
+        let checkinMonth = checkinDate.slice(5,7);
+        let checkinDayOfMonth = checkinDate.slice(8,11);
+        if(checkinMonth == monthAsNumber && checkinDayOfMonth == dayOfMonth && checkinYear == currentYear){
+          checkinsToday.push(activeCheckins[i]);
+        }
+      }
+
       checkinData = calculateDashboardCheckinData(
-        activeCheckins, // all checkins for the day
+        checkinsToday, // all checkins ever (needs to be filtered)
         studentsBeingViewed
       );
-    }
+  }
+
 
     let editStudentWindow = null;
 
