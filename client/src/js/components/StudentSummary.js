@@ -183,11 +183,11 @@ class Standups extends Component {
           </div>
         <main className='wrapper'>
           <div className='data-section-container-grid'>
-            <DataSectionForStudentSummary title='time in class' data={checkinData}
+            <DataSectionForStudentSummary title='time in class' data={checkinData} name={this.state.name}
               dataToDownload={this.state.checkinHistory} />
-            <DataSectionForStudentSummary title='standups completed' data={standupsData}
+            <DataSectionForStudentSummary title='standups completed' data={standupsData} name={this.state.name}
               dataToDownload={this.state.standups} />
-            <DataSectionForStudentSummary title='time spent coding' data={wakatimeData}
+            <DataSectionForStudentSummary title='time spent coding' data={wakatimeData} name={this.state.name}
               dataToDownload={this.state.wakatimes} />
           </div>
           <section className='standupAndcheckin'>

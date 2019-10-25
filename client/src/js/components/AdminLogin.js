@@ -1,5 +1,6 @@
 import React from "react";
 import "../../css/style.scss";
+import Logo from '../../img/sdcs_logo.png'
 
 function AdminLogin(props) {
   return (
@@ -7,7 +8,9 @@ function AdminLogin(props) {
       <div class="flex-center">
         <div class="login-container">
           <div className='admin-logo-size'>
-          <div id="logo-admin-style"></div>
+          <div id="logo-admin-style">
+            <img src={Logo} />
+          </div>
           </div>
           <h1>Admin Dashboard</h1>
           <form action="/dashboard" method="post">

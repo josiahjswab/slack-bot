@@ -285,7 +285,7 @@ class DashboardContainer extends Component {
               </div>
             </div>
             <div className='col-sm-4 student-col-size'>
-              <span className='card' onClick={() => this.toggle(1)}><h2>Time in Class</h2></span>
+              <span className='card' onClick={() => this.toggle(1)}><h2>Checkins</h2></span>
               <div className={this.state.display[1] ? "toggleContent-hidden" : ""}>
                 <DataSection
                   data={checkinData ? checkinData.summary : undefined}

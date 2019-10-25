@@ -142,10 +142,11 @@ module.exports = (app) => {
     if (req.body.token == process.env.token || '0') {
       if (req.body.checkin === 'true') {
         handleEvent(req.body, 'checkin');
+        res.sendStatus( 'Congratulations! You have just checked into San Diego Code School.');
       } else {
         handleEvent(req.body, 'checkout');
+        res.sendStatus( 'Congratulations! You have just checked out of San Diego Code School.');
       }
-      res.sendStatus( 'Congratulations! You have just checked into or out of San Diego Code School.');
     } else {
       res.sendStatus(401);
     }

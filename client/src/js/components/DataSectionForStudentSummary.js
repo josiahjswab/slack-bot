@@ -2,11 +2,12 @@ import React from "react";
 import DataBox from "./DataBox";
 import Delinquents from "./Delinquents";
 
-function handleClickDataToCSV(data) {
+function handleClickDataToCSV(data, name) {
   //transfer student data into CSV file
   if (data.length) {
     const separator = ",";
     const keys = Object.keys(data[0]);
+    const studentName = name;
     const csvContent =
       keys.join(separator) +
       "\n" +
@@ -30,8 +31,9 @@ function handleClickDataToCSV(data) {
     hiddenElement.href =
       "data:text/csvContent;charset=utf-8," + encodeURI(csvContent);
     hiddenElement.target = "_blank";
-    hiddenElement.download = "data.csv";
+    hiddenElement.download = studentName + ".csv";
     hiddenElement.click();
+   
   } else {
     alert("no data");
   }
@@ -61,7 +63,7 @@ function DataSectionForStudentSummary(props) {
       <h2 className="section-label inline-block">{props.title}</h2>
       <button
         className="datasection-button"
-        onClick={() => handleClickDataToCSV(props.dataToDownload)}
+        onClick={() => handleClickDataToCSV(props.dataToDownload, props.name)}
       >
         Download
       </button>
