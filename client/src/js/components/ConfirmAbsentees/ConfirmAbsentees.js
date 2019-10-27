@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { calculateAbsentees } from '../../utilities';
+import moment from 'moment';
+import { sendAbsences } from '../DashboardContainer/actions';
 
 class AbsentStudent extends React.Component{
     constructor(props){
         super(props);
         this.state = {}
     }
-
+  
     render(){
         const { student } = this.props;
         return (
-            <div className=''>
+            <div>
                 <h4 className='name-margin'>{student.name}
                     <p className='absent-padding'>Absent</p>
                     <input className='checkbox-position' type='checkbox' defaultChecked onClick={this.props.onClick} />
@@ -24,15 +26,28 @@ export default class ConfirmAbsentees extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            absentees: []
+            absentees: [],
         }
         this.confirm = this.confirm.bind(this);
         this.handleCheckbox = this.handleCheckbox.bind(this);
     }
+  
     confirm() {
         const { absentees } = this.state;
+        const { dispatch } = this.props;
+        var slack_ids = absentees.map(absentee => {
+            if(absentee.absent){
+                let today = moment().format();
+                let absence = {
+                    "slack_id": absentee.slack_id,
+                    "date": today
+                }
+                return absence
+            }
+        });
+        dispatch(sendAbsences(slack_ids));
     }
-
+  
     handleCheckbox(id){
         var { absentees } = this.state;
         var student;
@@ -45,9 +60,9 @@ export default class ConfirmAbsentees extends React.Component {
         })
         this.setState({absentees})
     }
-
+  
     componentDidMount() {
-        const { activeCheckins, studentsBeingViewed } = this.props;
+        const { activeCheckins, studentsBeingViewed, authToken } = this.props;
         let absentees = calculateAbsentees(activeCheckins, studentsBeingViewed);
         this.setState({
             absentees

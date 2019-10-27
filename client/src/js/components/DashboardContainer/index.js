@@ -9,4 +9,5 @@ function mapStoreToProps(store) {
         activeCheckins: store.dashboard.activeCheckins
     };
 }
+
 export default connect(mapStoreToProps)(DashboardContainer);

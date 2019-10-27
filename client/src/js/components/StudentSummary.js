@@ -30,11 +30,11 @@ class Standups extends Component {
     this.mergeStudentData = this.mergeStudentData.bind(this);
   }
 
-  toggle(panelNumber) {
+  toggle(panel) {
     this.setState({
       display: {
         ...this.state.display,
-        [panelNumber]: !this.state.display[panelNumber]
+        [panel]: !this.state.display[panel]
       }
     });
   }
@@ -191,8 +191,8 @@ class Standups extends Component {
               dataToDownload={this.state.wakatimes} />
           </div>
           <section className='standupAndcheckin'>
-            <span className='section-label pointer' onClick={() => this.toggle(2)}><h2>Standups and Checkins </h2></span>
-            <div className={`standup-container ${this.state.display[2] ? "toggleContent-hidden" : ""}`}>
+            <span className='section-label pointer' onClick={() => this.toggle('standups-panel')}><h2>Standups and Checkins </h2></span>
+            <div className={`standup-container ${this.state.display['standups-panel'] ? "toggleContent-hidden" : ""}`}>
               {StandupAndCheckinComponent}
             </div>
           </section>

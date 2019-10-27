@@ -47,3 +47,17 @@ export function getCheckins(authToken) {
       .then(data => { return data })
   }
 }
+
+export function sendAbsences(slack_ids, authToken) {
+  return {
+    type: 'SEND_ABSENCES',
+    payload: fetch(`/api/absences?access_token=${authToken}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(slack_ids)
+    })
+      .then(response => response.json())
+  }
+}

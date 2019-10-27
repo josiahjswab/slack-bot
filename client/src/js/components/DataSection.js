@@ -3,16 +3,8 @@ import DataBox from './DataBox';
 import Delinquents from './Delinquents';
 
 function DataSection(props) {
-  let delinquents;
   let boxes;
-
-  if(props.delinquents) {
-    delinquents =
-      (<Delinquents 
-        title={ props.delinquentTitle ? props.delinquentTitle : 'delinquents' }
-        students={ props.delinquents }
-      />)
-  }
+  let delinquents;
 
   if(props.data) {
     boxes = props.data.map(data => (
@@ -21,13 +13,21 @@ function DataSection(props) {
   } else {
     boxes = <p>No data available</p>
   }
+
+  if(props.delinquents) {
+    delinquents =
+      (<Delinquents 
+        title={ props.delinquentTitle ? props.delinquentTitle : 'delinquents' }
+        students={ props.delinquents }
+      />)
+  }
   
   return(
     <section className='data-section data-section-flex'>
       <div className='data-container'>
         { boxes }
       </div>
-      { delinquents }
+        { delinquents }
     </section>
   );
 }

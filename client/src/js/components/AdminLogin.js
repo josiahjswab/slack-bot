@@ -23,7 +23,11 @@ function AdminLogin(props) {
       <div className="auth">
         <br></br>
         <br></br>
-        <a href="auth/google" className="google"></a>
+        <div className='shadow'>
+        <a href="auth/google"><button className="loginBtn loginBtn--google">
+  Login with Google</button>
+</a>
+</div>
         <p></p>
       </div>
     </React.Fragment>
