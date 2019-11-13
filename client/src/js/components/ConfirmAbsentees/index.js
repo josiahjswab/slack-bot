@@ -3,7 +3,7 @@ import ConfirmAbsentees from './ConfirmAbsentees';
 
 function mapStoreToProps(store){
     return{
-        studentsBeingViewed: store.dashboard.studentsBeingViewed,
+        students: store.dashboard.students,
         authToken: store.dashboard.authToken,
         activeCheckins: store.dashboard.activeCheckins
     }

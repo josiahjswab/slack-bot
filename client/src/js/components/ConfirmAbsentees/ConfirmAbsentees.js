@@ -3,19 +3,19 @@ import { calculateAbsentees } from '../../utilities';
 import moment from 'moment';
 import { sendAbsences } from '../DashboardContainer/actions';
 
-class AbsentStudent extends React.Component{
-    constructor(props){
+class AbsentStudent extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {}
     }
-  
-    render(){
+
+    render() {
         const { student } = this.props;
         return (
             <div>
                 <h4 className='name-margin'>{student.name}
                     <p className='absent-padding'>Absent</p>
-                    <input className='checkbox-position' type='checkbox' defaultChecked onClick={this.props.onClick} />
+                    <input className='checkbox-position' type='checkbox' id={this.props.student.id} defaultChecked onClick={this.props.onClick} />
                 </h4>
             </div>
         )
@@ -26,17 +26,17 @@ export default class ConfirmAbsentees extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            absentees: [],
+            unexcusedAbsentees: [],
         }
         this.confirm = this.confirm.bind(this);
         this.handleCheckbox = this.handleCheckbox.bind(this);
     }
-  
+
     confirm() {
-        const { absentees } = this.state;
+        const { unexcusedAbsentees } = this.state;
         const { dispatch } = this.props;
-        var slack_ids = absentees.map(absentee => {
-            if(absentee.absent){
+        var slack_ids = unexcusedAbsentees.map(absentee => {
+            if (absentee.absent) {
                 let today = moment().format();
                 let absence = {
                     "slack_id": absentee.slack_id,
@@ -47,38 +47,41 @@ export default class ConfirmAbsentees extends React.Component {
         });
         dispatch(sendAbsences(slack_ids));
     }
-  
-    handleCheckbox(id){
-        var { absentees } = this.state;
-        var student;
-        absentees.map(absentee => {
-            if(absentee.id === id){
-                student = absentee;
-                student.absent = !absentee.absent;
-            }
-            return student;
-        })
-        this.setState({absentees})
+
+    handleCheckbox(e) {
+        if (!e.target.checked) {
+            let newStateSub = this.state.unexcusedAbsentees.filter(function (obj) {
+                return obj.id != e.target.id;
+            });
+            this.setState({ unexcusedAbsentees: newStateSub });
+        } else {
+            let newStateAdd = this.props.students.filter(function (obj) {
+                return obj.id == e.target.id;
+            });
+
+            this.setState({ unexcusedAbsentees: [...newStateAdd, ...this.state.unexcusedAbsentees] });
+        }
     }
-  
+
     componentDidMount() {
-        const { activeCheckins, studentsBeingViewed, authToken } = this.props;
-        let absentees = calculateAbsentees(activeCheckins, studentsBeingViewed);
+        const { activeCheckins, students } = this.props;
+        let absentees = calculateAbsentees(activeCheckins, students);
         this.setState({
-            absentees
+            unexcusedAbsentees: absentees,
         })
     }
 
     render() {
-        var { absentees } = this.state;
+        const { activeCheckins, students } = this.props;
+        let absentees = calculateAbsentees(activeCheckins, students);
         return (
             <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
                 <div className='unchecked'>
                     <h3 className='not-checked-in-color'>Not checked In:</h3>
                     <br></br>
                     <div>
-                        {absentees.map((student) => (
-                            <AbsentStudent id='absentStud' key={student.slack_id} student={student} onClick={() => this.handleCheckbox(student.id)} />
+                        {absentees.map((student, index) => (
+                            <AbsentStudent key={index} student={student} onClick={this.handleCheckbox} />
                         ))}
                     </div>
                     <div className='absentess-btn'>

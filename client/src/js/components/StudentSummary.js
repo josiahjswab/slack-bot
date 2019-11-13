@@ -8,6 +8,7 @@ import {
   calculateIndividualWakatimeData
 } from '../utilities';
 import EditStudent from './EditStudent';
+var moment = require('moment');
 
 class Standups extends Component {
   constructor(props) {
@@ -62,12 +63,8 @@ class Standups extends Component {
 
   mergeStudentData(data, type) {
     let dateObject = { ...this.state.dataByDate };
-
     for (let i = 0; i < data.length; i++) {
-      let date = new Date(data[i].date || data[i].checkin_time);
-      let formattedDate = (date.getMonth() + 1).toString().padStart(2, '0')
-      + "/" + (date.getDate().toString()).padStart(2, '0')
-      + "/" + (date.getFullYear().toString());
+      let formattedDate = moment(data[i].date || data[i].checkin_time).format('dddd L');
       if (!dateObject[formattedDate]) {
         dateObject[formattedDate] = {}
       }
@@ -159,11 +156,11 @@ class Standups extends Component {
         <div className='standup-card'>
           {`${this.state.name} has not submitted any standups and has not checked in.`}
         </div>
-		}
+    }
 
-		function sortByDate(a, b){
-			return a[0] < b[0] ? 1 : -1;
-		};
+    function sortByDate(a, b) {
+      return a[0] < b[0] ? 1 : -1;
+    };
 
     let editStudentWindow = null;
     if (this.state.showStudentEditWindow) {
@@ -178,20 +175,20 @@ class Standups extends Component {
         <HamburgerNavigation openStudentEditWindow={() => this.showStudentEditWindow}
           auth_token={this.getAuthToken()} />
         {editStudentWindow}
-          <div className='header-name'>
-            <h1>{this.state.name}</h1>
-          </div>
+        <div className='header-name'>
+          <h1>{this.state.name}</h1>
+        </div>
         <main className='wrapper'>
           <div className='data-section-container-grid'>
-            <DataSectionForStudentSummary title='time in class' data={checkinData} name={this.state.name}
+            <DataSectionForStudentSummary title='Time in Class' data={checkinData} name={this.state.name}
               dataToDownload={this.state.checkinHistory} />
-            <DataSectionForStudentSummary title='standups completed' data={standupsData} name={this.state.name}
+            <DataSectionForStudentSummary title='Standups Completed' data={standupsData} name={this.state.name}
               dataToDownload={this.state.standups} />
-            <DataSectionForStudentSummary title='time spent coding' data={wakatimeData} name={this.state.name}
+            <DataSectionForStudentSummary title='Time Spent Coding' data={wakatimeData} name={this.state.name}
               dataToDownload={this.state.wakatimes} />
           </div>
           <section className='standupAndcheckin'>
-            <span className='section-label pointer' onClick={() => this.toggle('standups-panel')}><h2>Standups and Checkins </h2></span>
+            <span className='section-label pointer' onClick={() => this.toggle('standups-panel')}><h2>Standups and Checkins</h2></span>
             <div className={`standup-container ${this.state.display['standups-panel'] ? "toggleContent-hidden" : ""}`}>
               {StandupAndCheckinComponent}
             </div>

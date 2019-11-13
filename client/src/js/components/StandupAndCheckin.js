@@ -2,6 +2,7 @@ import React from 'react';
 
 function StandupAndCheckin(props) {
   let { date, checkin, standup } = props;
+
   let checkinTime, checkoutTime, hours, notAtSchool, tasksYesterday, tasksToday, blockers, autoCheckout;
   if (checkin){
     checkinTime = checkin.checkin_time;
@@ -16,7 +17,6 @@ function StandupAndCheckin(props) {
     tasksToday = standup.tasks_today;
     blockers = standup.blockers;
   }
-
 	if(checkinTime){
 		let checkinDate = new Date(checkinTime);
     checkinTime = checkinDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
