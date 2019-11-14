@@ -8,7 +8,7 @@ import {
   calculateIndividualWakatimeData
 } from '../utilities';
 import EditStudent from './EditStudent';
-var moment = require('moment');
+import moment from 'moment';
 
 class Standups extends Component {
   constructor(props) {
@@ -62,15 +62,15 @@ class Standups extends Component {
   }
 
   mergeStudentData(data, type) {
-    let dateObject = { ...this.state.dataByDate };
+    let standupsAndCheckins = { ...this.state.dataByDate };
     for (let i = 0; i < data.length; i++) {
-      let formattedDate = moment(data[i].date || data[i].checkin_time).format('dddd L');
-      if (!dateObject[formattedDate]) {
-        dateObject[formattedDate] = {}
+      let formattedDate = moment(data[i].date || data[i].checkin_time).format('L dddd');
+      if (!standupsAndCheckins[formattedDate]) {
+        standupsAndCheckins[formattedDate] = {}
       }
-      dateObject[formattedDate][type] = data[i];
+      standupsAndCheckins[formattedDate][type] = data[i];
     }
-    this.setState({ dataByDate: dateObject })
+    this.setState({ dataByDate: standupsAndCheckins })
   }
 
   saveStudentData(studentData) {

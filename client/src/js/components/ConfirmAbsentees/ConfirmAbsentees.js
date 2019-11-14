@@ -50,16 +50,16 @@ export default class ConfirmAbsentees extends React.Component {
 
     handleCheckbox(e) {
         if (!e.target.checked) {
-            let newStateSub = this.state.unexcusedAbsentees.filter(function (obj) {
+            let filteredUnexcusedStudents = this.state.unexcusedAbsentees.filter(function (obj) {
                 return obj.id != e.target.id;
             });
-            this.setState({ unexcusedAbsentees: newStateSub });
+            this.setState({ unexcusedAbsentees: filteredUnexcusedStudents });
         } else {
-            let newStateAdd = this.props.students.filter(function (obj) {
+            let filteredStudentFromStore = this.props.students.filter(function (obj) {
                 return obj.id == e.target.id;
             });
 
-            this.setState({ unexcusedAbsentees: [...newStateAdd, ...this.state.unexcusedAbsentees] });
+            this.setState({ unexcusedAbsentees: [...filteredStudentFromStore, ...this.state.unexcusedAbsentees] });
         }
     }
 
@@ -80,8 +80,8 @@ export default class ConfirmAbsentees extends React.Component {
                     <h3 className='not-checked-in-color'>Not checked In:</h3>
                     <br></br>
                     <div>
-                        {absentees.map((student, index) => (
-                            <AbsentStudent key={index} student={student} onClick={this.handleCheckbox} />
+                        {absentees.map((student) => (
+                            <AbsentStudent key={student.id} student={student} onClick={this.handleCheckbox} />
                         ))}
                     </div>
                     <div className='absentess-btn'>
