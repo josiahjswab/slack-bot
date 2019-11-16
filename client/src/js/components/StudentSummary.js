@@ -169,6 +169,28 @@ class Standups extends Component {
         save={this.saveStudentData}
         errorMessage={this.state.saveErrorMessage} />
     }
+    
+    let keyMetrics = [], keyClassMetrics = [], keyStandupMetrics = [], keyCodingMetrics = []
+
+    if (!!checkinData) {
+      keyClassMetrics = checkinData.filter(function (obj) {
+        return (obj.footer == "7 days") || (obj.footer == "weekly auto-checkouts");
+      });
+    }
+
+    if (!!wakatimeData) {
+      keyCodingMetrics = wakatimeData.filter(function (obj) {
+        return (obj.footer == "7 days");
+      });
+    }
+
+    if (!!standupsData) {
+      keyStandupMetrics = standupsData.filter(function (obj) {
+        return (obj.footer == "past 7 days");
+      });
+    }
+
+    keyMetrics = [...keyClassMetrics, ...keyCodingMetrics, ...keyStandupMetrics];
 
     return (
       <React.Fragment>
@@ -176,10 +198,11 @@ class Standups extends Component {
           auth_token={this.getAuthToken()} />
         {editStudentWindow}
         <div className='header-name'>
-          <h1>{this.state.name}</h1>
+          <h4>{this.state.name}</h4>
         </div>
         <main className='wrapper'>
           <div className='data-section-container-grid'>
+            <DataSectionForStudentSummary title='Key Metrics' data={keyMetrics} name={this.state.name} />
             <DataSectionForStudentSummary title='Time in Class' data={checkinData} name={this.state.name}
               dataToDownload={this.state.checkinHistory} />
             <DataSectionForStudentSummary title='Standups Completed' data={standupsData} name={this.state.name}

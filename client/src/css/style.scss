@@ -231,7 +231,6 @@ body {
 }
 
 .data-section-flex {
-  margin-bottom: $grid-gap;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
   break-inside: avoid;
@@ -252,33 +251,13 @@ body {
   text-decoration: none;
 }
 
+.data-section h2 {
+  width: 100%;
+  margin-top: 0px;
+}
+
 .delinquents {
   margin-top: 0.25em;
-}
-
-.datasection-button {
-  text-align: center;
-  float: right;
-  display: block;
-  background-color: lightgray;
-  background-image: linear-gradient(lightgray, whitesmoke);
-  color: black;
-  padding: 0.1em;
-  margin-left: 0.5em;
-  border: 1.30px solid #990000;
-  border-radius: 0.25em;
-	text-decoration: none;
-  cursor: pointer;
-  padding: 1px 10px 1px;
-  margin-right: 13px;
-  padding-top: 2px;
-}
-
-.datasection-button:hover {
-  background-color: #797575;
-  background-image: linear-gradient(#b9b8b8,#d4d1d1);
-  color: #000;
-  text-decoration: none;
 }
 
 .delinquents h4 {
@@ -341,6 +320,15 @@ body {
   list-style-type: none;
 }
 
+.glyphicon-download-alt {
+  float: right;
+}
+
+.glyphicon-download-alt:hover {
+  cursor: pointer;
+  color: #990000;
+}
+
 .glyphicon-time {
   color: #990000;
   float: left;
@@ -386,8 +374,7 @@ header {
 
 .header-name {
   text-align: center;
-  margin-left: 15%;
-  margin-right: 15%;
+  margin-top: 15px;
 }
 
 header .date {
