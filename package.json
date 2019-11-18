@@ -10,14 +10,17 @@
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
     "start": "node .",
-    "test": "jest && mocha --exit"
+    "test": "jest --no-watchman --verbose; mocha test/server/*.spec.js --exit"
   },
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
     "setupFiles": [
-      "./test/setupTests.js"
+      "./test/client/setupTests.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/test/server/"
     ]
   },
   "dependencies": {

@@ -1,20 +1,20 @@
 import React from 'react';
-import AbsentStudent from '../client/src/js/components/ConfirmAbsentees/AbsentStundent';
+import Delinquents from '../../client/src/js/components/Delinquents';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 
-let student = {
+let students = [{
   absent: true,
   github_id: "",
   id: 5,
   name: "David Warren",
   slack_id: "05201987",
   wakatime_key: ""
-};
+}];
 
-describe('abstentee button', () => {
-  it('should have a button', () => {
-    const app = shallow(<AbsentStudent key={5} student={student} />);
+describe('Delinquents', () => {
+  it('should have a list', () => {
+    const app = shallow(<Delinquents students={students} />);
     expect(toJson(app)).toMatchSnapshot();
   });
 });

@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delinquents should have a list 1`] = `
+<div
+  className="delinquents"
+>
+  <h4 />
+  <ul
+    className="student-links box"
+  >
+    <li
+      id="stomp"
+      key="05201987"
+    >
+      <Link
+        style={
+          Object {
+            "width": "100%",
+          }
+        }
+        to="/student-summary/5?auth_token=undefined"
+      >
+        <span
+          className="gly-padding"
+        >
+          David Warren
+           
+        </span>
+        <span
+          className="glyphicon glyphicon-time"
+          style={
+            Object {
+              "font-size": "15px",
+            }
+          }
+          title="Missing Wakatime key"
+        />
+        <span
+          className="gitHub"
+          style={
+            Object {
+              "font-size": "15px",
+            }
+          }
+          title="Missing GitHub Id"
+        />
+      </Link>
+    </li>
+  </ul>
+</div>
+`;

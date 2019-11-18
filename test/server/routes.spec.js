@@ -5,7 +5,8 @@ const chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 chai.use(chaiHttp);
 
-const app = require('../server/server');
+const app = require('../../server/server');
+
 const slashCommand = {
   user_id: 'test user',
   channel_id: 'test channel'
