@@ -10,7 +10,10 @@
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
     "start": "node .",
-    "test": "jest --no-watchman --verbose; mocha test/server/*.spec.js --exit"
+    "test": "jest --no-watchman --verbose; mocha test/server/*.spec.js --exit",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:test": "start-server-and-test start http://localhost:3000 cy:run"
   },
   "jest": {
     "snapshotSerializers": [
@@ -64,6 +67,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cssnano": "^4.1.10",
+    "cypress": "^3.6.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "enzyme-to-json": "^3.4.3",
@@ -72,7 +76,7 @@
     "jest": "^24.9.0",
     "mocha": "^6.1.4",
     "react-test-renderer": "^16.11.0",
-    "start-server-and-test": "^1.9.1"
+    "start-server-and-test": "^1.10.6"
   },
   "repository": {
     "type": "",

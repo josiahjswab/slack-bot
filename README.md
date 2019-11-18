@@ -211,7 +211,7 @@ npm start
 ```
 npm run dev
 ```
-```(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
+(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
 
 ## Usage
  sdcs-slack-bot lives in *Slack*
@@ -263,5 +263,25 @@ Loopback is used for server setup. Please view common/models folder for models/r
         - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google credentials
 
-:copyright: 2019 San Diego Code School
+## Testing with Cypress
 
+Set the Cypress environmental variables by including the CYPRESS_ prefix.
+CYPRESS_ADMIN_EMAIL and CYPRESS_ADMIN_PASSWORD required to run login test.
+
+Command Line Example:
+$ export CYPRESS_ADMIN_EMAIL=<email for the user that is generated on server boot>
+$ export CYPRESS_ADMIN_PASSWORD=<password for the user that is generated on server boot>
+
+OR
+
+Update cypress.json to include the environmental variables.
+Example:
+{
+  "env": {     
+    "ADMIN_EMAIL": "<email for the user that is generated on server boot>",
+    "ADMIN_PASSWORD": "<password for the user that is generated on server boot>"
+  }
+}
+
+
+:copyright: 2019 San Diego Code School
