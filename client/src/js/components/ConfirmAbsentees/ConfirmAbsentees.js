@@ -2,25 +2,7 @@ import React, { Component } from 'react';
 import { calculateAbsentees } from '../../utilities';
 import moment from 'moment';
 import { sendAbsences } from '../DashboardContainer/actions';
-
-class AbsentStudent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    render() {
-        const { student } = this.props;
-        return (
-            <div>
-                <h4 className='name-margin'>{student.name}
-                    <p className='absent-padding'>Absent</p>
-                    <input className='checkbox-position' type='checkbox' id={this.props.student.id} defaultChecked onClick={this.props.onClick} />
-                </h4>
-            </div>
-        )
-    }
-}
+import AbsentStudent from './AbsentStundent';
 
 export default class ConfirmAbsentees extends React.Component {
     constructor(props) {
@@ -73,7 +55,10 @@ export default class ConfirmAbsentees extends React.Component {
 
     render() {
         const { activeCheckins, students } = this.props;
-        let absentees = calculateAbsentees(activeCheckins, students);
+        let absentees = [];
+        if (!!students) {
+            absentees = calculateAbsentees(activeCheckins, students);
+        }
         return (
             <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
                 <div className='unchecked'>

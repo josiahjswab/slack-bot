@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`abstentee button should have a button 1`] = `
+<div>
+  <h4
+    className="name-margin"
+  >
+    David Warren
+    <p
+      className="absent-padding"
+    >
+      Absent
+    </p>
+    <input
+      className="checkbox-position"
+      defaultChecked={true}
+      id={5}
+      type="checkbox"
+    />
+  </h4>
+</div>
+`;
