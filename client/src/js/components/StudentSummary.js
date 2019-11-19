@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import StandupAndCheckin from './StandupAndCheckin';
 import HamburgerNavigation from './HamburgerNavigation';
 import DataSectionForStudentSummary from './DataSectionForStudentSummary';
 import {
   calculateIndividualCheckinData,
   calculateIndividualStandupsData,
-  calculateIndividualWakatimeData
+  calculateIndividualWakatimeData,
 } from '../utilities';
 import EditStudent from './EditStudent';
-import moment from 'moment';
 
 class Standups extends Component {
   constructor(props) {
@@ -23,84 +23,12 @@ class Standups extends Component {
       saveErrorMessage: '',
       display: {},
       dataByDate: {},
-    }
+    };
     this.getAuthToken = this.getAuthToken.bind(this);
     this.showStudentEditWindow = this.showStudentEditWindow.bind(this);
     this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
     this.saveStudentData = this.saveStudentData.bind(this);
     this.mergeStudentData = this.mergeStudentData.bind(this);
-  }
-
-  toggle(panel) {
-    this.setState({
-      display: {
-        ...this.state.display,
-        [panel]: !this.state.display[panel]
-      }
-    });
-  }
-
-  getAuthToken() {
-    return this.props
-      .location
-      .search
-      .replace(/^(.*?)\auth_token=/, '');
-  }
-
-  showStudentEditWindow() {
-    this.setState({
-      showStudentEditWindow: true
-    });
-  }
-
-  hideStudentEditWindow(event, override) {
-    if (event.target === event.currentTarget || override) {
-      this.setState({
-        showStudentEditWindow: false
-      })
-    }
-  }
-
-  mergeStudentData(data, type) {
-    let standupsAndCheckins = { ...this.state.dataByDate };
-    for (let i = 0; i < data.length; i++) {
-      let formattedDate = moment(data[i].date || data[i].checkin_time).format('L dddd');
-      if (!standupsAndCheckins[formattedDate]) {
-        standupsAndCheckins[formattedDate] = {}
-      }
-      standupsAndCheckins[formattedDate][type] = data[i];
-    }
-    this.setState({ dataByDate: standupsAndCheckins })
-  }
-
-  saveStudentData(studentData) {
-    fetch(`/api/students/${studentData.id}?access_token=${this.getAuthToken()}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(studentData)
-    })
-      .then(response => {
-        return response.json();
-      })
-      .then(response => {
-        if (response.error) {
-          throw response.error.message
-        } else {
-          this.setState({
-            name: response.name,
-            editedStudentInfo: response,
-            showStudentEditWindow: false,
-            saveErrorMessage: null
-          })
-        }
-      })
-      .catch(err => {
-        this.setState({
-          saveErrorMessage: err
-        })
-      })
   }
 
   componentDidMount() {
@@ -127,10 +55,10 @@ class Standups extends Component {
           .catch(err => console.log(err));
 
         const wakatimeFilter = JSON.stringify({
-          "where": {
-            "slack_id": student.slack_id
-          }
-        })
+          where: {
+            slack_id: student.slack_id,
+          },
+        });
         fetch(`/api/wakatimes/?access_token=${this.getAuthToken()}&filter=${wakatimeFilter}`)
           .then(response => response.json())
           .then(wakatimes => {
@@ -142,18 +70,90 @@ class Standups extends Component {
 
   }
 
+  getAuthToken() {
+    return this.props
+      .location
+      .search
+      .replace(/^(.*?)\auth_token=/, '');
+  }
+
+  toggle(panel) {
+    this.setState({
+      display: {
+        ...this.state.display,
+        [panel]: !this.state.display[panel],
+      },
+    });
+  }
+
+  showStudentEditWindow() {
+    this.setState({
+      showStudentEditWindow: true,
+    });
+  }
+
+  hideStudentEditWindow(event, override) {
+    if (event.target === event.currentTarget || override) {
+      this.setState({
+        showStudentEditWindow: false,
+      });
+    }
+  }
+
+  mergeStudentData(data, type) {
+    const standupsAndCheckins = { ...this.state.dataByDate };
+    for (let i = 0; i < data.length; i++) {
+      const formattedDate = moment(data[i].date || data[i].checkin_time).format('L dddd');
+      if (!standupsAndCheckins[formattedDate]) {
+        standupsAndCheckins[formattedDate] = {};
+      }
+      standupsAndCheckins[formattedDate][type] = data[i];
+    }
+    this.setState({ dataByDate: standupsAndCheckins });
+  }
+
+  saveStudentData(studentData) {
+    fetch(`/api/students/${studentData.id}?access_token=${this.getAuthToken()}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(studentData),
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(response => {
+        if (response.error) {
+          throw response.error.message;
+        } else {
+          this.setState({
+            name: response.name,
+            editedStudentInfo: response,
+            showStudentEditWindow: false,
+            saveErrorMessage: null,
+          });
+        }
+      })
+      .catch(err => {
+        this.setState({
+          saveErrorMessage: err,
+        });
+      });
+  }
+
   render() {
     let StandupAndCheckinComponent;
-    let standupsData = calculateIndividualStandupsData(this.state.standups);
-    let checkinData = calculateIndividualCheckinData(this.state.checkinHistory);
-    let wakatimeData = calculateIndividualWakatimeData(this.state.wakatimes);
+    const standupsData = calculateIndividualStandupsData(this.state.standups);
+    const checkinData = calculateIndividualCheckinData(this.state.checkinHistory);
+    const wakatimeData = calculateIndividualWakatimeData(this.state.wakatimes);
     if (Object.keys(this.state.dataByDate).length > 0) {
       StandupAndCheckinComponent = Object.entries(this.state.dataByDate).sort(sortByDate).map(data => (
         <StandupAndCheckin key={data[0]} date={data[0]} checkin={data[1].checkin} standup={data[1].standup} />
       ));
     } else {
       StandupAndCheckinComponent =
-        <div className='standup-card'>
+        <div className="standup-card">
           {`${this.state.name} has not submitted any standups and has not checked in.`}
         </div>
     }
@@ -169,7 +169,7 @@ class Standups extends Component {
         save={this.saveStudentData}
         errorMessage={this.state.saveErrorMessage} />
     }
-    
+
     let keyMetrics = [], keyClassMetrics = [], keyStandupMetrics = [], keyCodingMetrics = []
 
     if (!!checkinData) {
