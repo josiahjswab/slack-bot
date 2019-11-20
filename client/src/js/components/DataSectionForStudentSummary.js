@@ -2,27 +2,31 @@ import React from "react";
 import DataBox from "./DataBox";
 import Delinquents from "./Delinquents";
 
-function handleClickDataToCSV(data, name) {
+function handleClickDataToCSV(data, studentName) {
   //transfer student data into CSV file
   if (data.length) {
     const separator = ",";
     const keys = Object.keys(data[0]);
-    const studentName = name;
     const csvContent =
+      "name," +
       keys.join(separator) +
       "\n" +
       data
         .map(row => {
-          return keys
-            .map(k => {
-              let cell = row[k];
-              cell = cell.toString().replace(/"/g, '""');
-              if (cell.search(/("|,|\n)/g) >= 0) {
-                cell = `"${cell}"`;
-              }
-              return cell;
-            })
-            .join(separator);
+          return (
+            studentName +
+            "," +
+            keys
+              .map(k => {
+                let cell = row[k];
+                cell = cell.toString().replace(/"/g, '""');
+                if (cell.search(/("|,|\n)/g) >= 0) {
+                  cell = `"${cell}"`;
+                }
+                return cell;
+              })
+              .join(separator)
+          );
         })
         .join("\n");
 
@@ -33,7 +37,6 @@ function handleClickDataToCSV(data, name) {
     hiddenElement.target = "_blank";
     hiddenElement.download = studentName + ".csv";
     hiddenElement.click();
-
   } else {
     alert("no data");
   }
@@ -55,26 +58,30 @@ function DataSectionForStudentSummary(props) {
   if (props.data) {
     if (props.data.length != 0) {
       boxes = props.data.map(data => <DataBox key={data.footer} data={data} />);
+    } else {
+      boxes = <p>No data available</p>;
+    }
   } else {
     boxes = <p>No data available</p>;
   }
-} else {
-  boxes = <p>No data available</p>;
-}
 
-return (
-  <section className="data-section data-section-flex">
-    <h2 className="section-label inline-block">
-      {props.title}{' '}
-      {!!props.dataToDownload &&
-        <span className="glyphicon glyphicon-download-alt"
-          onClick={() => handleClickDataToCSV(props.dataToDownload, props.name)}>
-        </span>}
-    </h2>
-    <div className="data-container">{boxes}</div>
-    {delinquents}
-  </section>
-);
+  return (
+    <section className="data-section data-section-flex">
+      <h2 className="section-label inline-block">
+        {props.title}{" "}
+        {!!props.dataToDownload && (
+          <span
+            className="glyphicon glyphicon-download-alt"
+            onClick={() =>
+              handleClickDataToCSV(props.dataToDownload, props.name)
+            }
+          ></span>
+        )}
+      </h2>
+      <div className="data-container">{boxes}</div>
+      {delinquents}
+    </section>
+  );
 }
 
 export default DataSectionForStudentSummary;
