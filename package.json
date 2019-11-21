@@ -85,7 +85,6 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
     "mocha": "^6.1.4",
-    "prettier": "^1.19.1",
     "react-test-renderer": "^16.11.0",
     "start-server-and-test": "^1.10.6"
   },
