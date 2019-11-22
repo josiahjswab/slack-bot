@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { calculateAbsentees } from '../../utilities';
 import moment from 'moment';
-import { sendAbsences } from '../DashboardContainer/actions';
+import { sendAbsences } from '../DashboardContainer/dashboardActions';
 import AbsentStudent from './AbsentStundent';
 
 export default class ConfirmAbsentees extends React.Component {

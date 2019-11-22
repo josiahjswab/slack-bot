@@ -109,16 +109,18 @@ function calculateIndividualStandupsData(standups) {
   const averageStandupPercent = Math.round((uniqueDaysWithStandups.length / totalDaysEnrolled) * 100);
   return ([
     {
-      featured: `${weekOfStandupsPercent}%`,
-      fraction: `${uniqueStandupsLastSevenDays.length} / 7`,
-      footer: 'past 7 days',
-    }, {
+      // featured: `${weekOfStandupsPercent}%`,
+      featured: `${uniqueStandupsLastSevenDays.length} / 7`,
+      footer: 'Standups completed past 7 days',
+    },
+    {
       featured: `${averageStandupPercent}%`,
       fraction: `${uniqueDaysWithStandups.length} / ${totalDaysEnrolled}`,
-      footer: 'total average',
+      footer: 'Standups completed total average',
     },
   ]);
 }
+
 
 function calculateIndividualCheckinData(checkins) {
   if (checkins.length === 0) { return null; }
@@ -145,7 +147,7 @@ function calculateIndividualCheckinData(checkins) {
   if (totalDaysEnrolled <= 7) {
     weeklyAverageHours = totalHours;
   } else {
-    weeklyAverageHours = Math.round(totalHours / totalDaysEnrolled * 7);
+    weeklyAverageHours = Math.round((totalHours / totalDaysEnrolled) * 7);
   }
 
   // time spent in classroom in the last seven days
@@ -172,15 +174,15 @@ function calculateIndividualCheckinData(checkins) {
     {
       featured: `${timeSpentLastSevenDays}`,
       measurement: 'hrs',
-      footer: '7 days',
+      footer: 'Time in class past 7 days',
     }, {
       featured: `${weeklyAverageHours}`,
       measurement: 'hrs',
-      footer: 'weekly average',
+      footer: 'Time in class weekly average',
     }, {
       featured: `${totalHours}`,
       measurement: 'hrs',
-      footer: 'total',
+      footer: 'Time in class total hours',
     }, {
       featured: `${autoCheckoutsLastSevenDays}`,
       measurement: '',
@@ -249,15 +251,15 @@ let wakatimes = getUniqueDates(wakatimeDates,'date')
     {
       featured: `${timeSpentLastSevenDays.toFixed(2)}`,
       measurement: 'hrs',
-      footer: '7 days',
+      footer: 'Time coding past 7 days',
     }, {
       featured: `${weeklyAverageHours.toFixed(2)}`,
       measurement: 'hrs',
-      footer: 'weekly average',
+      footer: 'Time coding weekly average',
     }, {
       featured: `${totalHours.toFixed(2)}`,
       measurement: 'hrs',
-      footer: 'total',
+      footer: 'Time coding total hours',
     },
   ]);
 }

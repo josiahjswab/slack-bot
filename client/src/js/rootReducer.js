@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-import dashboardreducer from './components/DashboardContainer/reducer'
+import dashboardReducer from './components/DashboardContainer/dashboardReducer';
+import studentStatsReducer from './components/studentStatsReducer';
 const rootReducer = combineReducers({
-    dashboard: dashboardreducer
+    dashboard: dashboardReducer,
+    studentStats: studentStatsReducer
 });
 export default rootReducer;
