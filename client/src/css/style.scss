@@ -217,6 +217,12 @@ body {
   grid-template-columns: 1fr;
 }
 
+@media only screen and (max-width:768px){
+  .data-container{
+    grid-template-columns: repeat(2,minmax(75px,1fr)) !important;
+  }
+}
+
 .data {
   text-align: center;
 }
@@ -277,7 +283,7 @@ body {
 }
 
 .data-container {
-  min-height: 8em;
+  min-height: 6em;
   display: grid;
   grid-gap: $grid-gap-smaller;
   grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
@@ -318,10 +324,6 @@ body {
 .roster ul {
   padding: 0.25em 0em;
   list-style-type: none;
-}
-
-.glyphicon-download-alt {
-  float: right;
 }
 
 .glyphicon-download-alt:hover {
@@ -756,19 +758,14 @@ req.body.checkin{
 }
 
 .standup-container {
-  grid-gap: $grid-gap;
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  display: grid;
+  grid-gap: $grid-gap-smaller;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .student-links li a:hover {
   background: $default-gray-darker;
 }
-
-.standup-container {
-  display: grid;
-  grid-gap: $grid-gap-smaller;
-  grid-template-columns: 1fr;
-} 
 
 .standup-card {
   margin-bottom: 0.5em;

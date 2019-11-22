@@ -5,7 +5,7 @@ const defaultState = {
   activeCheckins: [],
   absences: []
 };
-export default function dashboardreducer(state = defaultState, action) {
+export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;
   switch (type) {
     case "ADD_STUDENTS_TO_STORE": {

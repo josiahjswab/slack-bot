@@ -14,7 +14,7 @@ import {
   setStudentsBeingViewed,
   getStandups,
   getCheckins
-} from "./actions";
+} from "./dashboardActions";
 import EditStudent from "../EditStudent";
 
 class DashboardContainer extends Component {
