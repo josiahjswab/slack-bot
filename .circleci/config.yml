@@ -15,10 +15,10 @@ jobs:
             - ./node_modules
       - run:
           name: Jest Client and Mocha Server Suites
-          command: "npm run test"
+          command: "npm run test && npm run coverage"
       - run:
           name: Cypress End 2 End
-          command: "npm run cy:test"
+          command: "npm run build && npm run cy:test"
 workflows:
   version: 2
   build-deploy:

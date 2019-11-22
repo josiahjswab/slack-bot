@@ -26,5 +26,6 @@ npm-debug.log
 package-lock.json
 data
 data.json
-cypress.json
 cypress/videos
+cypress/screenshots
+.nyc_output
