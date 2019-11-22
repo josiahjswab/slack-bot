@@ -30,7 +30,6 @@ class Standups extends Component {
 
   componentDidMount() {
     const id = this.props.location.pathname.replace("/student-summary/", "");
-    // eslint-disable-next-line react/prop-types
     const { dispatch } = this.props;
     dispatch(getStudentInfo(id, this.getAuthToken()));
   }
@@ -208,25 +207,6 @@ class Standups extends Component {
             wakatimeData={this.props.studentWakatimes}
             name={this.props.studentInfo.name}
             />
-
-            {/* <DataSectionForStudentStats
-              title="Time in Class"
-              data={checkinData}
-              name={this.state.name}
-              dataToDownload={this.props.studentCheckins}
-            />
-            <DataSectionForStudentStats
-              title="Standups Completed"
-              data={standupsData}
-              name={this.state.name}
-              dataToDownload={this.props.studentStandups}
-            />
-            <DataSectionForStudentStats
-              title="Time Spent Coding"
-              data={wakatimeData}
-              name={this.state.name}
-              dataToDownload={this.props.studentWakatimes}
-            /> */}
           </div>
           
           <section className="standupAndcheckin">
