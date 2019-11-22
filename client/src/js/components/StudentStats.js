@@ -203,7 +203,7 @@ class Standups extends Component {
             <StudentStatsDownload 
             title='Checkin Data' 
             checkinData={this.props.studentCheckins}
-            standupsData={this.props.studentStandups}
+            standupData={this.props.studentStandups}
             wakatimeData={this.props.studentWakatimes}
             name={this.props.studentInfo.name}
             />
