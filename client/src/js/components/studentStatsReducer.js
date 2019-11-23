@@ -9,7 +9,6 @@ const defaultState = {
 };
 export default function studentStatsReducer(state = defaultState, action) {
   const { type, payload } = action;
-  console.log(type);
   switch (type) {
     case "GET_STUDENT_INFO_FULFILLED": {
       return {

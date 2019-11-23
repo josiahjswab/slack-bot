@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router";
 import { calculateAbsentees } from '../../utilities';
 import moment from 'moment';
 import { sendAbsences } from '../DashboardContainer/dashboardActions';
 import AbsentStudent from './AbsentStundent';
 
-export default class ConfirmAbsentees extends React.Component {
+class ConfirmAbsentees extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +28,7 @@ export default class ConfirmAbsentees extends React.Component {
                 return absence
             }
         });
-        dispatch(sendAbsences(slack_ids));
+        dispatch(sendAbsences(slack_ids, this.props.authToken));
     }
 
     handleCheckbox(e) {
@@ -78,3 +79,5 @@ export default class ConfirmAbsentees extends React.Component {
         )
     }
 }
+
+export default withRouter(ConfirmAbsentees);

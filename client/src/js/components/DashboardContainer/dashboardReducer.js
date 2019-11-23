@@ -3,7 +3,8 @@ const defaultState = {
   studentsBeingViewed: [],
   allStandups: [],
   activeCheckins: [],
-  absences: []
+  absences: [],
+  authToken: ""
 };
 export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -66,11 +67,16 @@ export default function dashboardReducer(state = defaultState, action) {
         activeCheckins: payload
       };
     }
-
     case "SEND_ABSENCES_FULFILLED": {
       return {
         ...state,
         absences: payload
+      };
+    }
+    case "STORE_AUTH_TOKEN": {
+      return {
+        ...state,
+        authToken: payload
       };
     }
 

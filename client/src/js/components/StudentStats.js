@@ -22,7 +22,6 @@ class Standups extends Component {
     this.state = {
       display: {},
     };
-    this.getAuthToken = this.getAuthToken.bind(this);
     this.saveStudentData = this.saveStudentData.bind(this);
     this.openEditWindow = this.openEditWindow.bind(this);
     this.closeEditWindow = this.closeEditWindow.bind(this);
@@ -31,11 +30,7 @@ class Standups extends Component {
   componentDidMount() {
     const id = this.props.location.pathname.replace("/student-summary/", "");
     const { dispatch } = this.props;
-    dispatch(getStudentInfo(id, this.getAuthToken()));
-  }
-
-  getAuthToken() {
-    return this.props.location.search.replace(/^(.*?)\auth_token=/, "");
+    dispatch(getStudentInfo(id, this.props.authToken));
   }
 
   toggle(panel) {
@@ -62,7 +57,7 @@ class Standups extends Component {
   saveStudentData(studentData) {
     const id = this.props.location.pathname.replace("/student-summary/", "");
     const { dispatch } = this.props;
-    dispatch(updateStudentInfo(id, studentData, this.getAuthToken()));
+    dispatch(updateStudentInfo(id, studentData, this.props.authToken));
   }
 
   render() {
@@ -182,7 +177,7 @@ class Standups extends Component {
       <>
         <HamburgerNavigation
           openStudentEditWindow={() => this.openEditWindow}
-          auth_token={this.getAuthToken()}
+          auth_token={this.props.authToken}
         />
         {editStudentWindow}
         <div className="header-name">
@@ -240,7 +235,8 @@ function mapStoreToProps(store) {
     studentWakatimes: store.studentStats.studentWakatimes,
     studentStandupsAndCheckins: store.studentStats.studentStandupsAndCheckins,
     errMessage: store.studentStats.errMessage,
-    editWindowOpen: store.studentStats.editWindowOpen
+    editWindowOpen: store.studentStats.editWindowOpen,
+    authToken: store.dashboard.authToken
   };
 }
 

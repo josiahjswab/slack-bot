@@ -13,7 +13,8 @@ import {
   getStudentData,
   setStudentsBeingViewed,
   getStandups,
-  getCheckins
+  getCheckins,
+  storeAuthToken
 } from "./dashboardActions";
 import EditStudent from "../EditStudent";
 
@@ -22,7 +23,6 @@ class DashboardContainer extends Component {
     super(props);
     this.state = {
       absentees: {},
-      authToken: "",
       showStudentEditWindow: false,
       editedStudentInfo: {},
       saveErrorMessage: "",
@@ -89,7 +89,7 @@ class DashboardContainer extends Component {
       saveErrorMessage: null
     });
     const { dispatch } = this.props;
-    dispatch(saveStudentData(studentData, this.state.authToken));
+    dispatch(saveStudentData(studentData, this.props.authToken));
   }
 
   getViewByType(e) {
@@ -112,23 +112,21 @@ class DashboardContainer extends Component {
 
   componentDidMount() {
     const { dispatch, students } = this.props;
-
     let authToken = this.props.location.search.replace(
       /^(.*?)\auth_token=/,
       ""
     );
+    dispatch(storeAuthToken(authToken))
 
-    this.setState({ authToken });
-
-    dispatch(getStudentData(authToken));
+    dispatch(getStudentData(this.props.authToken));
     let studentsPaid = students.filter(student => student.type == "PAID");
     let studentsJobseeking = students.filter(
       student => student.type == "JOBSEEKER"
     );
     let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
 
-    dispatch(getStandups(authToken));
-    dispatch(getCheckins(authToken));
+    dispatch(getStandups(this.props.authToken));
+    dispatch(getCheckins(this.props.authToken));
     dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking));
   }
 
@@ -238,7 +236,7 @@ class DashboardContainer extends Component {
             <ul className="">
               <Link
                 className="link-btn1"
-                to={`/login?auth_token=${this.state.authToken}`}
+                to={`/login?auth_token=${this.props.authToken}`}
               >
                 Logout
               </Link>
@@ -290,7 +288,7 @@ class DashboardContainer extends Component {
               >
                 <Roster
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.state.authToken}
+                  auth_token={this.props.authToken}
                 />
               </div>
             </div>
@@ -314,7 +312,7 @@ class DashboardContainer extends Component {
                     standupsData ? standupsData.delinquents : undefined
                   }
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.state.authToken}
+                  auth_token={this.props.authToken}
                 />
               </div>
             </div>
@@ -339,7 +337,7 @@ class DashboardContainer extends Component {
                   }
                   delinquentTitle="absentees"
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.state.authToken}
+                  auth_token={this.props.authToken}
                 />
               </div>
             </div>

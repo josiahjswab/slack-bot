@@ -61,3 +61,10 @@ export function sendAbsences(slack_ids, authToken) {
       .then(response => response.json())
   }
 }
+
+export function storeAuthToken(authToken) {
+  return {
+    type: 'STORE_AUTH_TOKEN',
+    payload: authToken
+  }
+}
