@@ -1,38 +1,31 @@
 {
-  "name": "student",
+  "name": "commits",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "name": {
-      "type": "string",
-      "required": true
-		},
     "slack_id": {
       "type": "string",
       "required": true
     },
-		"github_id": {
-      "type": "string",
-      "required": true
+    "commits": {
+      "type": "number",
+      "required": true,
+      "default": 0
     },
-		"wakatime_key": {
-			"type": "string",
-			"required": false
-		},
-		"type": {
-			"type": "string",
-			"require": true
-		}
+    "date": {
+      "type": "Date",
+      "require": true
+    }
   },
   "validations": [],
   "relations": {
-    "standups": {
-      "type": "hasMany",
-      "model": "standup",
-      "foreignKey": ""
+    "student": {
+      "type": "belongsTo",
+      "model": "student",
+      "foreignKey": "slack_id"
     }
   },
   "acls": [
@@ -47,6 +40,13 @@
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW"
+    },
+
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
     }
   ],
   "methods": {}
