@@ -68,6 +68,14 @@ class Standups extends Component {
         this.props.studentStandups
       );
     }
+		let commitData = [];
+    if (this.props.studentCommits) {
+      commitData = {
+        featured: this.props.studentCommits,
+        measurement: '',
+        footer: 'Commits past 7 days',
+      }
+		}
     let checkinData = [];
     if (this.props.studentCheckins) {
       checkinData = calculateIndividualCheckinData(this.props.studentCheckins);
@@ -119,11 +127,16 @@ class Standups extends Component {
     let keyClassMetrics = [];
     let keyStandupMetrics = [];
     let keyCodingMetrics = [];
+		let keyCommitMetrics = [];
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
         return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
       });
+    }
+    
+		if (!!commitData) {
+      keyCommitMetrics = [commitData];
     }
 
     if (!!wakatimeData) {
@@ -141,7 +154,8 @@ class Standups extends Component {
     keyMetrics = [
       ...keyClassMetrics,
       ...keyCodingMetrics,
-      ...keyStandupMetrics
+      ...keyStandupMetrics,
+			...keyCommitMetrics
     ];
 
     let otherMetrics = [];
@@ -233,6 +247,7 @@ function mapStoreToProps(store) {
     studentStandups: store.studentStats.studentStandups,
     studentCheckins: store.studentStats.studentCheckins,
     studentWakatimes: store.studentStats.studentWakatimes,
+		studentCommits: store.studentStats.studentCommits,
     studentStandupsAndCheckins: store.studentStats.studentStandupsAndCheckins,
     errMessage: store.studentStats.errMessage,
     editWindowOpen: store.studentStats.editWindowOpen,

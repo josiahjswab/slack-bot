@@ -45,7 +45,7 @@ function getStudentStats(id, authToken, slack_id) {
         })
     });
 
-    const wakatimeFilter = JSON.stringify({
+    const userFilter = JSON.stringify({
       where: {
         slack_id: slack_id
       }
@@ -54,13 +54,22 @@ function getStudentStats(id, authToken, slack_id) {
     dispatch({
       type: "GET_STUDENT_WAKATIMES",
       payload: fetch(
-        `/api/wakatimes/?access_token=${authToken}&filter=${wakatimeFilter}`
+        `/api/wakatimes/?access_token=${authToken}&filter=${userFilter}`
       )
         .then(response => response.json())
         .then(wakatimes => {
           return wakatimes;
         })
     });
+
+		dispatch({
+			type: "GET_STUDENT_COMMITS",
+			payload: fetch(`/api/commits/getWeeklyCommits/${slack_id}?isNumber=true&access_token=${authToken}`)
+				.then(response => response.json())
+				.then(commits => {
+					return commits;
+			})
+		});
 
     Promise.all([standups, checkins]).then(standupsAndCheckins =>
       dispatch({
