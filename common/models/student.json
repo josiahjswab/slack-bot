@@ -16,7 +16,7 @@
     },
 		"github_id": {
       "type": "string",
-      "required": true
+      "required": false
     },
 		"wakatime_key": {
 			"type": "string",
