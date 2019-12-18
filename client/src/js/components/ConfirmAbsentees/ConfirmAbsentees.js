@@ -47,18 +47,18 @@ class ConfirmAbsentees extends React.Component {
     }
 
     componentDidMount() {
-        const { activeCheckins, students } = this.props;
-        let absentees = calculateAbsentees(activeCheckins, students);
+        const { activeCheckinsBeingViewed, students } = this.props;
+        let absentees = calculateAbsentees(activeCheckinsBeingViewed, students);
         this.setState({
             unexcusedAbsentees: absentees,
         })
     }
 
     render() {
-        const { activeCheckins, students } = this.props;
+        const { activeCheckinsBeingViewed, students } = this.props;
         let absentees = [];
         if (!!students) {
-            absentees = calculateAbsentees(activeCheckins, students);
+            absentees = calculateAbsentees(activeCheckinsBeingViewed, students);
         }
         return (
             <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>

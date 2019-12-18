@@ -1,12 +1,22 @@
 export function getStudentData(authToken) {
-    return {
-        type: 'GET_STUDENT_DATA',
-        payload: fetch(`/api/students?access_token=${authToken}`)
-        .then(response => response.json())
-        .then(data => { let students = data.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
-          return students;
-        })
-    }
+  return dispatch => {
+    return dispatch({
+      type: 'GET_STUDENT_DATA',
+      payload: fetch(`/api/students?access_token=${authToken}`)
+      .then(response => response.json())
+      .then(
+        data => { let students = data.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
+        return students;
+      })
+    }).then((students)=>{
+      let studentsPaid = students.value.filter(student => student.type == "PAID");
+      let studentsJobseeking = students.value.filter(
+        student => student.type == "JOBSEEKER"
+      );
+      let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
+      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, authToken))
+    })
+  }
 }
 
 export function saveStudentData(studentData, authToken) {
@@ -23,28 +33,50 @@ export function saveStudentData(studentData, authToken) {
     }
 }
 
-export function setStudentsBeingViewed(studentsBeingViewed) {
-  return {
-    type: 'SET_STUDENTS_BEING_VIEWED',
-    payload: studentsBeingViewed
-  }
+export function setStudentsBeingViewed(studentsBeingViewed, authToken) {
+  return dispatch => {
+    dispatch({
+      type: 'SET_STUDENTS_BEING_VIEWED',
+      payload: studentsBeingViewed
+    });
+
+    dispatch(getStandups(studentsBeingViewed, authToken));
+    dispatch(getCheckins(studentsBeingViewed, authToken));
+
+  };
 }
 
-export function getStandups(authToken) {
+function getStandups(studentsBeingViewed, authToken) {
   return {
       type: 'GET_STANDUPS',
       payload: fetch(`/api/standups?access_token=${authToken}`)
       .then(response => response.json())
-      .then(data => { return data })
+      .then(data => {
+        let slack_ids = {};
+        studentsBeingViewed.forEach(student => slack_ids[student.slack_id] = 1)
+        let standupsViewed = data.filter(standup => 
+            standup.slack_id in slack_ids
+          );
+         
+        return standupsViewed;
+       })
   }
 }
 
-export function getCheckins(authToken) {
+function getCheckins(studentsBeingViewed, authToken) {
   return {
       type: 'GET_CHECKINS',
       payload: fetch(`/api/checkins?access_token=${authToken}`)
       .then(response => response.json())
-      .then(data => { return data })
+      .then(data => {
+        let slack_ids = {};
+        studentsBeingViewed.forEach(student => slack_ids[student.slack_id] = 1)
+        let checkinsViewed = data.filter(checkin => 
+            checkin.slack_id in slack_ids
+          );
+         
+        return checkinsViewed;
+      })
   }
 }
 

@@ -1,21 +1,14 @@
 const defaultState = {
   students: [],
   studentsBeingViewed: [],
-  allStandups: [],
-  activeCheckins: [],
+  standupsBeingViewed: [],
+  activeCheckinsBeingViewed: [],
   absences: [],
   authToken: ""
 };
 export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;
   switch (type) {
-    case "ADD_STUDENTS_TO_STORE": {
-      return {
-        ...state,
-        students: payload
-      };
-    }
-
     case "SAVE_STUDENT_DATA": {
       return {
         ...state,
@@ -30,20 +23,10 @@ export default function dashboardReducer(state = defaultState, action) {
       };
     }
 
-    case "GET_STUDENT_DATA": {
-      return {
-        ...state,
-        students: payload
-      };
-    }
-
     case "GET_STUDENT_DATA_FULFILLED": {
       return {
         ...state,
-        students: payload,
-        studentsBeingViewed: payload
-          .filter(student => student.type == "PAID")
-          .concat(payload.filter(student => student.type == "JOBSEEKER"))
+        students: payload
       };
     }
 
@@ -57,14 +40,14 @@ export default function dashboardReducer(state = defaultState, action) {
     case "GET_STANDUPS_FULFILLED": {
       return {
         ...state,
-        allStandups: payload
+        standupsBeingViewed: payload
       };
     }
 
     case "GET_CHECKINS_FULFILLED": {
       return {
         ...state,
-        activeCheckins: payload
+        activeCheckinsBeingViewed: payload
       };
     }
     case "SEND_ABSENCES_FULFILLED": {

@@ -19,6 +19,7 @@ function DataSection(props) {
       (<Delinquents 
         title={ props.delinquentTitle ? props.delinquentTitle : 'delinquents' }
         students={ props.delinquents }
+        auth_token={props.auth_token}
       />)
   }
   

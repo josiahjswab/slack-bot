@@ -5,8 +5,8 @@ function mapStoreToProps(store) {
         students: store.dashboard.students,
         studentsBeingViewed: store.dashboard.studentsBeingViewed,
         authToken: store.dashboard.authToken,
-        allStandups: store.dashboard.allStandups,
-        activeCheckins: store.dashboard.activeCheckins
+        standupsBeingViewed: store.dashboard.standupsBeingViewed,
+        activeCheckinsBeingViewed: store.dashboard.activeCheckinsBeingViewed
     };
 }
 

@@ -12,8 +12,6 @@ import {
   saveStudentData,
   getStudentData,
   setStudentsBeingViewed,
-  getStandups,
-  getCheckins,
   storeAuthToken
 } from "./dashboardActions";
 import EditStudent from "../EditStudent";
@@ -42,6 +40,16 @@ class DashboardContainer extends Component {
     );
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    let authToken = this.props.location.search.replace(
+      /^(.*?)\auth_token=/,
+      ""
+    );
+    dispatch(storeAuthToken(authToken))
+    dispatch(getStudentData(this.props.authToken));
+  }
+
   toggle(panel) {
     this.setState({
       display: {
@@ -67,8 +75,8 @@ class DashboardContainer extends Component {
   }
 
   showConfirmAbsenteesWindow() {
-    const { activeCheckins, studentsBeingViewed } = this.props;
-    const absentees = calculateAbsentees(activeCheckins, studentsBeingViewed);
+    const { activeCheckinsBeingViewed, studentsBeingViewed } = this.props;
+    const absentees = calculateAbsentees(activeCheckinsBeingViewed, studentsBeingViewed);
     this.setState({
       absentees: absentees,
       showConfirmAbsenteesWindow: true
@@ -110,26 +118,6 @@ class DashboardContainer extends Component {
     }
   }
 
-  componentDidMount() {
-    const { dispatch, students } = this.props;
-    let authToken = this.props.location.search.replace(
-      /^(.*?)\auth_token=/,
-      ""
-    );
-    dispatch(storeAuthToken(authToken))
-
-    dispatch(getStudentData(this.props.authToken));
-    let studentsPaid = students.filter(student => student.type == "PAID");
-    let studentsJobseeking = students.filter(
-      student => student.type == "JOBSEEKER"
-    );
-    let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
-
-    dispatch(getStandups(this.props.authToken));
-    dispatch(getCheckins(this.props.authToken));
-    dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking));
-  }
-
   render() {
     const days = [
       "Sunday",
@@ -164,19 +152,19 @@ class DashboardContainer extends Component {
 
     let standupsData;
     let checkinData;
-    const { studentsBeingViewed, allStandups, activeCheckins } = this.props;
+    const { studentsBeingViewed, standupsBeingViewed, activeCheckinsBeingViewed } = this.props;
 
-    if (allStandups.length) {
+    if (standupsBeingViewed.length) {
       standupsData = calculateDashboardStandupsData(
-        allStandups,
+        standupsBeingViewed,
         studentsBeingViewed
       );
     }
 
-    if (activeCheckins.length) {
+    if (activeCheckinsBeingViewed.length) {
       let checkinsToday = [];
-      for (let i = 0; i < activeCheckins.length; i++) {
-        let thisCheckin = activeCheckins[i].checkin_time;
+      for (let i = 0; i < activeCheckinsBeingViewed.length; i++) {
+        let thisCheckin = activeCheckinsBeingViewed[i].checkin_time;
         let checkinDate = thisCheckin.slice(0, 10);
         let checkinYear = checkinDate.slice(0, 4);
         let checkinMonth = checkinDate.slice(5, 7);
@@ -186,7 +174,7 @@ class DashboardContainer extends Component {
           checkinDayOfMonth == dayOfMonth &&
           checkinYear == currentYear
         ) {
-          checkinsToday.push(activeCheckins[i]);
+          checkinsToday.push(activeCheckinsBeingViewed[i]);
         }
       }
 
@@ -212,7 +200,7 @@ class DashboardContainer extends Component {
 
     if (this.state.showConfirmAbsenteesWindow) {
       let currentAbsentees = calculateAbsentees(
-        this.props.activeCheckins,
+        this.props.activeCheckinsBeingViewed,
         this.props.students
       );
       confirmAbsenteesWindow = (
