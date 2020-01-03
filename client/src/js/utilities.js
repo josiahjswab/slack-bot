@@ -191,73 +191,31 @@ function calculateIndividualCheckinData(checkins) {
   ]);
 }
 function calculateIndividualWakatimeData(wt) {
-  const wakatimeDates = wt.map(wakatime => {
-    const wakatimeDate = new Date(wakatime.date);
-    let wakatimedateobj = new Object();
-      wakatimedateobj.date = `${wakatimeDate.getFullYear()}-
-      ${wakatimeDate.getMonth() + 1}-
-      ${wakatimeDate.getDate()}`
-      wakatimedateobj.duration = `${wakatime.duration}`
-      return wakatimedateobj
-  });
-  //filters out duplicate object entries
-  function getUniqueDates(arr, comp) {
-    const unique = arr
-         .map(e => e[comp])
-       // store the keys of the unique objects
-      .map((e, i, final) => final.indexOf(e) === i && i)
-      // eliminate the dead keys & store unique objects
-      .filter(e => arr[e]).map(e => arr[e]);
-     return unique;
-  }
-let wakatimes = getUniqueDates(wakatimeDates,'date')
-  if (wakatimes.length == 0) { return null; }
- // total time spent in classroom
-  let totalSeconds = wakatimes.reduce((accumulator, wakatime) => {
-    return accumulator + parseInt(wakatime.duration);
-  }, 0);
+  const moment = require('moment')
 
-  let totalHours = Math.round(totalSeconds) / (60 * 60);
+  let totalHours = 0;
+  wt.forEach(obj => totalHours += obj.duration);
 
-  // weekly average = daily average * 7, but only if student has already been
-  // enrolled for at least one week
-  const dayOne = new Date(wakatimes[0].date);
-  const dayOneMidnight = new Date(
-    `${dayOne.getFullYear()}-
-    ${dayOne.getMonth() + 1}-
-    ${dayOne.getDate()}`
-  );
-  const totalDaysEnrolled =
-    Math.round((tomorrowMidnight - dayOneMidnight) / millisecondsToDays);
-  let weeklyAverageHours;
-  if (totalDaysEnrolled <= 7) {
-    weeklyAverageHours = totalHours;
-  } else {
-    weeklyAverageHours = Math.round((totalHours / totalDaysEnrolled) * 7);
-  }
+  let lastSevenDays = wt.filter(obj => moment(obj.date).isAfter(moment().utc().subtract(7, 'days').startOf('day')));
 
-  // time spent in coding in the last seven days
-  const wakatimesLastSevenDays = wakatimes.filter(wakatime => {
-    return new Date(wakatime.date) > sevenDaysAgoMidnight;
-  });
+  let totalDaysEnrolled = moment().diff(moment(lastSevenDays[0].date), 'days')
 
-  let timeSpentLastSevenDays = wakatimesLastSevenDays.reduce((accumulator, wakatime) => {
-    return accumulator + parseInt(wakatime.duration);
-  }, 0);
+  let timeSpentLastSevenDays = 0;
+  lastSevenDays.forEach(obj => timeSpentLastSevenDays += obj.duration);
 
-  timeSpentLastSevenDays = Math.round(timeSpentLastSevenDays) / (60 * 60);
+  let weeklyAverageHours = timeSpentLastSevenDays / totalDaysEnrolled;
 
   return ([
     {
-      featured: `${timeSpentLastSevenDays.toFixed(2)}`,
+      featured: `${(timeSpentLastSevenDays/3600).toFixed(2)}`,
       measurement: 'hrs',
       footer: 'Time coding past 7 days',
     }, {
-      featured: `${weeklyAverageHours.toFixed(2)}`,
+      featured: `${(weeklyAverageHours/3600).toFixed(2)}`,
       measurement: 'hrs',
       footer: 'Time coding weekly average',
     }, {
-      featured: `${totalHours.toFixed(2)}`,
+      featured: `${(totalHours/3600).toFixed(2)}`,
       measurement: 'hrs',
       footer: 'Time coding total hours',
     },

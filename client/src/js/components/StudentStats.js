@@ -81,7 +81,7 @@ class Standups extends Component {
       checkinData = calculateIndividualCheckinData(this.props.studentCheckins);
     }
     let wakatimeData = [];
-    if (this.props.studentWakatimes) {
+    if (this.props.studentWakatimes.length > 0) {
       wakatimeData = calculateIndividualWakatimeData(
         this.props.studentWakatimes
       );
