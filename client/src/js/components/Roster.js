@@ -6,7 +6,7 @@ function Roster(props) {
     <section className='roster'>
       <ul className='student-links box'>
         {props.students.map(student => {
-          const link = `/student-summary/${student.id}?auth_token=${props.auth_token}`;
+          const link = `/admin/student-summary/${student.id}?auth_token=${props.auth_token}`;
           return (
             <li id='stomp' key={student.slack_id}>
               <Link style={{ "width": "100%" }} to={link}>

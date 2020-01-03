@@ -1,15 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import DashboardContainer from './DashboardContainer/index';
 import StudentStats from './StudentStats';
-import AdminLogin from './AdminLogin'
+import AdminLogin from './AdminLogin';
+import StudentLogin from './StudentView/StudentLogin';
+import StudentDashboard from './StudentView/StudentDashboard';
 
 function DashboardApp(props) {
   return (
     <Router basename="/">
-      <Route exact path='/dashboard' component={ DashboardContainer} />
-      <Route path='/student-summary/:id' component={ StudentStats } />
-      <Route path='/login' component={ AdminLogin } />
+      <Route exact path='/admin/dashboard' component={ DashboardContainer} />
+      <Route path='/admin/student-summary/:id' component={ StudentStats } />
+      <Route path='/admin/login' component={ AdminLogin } />
+      <Route path='/login' component={ StudentLogin } />
+      <Route path='/dashboard/:id' component={ StudentDashboard } />
     </Router>
   );
 }

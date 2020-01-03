@@ -887,3 +887,22 @@ req.body.checkin{
   grid-gap: $grid-gap-smaller;
   grid-template-columns: minmax(0, 1fr);
 }
+
+#add-part-btn {
+  background-color: #990000;
+  color: $default-text-light;
+  border-radius: 0.25em;
+  border: 1px solid #990000;
+  cursor: pointer;
+  margin-bottom: 5%;
+  margin-top: .01%;
+  max-width: 44%;
+  float: right;
+  padding: 4.5px 5px 4px 5px
+}
+
+#add-part-btn:hover {
+  background-color: #800000;
+  color: $default-text-light;
+  text-decoration: none;
+}

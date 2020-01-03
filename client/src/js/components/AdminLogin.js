@@ -13,7 +13,7 @@ function AdminLogin(props) {
           </div>
           </div>
           <h1>Admin Dashboard</h1>
-          <form action="/dashboard" method="post">
+          <form action="/admin/dashboard" method="post">
             <input type="text" className="action-email" name="email" placeholder="Email" />
             <input type="password" className="action-password" name="password" placeholder="Password" />
             <input type="submit" value="Login" className="link-btn" />

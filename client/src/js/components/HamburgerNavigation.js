@@ -8,7 +8,7 @@ function HamburgerNavigation(props) {
       <div className='hamburger' onClick={toggleMenu}><div></div></div>
       <ul className='navigation hamburger-navigation'>
         <li>
-        <Link className='link-btn2' to={`/login?auth_token=${props.auth_token}`}
+        <Link className='link-btn2' to={`/admin/login`}
         >Logout
         </Link>
         </li>
@@ -18,7 +18,7 @@ function HamburgerNavigation(props) {
 					</div>
         </li>
         <li className='dashboard-link'>
-          <Link className='sdcs-logo' to={`/dashboard?auth_token=${props.auth_token}`}>
+          <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
             <p id='logo-style-student-page'></p></Link>
           <p className='dash-btn'></p>
         </li>

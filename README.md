@@ -165,17 +165,17 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
 4. Create a providers.js in your root folder and paste this in and add your google id and secret to an env file:
 
 module.exports = {
-  'google-login': {
+    'google-login': {
     'provider': 'google',
     'module': 'passport-google-oauth',
     'strategy': 'OAuth2Strategy',
     'clientID': process.env.GOOGLE_ID,
     'clientSecret': process.env.GOOGLE_SECRET,
-    'callbackURL': '/auth/google/callback',
-    'authPath': '/auth/google',
-    'callbackPath': '/auth/google/callback',
-    'successRedirect': '/auth',
-    'failureRedirect': '/login',
+    'callbackURL': '/admin/auth/google/callback',
+    'authPath': '/admin/auth/google',
+    'callbackPath': '/admin/auth/google/callback',
+    'successRedirect': '/admin/auth',
+    'failureRedirect': '/admin/login',
     'scope': ['email', 'profile'],
     'failureFlash': true,
   },
@@ -283,5 +283,31 @@ Example:
   }
 }
 
+## Using the Student User Dashboard
+
+In order to sign in, go to the url route /login
+
+After you sign in with slack you should get the following objects in your users. 
+
+{
+    "username": "slack.UREHZNDL3",
+    "email": "UREHZNDL3@loopback.Slack.com",
+    "id": "5dfaade86a95a2edf110740a"
+}
+
+Role mapping is not implemented yet, you need to post a role mapping with the principal id equal to the user id from above.
+Also you need to make up the roleID and principal type. We use STUDENT because it made the most sense.
+
+{
+    "id": "5dfac549a12a9006eb58cc0c",
+    "principalType": "STUDENT",
+    "principalId": "5dfaade86a95a2edf110740a",
+    "roleId": "5dfaade86a95a2edf110840a"
+}
+
+additionally add the redirect url /student/auth/slack/callback to your slack application
+
+Also add SLACK_CLIENT_ID and SLACK_CLIENT_SECRET
+from your slack application credentials in Basic Information
 
 :copyright: 2019 San Diego Code School

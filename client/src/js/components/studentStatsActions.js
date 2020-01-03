@@ -80,18 +80,31 @@ function getStudentStats(id, authToken, slack_id) {
   };
 }
 
-export function getStudentInfo(id, authToken) {
+export function getStudentInfo(id, authToken, isSlackId) {
   return dispatch => {
-    return dispatch({
-      type: "GET_STUDENT_INFO",
-      payload: fetch(`/api/students/${id}?access_token=${authToken}`)
-        .then(response => response.json())
-        .then(data => {
-          return data;
-        })
-    }).then(student => {
-      dispatch(getStudentStats(id, authToken, student.value.slack_id));
-    });
+    if (isSlackId){
+      return dispatch({
+        type: "GET_STUDENT_INFO",
+        payload: fetch(`/api/students/slackId/${id}?access_token=${authToken}`)
+          .then(response => response.json())
+          .then(data => {
+            return data;
+          })
+      }).then(student => {
+        dispatch(getStudentStats(student.value[0].id, authToken, id));
+      });
+    } else {
+      return dispatch({
+        type: "GET_STUDENT_INFO",
+        payload: fetch(`/api/students/${id}?access_token=${authToken}`)
+          .then(response => response.json())
+          .then(data => {
+            return data;
+          })
+      }).then(student => {
+        dispatch(getStudentStats(id, authToken, student.value.slack_id));
+      });
+    }
   };
 }
 

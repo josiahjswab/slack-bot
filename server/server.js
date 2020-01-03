@@ -37,6 +37,7 @@ app.middleware('session', session({
   saveUninitialized: true,
   resave: true,
 }));
+
 passportConfigurator.init();
 
 app.use(flash());
@@ -51,49 +52,50 @@ for (let s in config) {
   let c = config[s];
   c.session = c.session !== false;
   passportConfigurator.configureProvider(s, c);
-}
+};
 
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
-app.get('/login', (req, res) => {
+app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/login.html'));
 });
 
-app.get('/auth', (req, res) => {
+
+app.get('/admin/auth', (req, res) => {
   const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
   ensureAuthorized(token)
     .then(response => {
       if (response === 'AUTHORIZED') {
         res.redirect(`/dashboard?auth_token=${token}`);
       } else {
-        res.redirect('/login');
+        res.redirect('/admin/login');
       }
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/login');
+      res.redirect('/admin/login');
     });
 });
 
-app.get('/dashboard', (req, res) => {
+app.get('/admin/dashboard', (req, res) => {
   const token = req.query.auth_token;
   ensureAuthorized(token)
     .then(response => {
       if (response === 'AUTHORIZED') {
         res.sendFile(path.join(__dirname, '../dist/index.html'));
       } else {
-        res.redirect('/login');
+        res.redirect('/admin/login');
       }
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/login');
+      res.redirect('/admin/login');
     });
 });
 
-app.post('/dashboard', (req, res) => {
+app.post('/admin/dashboard', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -102,53 +104,53 @@ app.post('/dashboard', (req, res) => {
     password: password,
   }, 'user', function(err, token) {
     if (err) {
-      return res.status(401).redirect('/login');
+      return res.status(401).redirect('/admin/login');
     }
     token = token.toJSON();
-    res.redirect(`/dashboard?auth_token=${token.id}`);
+    res.redirect(`/admin/dashboard?auth_token=${token.id}`);
   });
 });
 
-app.get('/student-summary/:id', (req, res) => {
+app.get('/admin/student-summary/:id', (req, res) => {
   const token = req.query.auth_token;
   ensureAuthorized(token)
     .then(response => {
       if (response === 'AUTHORIZED') {
         res.sendFile(path.join(__dirname, '../dist/index.html'));
       } else {
-        res.redirect('/login');
+        res.redirect('/admin/login');
       }
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/login');
+      res.redirect('/admin/login');
     });
 });
 
-app.get('/inactive', (req, res) => {
+app.get('/admin/inactive', (req, res) => {
   const token = req.query.auth_token;
   ensureAuthorized(token)
     .then(response => {
       if (response === 'AUTHORIZED') {
         res.sendFile(path.join(__dirname, '../dist/index.html'));
       } else {
-        res.redirect('/login');
+        res.redirect('/admin/login');
       }
     })
     .catch(err => {
       console.log(err);
-      res.redirect('/login');
+      res.redirect('/admin/login');
     });
 });
 
-app.get('/logout', (req, res, next) => {
+app.get('/admin/logout', (req, res, next) => {
   if (req.query.auth_token) {
     app.models.accessToken.destroyAll({
       id: req.query.auth_token,
     });
   };
   req.logout();
-  res.redirect('/');
+  res.redirect('/admin/login');
 });
 
 app.start = function() {
@@ -195,3 +197,41 @@ function ensureAuthorized(authToken) {
       }
     });
 }
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
+app.get('/auth', (req, res) => {
+
+  const slack_id = req.user.username;
+  const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.redirect(`/dashboard/${slack_id}?auth_token=${token}`);
+      } else {
+        res.redirect('/login');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
+});
+
+app.get('/dashboard/:slack_id', (req, res) => {
+  const token = req.query.auth_token;
+  ensureAuthorized(token)
+    .then(response => {
+      if (response === 'AUTHORIZED') {
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
+      } else {
+        res.redirect('/login')
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/login');
+    });
+});

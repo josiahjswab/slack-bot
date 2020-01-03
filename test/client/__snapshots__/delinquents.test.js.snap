@@ -18,7 +18,7 @@ exports[`Delinquents should have a list 1`] = `
             "width": "100%",
           }
         }
-        to="/student-summary/5?auth_token=undefined"
+        to="/admin/student-summary/5?auth_token=undefined"
       >
         <span
           className="gly-padding"

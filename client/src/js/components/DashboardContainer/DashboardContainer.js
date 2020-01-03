@@ -224,7 +224,7 @@ class DashboardContainer extends Component {
             <ul className="">
               <Link
                 className="link-btn1"
-                to={`/login?auth_token=${this.props.authToken}`}
+                to={`/admin/login`}
               >
                 Logout
               </Link>

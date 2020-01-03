@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
-import StandupAndCheckin from './StandupAndCheckin';
-import HamburgerNavigation from './HamburgerNavigation';
-import DataSectionForStudentStats from './DataSectionForStudentStats';
+import StandupAndCheckin from '../StandupAndCheckin';
+import DataSectionForStudentStats from '../DataSectionForStudentStats';
 import {
   calculateIndividualCheckinData,
   calculateIndividualStandupsData,
   calculateIndividualWakatimeData,
-} from '../utilities';
-import EditStudent from './EditStudent';
+} from '../../utilities';
+import PartnerForm from '../AccountabilityPartner/PartnerForm';
 import {
   getStudentInfo,
   updateStudentInfo,
   toggleEditWindow,
-} from './studentStatsActions';
-import StudentStatsDownload from './StudentStatsDownload';
+} from '../studentStatsActions';
 
-class Standups extends Component {
+class StudentDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,9 +27,10 @@ class Standups extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.location.pathname.replace("/admin/student-summary/", "");
     const { dispatch } = this.props;
-    dispatch(getStudentInfo(id, this.props.authToken, false));
+    let slack_id = (this.props.match.params.id).replace(/^.*\./, '');
+    let token = (this.props.location.search).replace(/^.*\=/, '');
+    dispatch(getStudentInfo(slack_id, token, true));
   }
 
   toggle(panel) {
@@ -55,9 +55,28 @@ class Standups extends Component {
   }
 
   saveStudentData(studentData) {
+    this.setState({
+      showPartnerEditWindow: false,
+      saveErrorMessage: null
+    });
     const id = this.props.location.pathname.replace("/admin/student-summary/", "");
     const { dispatch } = this.props;
     dispatch(updateStudentInfo(id, studentData, this.props.authToken));
+  }
+
+  showPartnerEditWindow(studentInfo) {
+    this.setState({
+      studentInfo,
+      showPartnerEditWindow: true
+    });
+  }
+
+  hidePartnerEditWindow (event, override) {
+    if (event.target === event.currentTarget || override) {
+      this.setState({
+        showPartnerEditWindow: false
+      });
+    }
   }
 
   render() {
@@ -68,14 +87,14 @@ class Standups extends Component {
         this.props.studentStandups
       );
     }
-		let commitData = [];
+    let commitData = [];
     if (this.props.studentCommits) {
       commitData = {
         featured: this.props.studentCommits,
         measurement: '',
         footer: 'Commits past 7 days',
       }
-		}
+    }
     let checkinData = [];
     if (this.props.studentCheckins) {
       checkinData = calculateIndividualCheckinData(this.props.studentCheckins);
@@ -111,14 +130,15 @@ class Standups extends Component {
       return a[0] < b[0] ? 1 : -1;
     }
 
-    let editStudentWindow = null;
-    if (this.props.editWindowOpen) {
-      editStudentWindow = (
-        <EditStudent
-          studentData={this.props.studentInfo}
-          closeWindow={() => this.closeEditWindow}
-          save={this.saveStudentData}
-          errorMessage={this.props.errMessage}
+    let editPartnerWindow = null;
+
+    if (this.state.showPartnerEditWindow) {
+      editPartnerWindow = (
+        <PartnerForm
+          studentData={this.state.editedStudentInfo}
+          closeWindow={() => this.hideStudentEditWindow}
+          save={this.handleSaveStudentData}
+          errorMessage={this.state.saveErrorMessage}
         />
       );
     }
@@ -127,15 +147,15 @@ class Standups extends Component {
     let keyClassMetrics = [];
     let keyStandupMetrics = [];
     let keyCodingMetrics = [];
-		let keyCommitMetrics = [];
+    let keyCommitMetrics = [];
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
         return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
       });
     }
-    
-		if (!!commitData) {
+
+    if (!!commitData) {
       keyCommitMetrics = [commitData];
     }
 
@@ -155,7 +175,7 @@ class Standups extends Component {
       ...keyClassMetrics,
       ...keyCodingMetrics,
       ...keyStandupMetrics,
-			...keyCommitMetrics
+      ...keyCommitMetrics
     ];
 
     let otherMetrics = [];
@@ -189,13 +209,29 @@ class Standups extends Component {
 
     return (
       <>
-        <HamburgerNavigation
-          openStudentEditWindow={() => this.openEditWindow}
-          auth_token={this.props.authToken}
-        />
-        {editStudentWindow}
+        <div>
+          <ul className='navigation hamburger-navigation'>
+            <li>
+              <Link className='link-btn2' to={'/login'}
+              >Logout
+         </Link>
+              <li
+                className="add-partner"
+                id="add-part-btn"
+                onClick={() => this.showPartnerEditWindow({})}
+              >
+                Add Partner
+              </li>
+            </li>
+            <li className='dashboard-link'>
+              <div className='sdcs-logo'>
+                <p className='student-dash-logo' id='logo-style-student-page'></p>
+              </div>
+            </li>
+          </ul>
+        </div>
         <div className="header-name">
-          <h4>{this.props.studentInfo.name}</h4>
+          {!(Object.entries(this.props.studentInfo).length === 0) && <h4>{this.props.studentInfo[0].name}</h4>}
         </div>
         <main className="wrapper">
           <div className="data-section-container-grid">
@@ -209,15 +245,7 @@ class Standups extends Component {
               data={otherMetrics}
               name={this.props.studentInfo.name}
             />
-            <StudentStatsDownload 
-            title='Checkin Data' 
-            checkinData={this.props.studentCheckins}
-            standupData={this.props.studentStandups}
-            wakatimeData={this.props.studentWakatimes}
-            name={this.props.studentInfo.name}
-            />
           </div>
-          
           <section className="standupAndcheckin">
             <span
               className="section-label pointer"
@@ -230,7 +258,7 @@ class Standups extends Component {
                 this.state.display["standups-panel"]
                   ? "toggleContent-hidden"
                   : ""
-              }`}
+                }`}
             >
               {StandupAndCheckinComponent}
             </div>
@@ -247,7 +275,7 @@ function mapStoreToProps(store) {
     studentStandups: store.studentStats.studentStandups,
     studentCheckins: store.studentStats.studentCheckins,
     studentWakatimes: store.studentStats.studentWakatimes,
-		studentCommits: store.studentStats.studentCommits,
+    studentCommits: store.studentStats.studentCommits,
     studentStandupsAndCheckins: store.studentStats.studentStandupsAndCheckins,
     errMessage: store.studentStats.errMessage,
     editWindowOpen: store.studentStats.editWindowOpen,
@@ -255,4 +283,4 @@ function mapStoreToProps(store) {
   };
 }
 
-export default connect(mapStoreToProps)(Standups);
+export default connect(mapStoreToProps)(StudentDashboard);
