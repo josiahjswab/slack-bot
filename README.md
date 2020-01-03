@@ -86,7 +86,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
     /checkin : https://dingdong-slack-bot.herokuapp.com/slack/checkin \
     /checkout : https://dingdong-slack-bot.herokuapp.com/slack/checkout \
     /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup \
-		/register : https://dingdong-slack-bot.herokuapp.com/slack/register \
+		/edit : https://dingdong-slack-bot.herokuapp.com/slack/edit \
         /wakatime : https://dingdong-slack-bot.herokuapp.com/slack/wakatime \
     - 'OAuth & Permissions'
         - Permission Scopes:
@@ -139,7 +139,7 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
     /{initials}checkout : {localtunnel url}/slack/checkout
     /{initials}standup : {localtunnel url}/slack/standup
     /{initials}wakatime : {localtunnel url}/slack/wakatime
-	/register : https://dingdong-slack-bot.herokuapp.com/slack/register
+	/edit : https://dingdong-slack-bot.herokuapp.com/slack/edit
     - 'OAuth & Permissions'
         - Permission Scopes:
             chat:write:bot
