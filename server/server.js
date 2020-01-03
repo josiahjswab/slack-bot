@@ -68,7 +68,7 @@ app.get('/admin/auth', (req, res) => {
   ensureAuthorized(token)
     .then(response => {
       if (response === 'AUTHORIZED') {
-        res.redirect(`/dashboard?auth_token=${token}`);
+        res.redirect(`/admin/dashboard?auth_token=${token}`);
       } else {
         res.redirect('/admin/login');
       }
