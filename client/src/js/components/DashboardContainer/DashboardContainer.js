@@ -47,7 +47,7 @@ class DashboardContainer extends Component {
       ""
     );
     dispatch(storeAuthToken(authToken))
-    dispatch(getStudentData(this.props.authToken));
+    dispatch(getStudentData(authToken));
   }
 
   toggle(panel) {

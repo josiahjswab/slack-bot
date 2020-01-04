@@ -4,6 +4,7 @@ const loopback = require('loopback');
 const boot = require('loopback-boot');
 const path = require('path');
 const session = require('express-session');
+const explorer = require('loopback-component-explorer')
 require('dotenv').config()
 const app = module.exports = loopback();
 
@@ -15,6 +16,25 @@ const PassportConfigurator = loopbackPassport.PassportConfigurator;
 const passportConfigurator = new PassportConfigurator(app);
 
 const flash = require('express-flash');
+
+const ensureAdmin = (req, res, next) => {
+  if(!!req.query.auth_token) {
+  app.models.accessToken.find({'where': {id: req.query.auth_token}}).then(token => {
+      app.models.user.isAdminRole(token[0].userId, (err, isAdmin) => 
+            {
+              if (!isAdmin) {
+                res.redirect('/admin/login')
+             } else {
+                next()
+             }
+          })
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+}
+
+app.use('/explorer/$', ensureAdmin, explorer.routes(app, { basePath: '/api' }));
 
 let config = {};
 try {
@@ -102,11 +122,11 @@ app.post('/admin/dashboard', (req, res) => {
   app.models.User.login({
     email: email,
     password: password,
-  }, 'user', function(err, token) {
+  }, 'user', function(err, user) {
     if (err) {
       return res.status(401).redirect('/admin/login');
     }
-    token = token.toJSON();
+    let token = user.toJSON();
     res.redirect(`/admin/dashboard?auth_token=${token.id}`);
   });
 });
@@ -158,10 +178,6 @@ app.start = function() {
     app.emit('started');
     const baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
-    if (app.get('loopback-component-explorer')) {
-      const explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
-    }
   });
 };
 
