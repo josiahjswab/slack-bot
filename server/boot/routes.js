@@ -133,11 +133,13 @@ module.exports = app => {
           body.submission.name,
           body.submission.github_id,
           body.submission.wakatime_key,
+          body.submission.partner_name,
+          body.submission.partner_email,
           "FREE"
         );
         res.send("");
         axios.post(body.response_url, {
-          text: "You have been registered, thank you!"
+          text: "Your student info has been saved, thank you!"
         });
         break;
       case "editStudent":
@@ -145,11 +147,13 @@ module.exports = app => {
           body.user.id,
           body.submission.name,
           body.submission.github_id,
-          body.submission.wakatime_key
+          body.submission.wakatime_key,
+          body.submission.partner_name,
+          body.submission.partner_email
         );
         res.send("");
         axios.post(body.response_url, {
-          text: "Your Wakatime Key has been changed, thank you!"
+          text: "Your student info has been saved, thank you!"
         });
         break;
       case "registerWakatimeKey":
@@ -921,6 +925,18 @@ module.exports = app => {
                 label: "Wakatime API Key (if you know it)",
                 name: "wakatime_key",
                 optional: true
+              },
+              {
+                type: "text",
+                label: "Accountability Partner Name",
+                name: "partner_name",
+                optional: true
+              },
+              {
+                type: "text",
+                label: "Accountability Partner Email",
+                name: "partner_email",
+                optional: true
               }
             ]
           }
@@ -929,10 +945,6 @@ module.exports = app => {
         console.log(`error in register was ${err}`);
       });
     } else {
-      var params = {
-        icon_emoji: ":smiley:"
-      };
-
       app.models.student
         .findOne({ where: { slack_id: currentStudent.slack_id } })
         .then(studentInfo => {
@@ -969,6 +981,20 @@ module.exports = app => {
                     name: "wakatime_key",
                     value: studentInfo.wakatime_key,
                     optional: true
+                  },
+                  {
+                    type: "text",
+                    label: "Accountability Partner Name",
+                    name: "partner_name",
+                    value: studentInfo.partner_name,
+                    optional: true
+                  },
+                  {
+                    type: "text",
+                    label: "Accountability Partner Email",
+                    name: "partner_email",
+                    value: studentInfo.partner_email,
+                    optional: true
                   }
                 ]
               }
@@ -978,13 +1004,6 @@ module.exports = app => {
         .catch(err => {
           console.log(`error in edit was ${err}`);
         });
-
-      bot.postEphemeral(
-        user.channel_id,
-        user.user_id,
-        "You are already registered! Would you like to edit your information?",
-        params
-      );
     }
   }
 
@@ -993,6 +1012,8 @@ module.exports = app => {
     name,
     github_id,
     wakatime_key,
+    partner_name,
+    partner_email,
     type
   ) {
     app.models.student.create(
@@ -1001,6 +1022,8 @@ module.exports = app => {
         name,
         github_id,
         wakatime_key,
+        partner_name,
+        partner_email,
         type
       },
       (err, result) => {
@@ -1009,13 +1032,15 @@ module.exports = app => {
     );
   }
 
-  function saveStudentEdits(slack_id, name, github_id, wakatime_key) {
+  function saveStudentEdits(slack_id, name, github_id, wakatime_key, partner_name, partner_email) {
     app.models.student.upsertWithWhere(
       { slack_id: slack_id },
       {
         name,
         github_id,
-        wakatime_key
+        wakatime_key,
+        partner_name,
+        partner_email
       }
     );
   }
