@@ -5,7 +5,7 @@ function mapStoreToProps(store){
     return{
         students: store.dashboard.students,
         authToken: store.dashboard.authToken,
-        activeCheckinsBeingViewed: store.dashboard.activeCheckinsBeingViewed,
+        activeCheckinsToday: store.dashboard.activeCheckinsToday,
     }
 }
 

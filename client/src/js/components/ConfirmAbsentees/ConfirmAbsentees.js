@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from "react-router";
 import { calculateAbsentees } from '../../utilities';
 import moment from 'moment';
-import { sendAbsences } from '../DashboardContainer/dashboardActions';
 import AbsentStudent from './AbsentStundent';
 
 class ConfirmAbsentees extends React.Component {
@@ -17,18 +16,15 @@ class ConfirmAbsentees extends React.Component {
 
     confirm() {
         const { unexcusedAbsentees } = this.state;
-        const { dispatch } = this.props;
-        var slack_ids = unexcusedAbsentees.map(absentee => {
-            if (absentee.absent) {
+        let slack_ids = unexcusedAbsentees.map(absentee => {
                 let today = moment().format();
                 let absence = {
                     "slack_id": absentee.slack_id,
                     "date": today
-                }
-                return absence
-            }
+                };
+                return absence;
         });
-        dispatch(sendAbsences(slack_ids, this.props.authToken));
+        return slack_ids;
     }
 
     handleCheckbox(e) {
@@ -47,31 +43,27 @@ class ConfirmAbsentees extends React.Component {
     }
 
     componentDidMount() {
-        const { activeCheckinsBeingViewed, students } = this.props;
-        let absentees = calculateAbsentees(activeCheckinsBeingViewed, students);
+        const { activeCheckinsToday, students } = this.props;
+        let absentees = calculateAbsentees(activeCheckinsToday, students);
         this.setState({
             unexcusedAbsentees: absentees,
         })
     }
 
     render() {
-        const { activeCheckinsBeingViewed, students } = this.props;
-        let absentees = [];
-        if (!!students) {
-            absentees = calculateAbsentees(activeCheckinsBeingViewed, students);
-        }
+
         return (
-            <div className='add-edit-student-window' onClick={this.props.closeWindow(event)}>
+            <div className='add-edit-student-window' onClick={this.props.closeWindow(event, true)}>
                 <div className='unchecked'>
                     <h3 className='not-checked-in-color'>Not checked In:</h3>
                     <br></br>
                     <div>
-                        {absentees.map((student) => (
+                        {this.props.absentees.map((student) => (
                             <AbsentStudent key={student.id} student={student} onClick={this.handleCheckbox} />
                         ))}
                     </div>
-                    <div className='absentess-btn'>
-                        <button id="cap" onClick={this.confirm}>Confirm Absences</button>
+                    <div className='absentees-btn'>
+                        <button id="cap" onClick={() => this.props.saveAbsentees(this.confirm())}>Confirm Absences</button>
                         <button id="cap1" onClick={this.props.closeWindow(event, true)}>Cancel</button>
                     </div>
                 </div>
