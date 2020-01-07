@@ -12,7 +12,8 @@ import {
   saveStudentData,
   getStudentData,
   setStudentsBeingViewed,
-  storeAuthToken
+  storeAuthToken,
+  sendAbsences
 } from "./dashboardActions";
 import EditStudent from "../EditStudent";
 
@@ -20,7 +21,6 @@ class DashboardContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      absentees: {},
       showStudentEditWindow: false,
       editedStudentInfo: {},
       saveErrorMessage: "",
@@ -35,6 +35,7 @@ class DashboardContainer extends Component {
     this.hideConfirmAbsenteesWindow = this.hideConfirmAbsenteesWindow.bind(
       this
     );
+    this.saveAbsentees = this.saveAbsentees.bind(this)
     this.showConfirmAbsenteesWindow = this.showConfirmAbsenteesWindow.bind(
       this
     );
@@ -75,10 +76,7 @@ class DashboardContainer extends Component {
   }
 
   showConfirmAbsenteesWindow() {
-    const { activeCheckinsBeingViewed, studentsBeingViewed } = this.props;
-    const absentees = calculateAbsentees(activeCheckinsBeingViewed, studentsBeingViewed);
     this.setState({
-      absentees: absentees,
       showConfirmAbsenteesWindow: true
     });
   }
@@ -89,6 +87,14 @@ class DashboardContainer extends Component {
         showConfirmAbsenteesWindow: false
       });
     }
+  }
+
+  saveAbsentees(slack_ids) {
+    this.setState({
+      showConfirmAbsenteesWindow: false
+    });
+    const { dispatch } = this.props;
+    dispatch(sendAbsences(slack_ids, this.props.authToken));
   }
 
   handleSaveStudentData(studentData) {
@@ -110,11 +116,11 @@ class DashboardContainer extends Component {
         student => student.type == "JOBSEEKER"
       );
       let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
-      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking));
+      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, this.props.authToken));
     } else if (typeFilter == "ALL") {
-      dispatch(setStudentsBeingViewed(students));
+      dispatch(setStudentsBeingViewed(students, this.props.authToken));
     } else {
-      dispatch(setStudentsBeingViewed(filtered));
+      dispatch(setStudentsBeingViewed(filtered, this.props.authToken));
     }
   }
 
@@ -199,13 +205,12 @@ class DashboardContainer extends Component {
     let confirmAbsenteesWindow = null;
 
     if (this.state.showConfirmAbsenteesWindow) {
-      let currentAbsentees = calculateAbsentees(
-        this.props.activeCheckinsBeingViewed,
-        this.props.students
-      );
+      const { activeCheckinsToday, students } = this.props;
+      let currentAbsentees = calculateAbsentees(activeCheckinsToday, students);
       confirmAbsenteesWindow = (
         <ConfirmAbsentees
           absentees={currentAbsentees}
+          saveAbsentees={this.saveAbsentees}
           closeWindow={() => this.hideConfirmAbsenteesWindow}
         />
       );

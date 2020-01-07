@@ -3,6 +3,7 @@ const defaultState = {
   studentsBeingViewed: [],
   standupsBeingViewed: [],
   activeCheckinsBeingViewed: [],
+  activeCheckinsToday: [],
   absences: [],
   authToken: ""
 };
@@ -44,7 +45,14 @@ export default function dashboardReducer(state = defaultState, action) {
       };
     }
 
-    case "GET_CHECKINS_FULFILLED": {
+    case "GET_CHECKINS_TODAY_FULFILLED": {
+      return {
+        ...state,
+        activeCheckinsToday: payload
+      };
+    }
+
+    case "GET_CHECKINS_VIEWED_FULFILLED": {
       return {
         ...state,
         activeCheckinsBeingViewed: payload

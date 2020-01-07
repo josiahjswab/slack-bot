@@ -63,17 +63,13 @@ function calculateDashboardCheckinData(activeCheckins, students) {
   };
 }
 
-function calculateAbsentees(activeCheckins, students) {
+function calculateAbsentees(activeCheckinsToday, students) {
   // assumes a student cannot have more than one active checkin
-  var absentees = students.filter(student => {
-    return !activeCheckins.some(checkin => {
-      return student.slack_id === checkin.slack_id;
-    });
-  });
-  absentees.map(absentee => {
-    absentee.absent = true;
-    return absentee;
-  })
+  let slack_ids = {};
+  activeCheckinsToday.forEach(checkin => slack_ids[checkin.slack_id] = 1)
+  let absentees = students.filter(student => 
+      !(student.slack_id in slack_ids) && student.type == "PAID"
+  );
   return absentees;
 }
 
