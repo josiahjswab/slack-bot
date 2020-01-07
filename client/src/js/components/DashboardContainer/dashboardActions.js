@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 export function getStudentData(authToken) {
   return dispatch => {
     return dispatch({
@@ -14,9 +16,25 @@ export function getStudentData(authToken) {
         student => student.type == "JOBSEEKER"
       );
       let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
-      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, authToken))
+      dispatch(getCheckinsToday(authToken));
+      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, authToken));
     })
   }
+}
+
+function getCheckinsToday(authToken) {
+  return {
+    type: 'GET_CHECKINS_TODAY',
+    payload: fetch(`/api/checkins?access_token=${authToken}`)
+    .then(response => response.json())
+    .then(data => {
+      let today = moment().format('L');
+      let checkinsToday = data.filter( checkin => 
+        moment(checkin.checkin_time).format('L') == today
+      )
+      return checkinsToday;
+    })
+}
 }
 
 export function saveStudentData(studentData, authToken) {
@@ -41,7 +59,7 @@ export function setStudentsBeingViewed(studentsBeingViewed, authToken) {
     });
 
     dispatch(getStandups(studentsBeingViewed, authToken));
-    dispatch(getCheckins(studentsBeingViewed, authToken));
+    dispatch(getCheckinsViewed(studentsBeingViewed, authToken));
 
   };
 }
@@ -63,9 +81,9 @@ function getStandups(studentsBeingViewed, authToken) {
   }
 }
 
-function getCheckins(studentsBeingViewed, authToken) {
+function getCheckinsViewed(studentsBeingViewed, authToken) {
   return {
-      type: 'GET_CHECKINS',
+      type: 'GET_CHECKINS_VIEWED',
       payload: fetch(`/api/checkins?access_token=${authToken}`)
       .then(response => response.json())
       .then(data => {
