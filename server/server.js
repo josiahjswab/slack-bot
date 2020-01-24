@@ -20,7 +20,10 @@ const flash = require('express-flash');
 const ensureAdmin = (req, res, next) => {
   if(!!req.query.auth_token) {
   app.models.accessToken.find({'where': {id: req.query.auth_token}}).then(token => {
-      app.models.user.isAdminRole(token[0].userId, (err, isAdmin) => 
+    if ( token.length == 0) {
+      res.redirect('/admin/login')
+    } else {
+    app.models.user.isAdminRole(token[0].userId, (err, isAdmin) => 
             {
               if (!isAdmin) {
                 res.redirect('/admin/login')
@@ -28,9 +31,33 @@ const ensureAdmin = (req, res, next) => {
                 next()
              }
           })
+        }
     })
+  
   } else {
     res.redirect('/admin/login')
+  }
+}
+
+const ensureStudent = (req, res, next) => {
+  if(!!req.query.auth_token) {
+  app.models.accessToken.find({'where': {id: req.query.auth_token}}).then(token => {
+    if ( token.length == 0) {
+      res.redirect('/login')
+    } else {
+    app.models.user.isStudentRole(token[0].userId, (err, isStudent) => 
+            {
+              if (!isStudent) {
+                res.redirect('/login')
+             } else {
+                next()
+             }
+          })
+        }
+    })
+  
+  } else {
+    res.redirect('/login')
   }
 }
 
@@ -99,20 +126,8 @@ app.get('/admin/auth', (req, res) => {
     });
 });
 
-app.get('/admin/dashboard', (req, res) => {
-  const token = req.query.auth_token;
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
-      } else {
-        res.redirect('/admin/login');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/admin/login');
-    });
+app.get('/admin/dashboard', ensureAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.post('/admin/dashboard', (req, res) => {
@@ -131,37 +146,25 @@ app.post('/admin/dashboard', (req, res) => {
   });
 });
 
-app.get('/admin/student-summary/:id', (req, res) => {
-  const token = req.query.auth_token;
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
-      } else {
-        res.redirect('/admin/login');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/admin/login');
-    });
+app.get('/admin/student-summary/:id', ensureAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-app.get('/admin/inactive', (req, res) => {
-  const token = req.query.auth_token;
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
-      } else {
-        res.redirect('/admin/login');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/admin/login');
-    });
-});
+app.get('/admin/student-summary/createStudentRoleMapping/:slack_id', ensureAdmin, (req, res) => {
+  if (app.models.user.createStudentRoleMapping(req.params.slack_id) != -1) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(500);
+  }
+})
+
+app.get('/admin/student-summary/deleteStudentRoleMapping/:slack_id', ensureAdmin, (req, res) => {
+  if (app.models.user.deleteStudentRoleMapping(req.params.slack_id) != -1) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(500);
+  }
+})
 
 app.get('/admin/logout', (req, res, next) => {
   if (req.query.auth_token) {
@@ -220,7 +223,7 @@ app.get('/login', (req, res) => {
 
 app.get('/auth', (req, res) => {
 
-  const slack_id = req.user.username;
+  const slack_id = req.user.username.replace(/^.*\./, '');
   const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
   ensureAuthorized(token)
     .then(response => {
@@ -236,18 +239,72 @@ app.get('/auth', (req, res) => {
     });
 });
 
-app.get('/dashboard/:slack_id', (req, res) => {
-  const token = req.query.auth_token;
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
-      } else {
-        res.redirect('/login')
-      }
+app.get('/dashboard/:slack_id', ensureStudent, (req, res) => {
+  let studentSlackId = req.params.slack_id
+  let studentObject = {
+    name: '',
+    standups: [],
+    checkins: [],
+    wakatimes: [],
+    commits: ''
+  }
+  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
+    if(student.length == 0 ) {
+      res.send("No Student Found")
+    }
+    studentObject.name = student[0].name;
+    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
+      studentObject.standups = standups
+      return standups
     })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/login');
-    });
+    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
+      studentObject.checkins = checkins
+      return checkins
+    })
+    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
+      studentObject.wakatimes = wakatimes
+    })
+    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
+      studentObject.commits = commits
+    })
+
+    Promise.all([wakatimes, commits, standups, checkins]).then(() => {
+      res.render('dash', {studentObject})
+    })
+  });
+});
+
+app.get('/partner/:slack_id', (req, res) => {
+  let studentSlackId = req.params.slack_id
+  let studentObject = {
+    name: '',
+    standups: [],
+    checkins: [],
+    wakatimes: [],
+    commits: ''
+  }
+  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
+    if(student.length == 0 ) {
+      res.send("No Student Found")
+    }
+    studentObject.name = student[0].name;
+    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
+      studentObject.standups = standups
+      return standups
+    })
+    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
+      studentObject.checkins = checkins
+      return checkins
+    })
+    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
+      studentObject.wakatimes = wakatimes
+    })
+    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
+      studentObject.commits = commits
+    })
+
+    Promise.all([wakatimes, commits, standups, checkins]).then(() => {
+      res.render('partner', {studentObject})
+    })
+  });
 });

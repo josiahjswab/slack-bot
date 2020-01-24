@@ -41,7 +41,7 @@ module.exports = function(app) {
         .then(roleMap => {
           if (!roleMap) {
             response[1].principals.create({
-              principalType: RoleMapping.USER,
+              principalType: "USER",
               principalId: response[0].id,
             })
           }

@@ -7,7 +7,7 @@ import {
   calculateIndividualCheckinData,
   calculateIndividualStandupsData,
   calculateIndividualWakatimeData,
-} from '../utilities';
+} from '../../../../common/utilities';
 import EditStudent from './EditStudent';
 import {
   getStudentInfo,
@@ -30,7 +30,7 @@ class Standups extends Component {
   componentDidMount() {
     const id = this.props.location.pathname.replace("/admin/student-summary/", "");
     const { dispatch } = this.props;
-    dispatch(getStudentInfo(id, this.props.authToken, false));
+    dispatch(getStudentInfo(id, localStorage.getItem('token')));
   }
 
   toggle(panel) {
@@ -57,10 +57,36 @@ class Standups extends Component {
   saveStudentData(studentData) {
     const id = this.props.location.pathname.replace("/admin/student-summary/", "");
     const { dispatch } = this.props;
-    dispatch(updateStudentInfo(id, studentData, this.props.authToken));
+    dispatch(updateStudentInfo(id, studentData, localStorage.getItem('token')));
   }
 
   render() {
+    function sortByDate(a, b) {
+      let arrA = a[0].split('/')
+      let arrB = b[0].split('/')
+      if (parseInt(arrA[2].substring(0, 4)) > parseInt(arrB[2].substring(0, 4))) {
+        return -1;
+      }
+      else if (parseInt(arrA[2].substring(0, 4)) < parseInt(arrB[2].substring(0, 4))) {
+        return 1;
+      }
+      else if (parseInt(arrA[0]) > parseInt(arrB[0])){
+        return -1;
+      }
+      else if (parseInt(arrA[0]) < parseInt(arrB[0])){
+        return 1;
+      }
+      else if (parseInt(arrA[1]) > parseInt(arrB[1])){
+        return -1;
+      }
+      else if (parseInt(arrA[1]) < parseInt(arrB[1])){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    };
+
     let StandupAndCheckinComponent;
     let standupsData = [];
     if (this.props.studentStandups.length) {
@@ -105,10 +131,6 @@ class Standups extends Component {
           {`${this.props.studentInfo.name} has not submitted any standups and has not checked in.`}
         </div>
       );
-    }
-
-    function sortByDate(a, b) {
-      return a[0] < b[0] ? 1 : -1;
     }
 
     let editStudentWindow = null;
@@ -191,7 +213,7 @@ class Standups extends Component {
       <>
         <HamburgerNavigation
           openStudentEditWindow={() => this.openEditWindow}
-          auth_token={this.props.authToken}
+          auth_token={localStorage.getItem('token')}
         />
         {editStudentWindow}
         <div className="header-name">

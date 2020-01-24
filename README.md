@@ -248,6 +248,12 @@ npm run dev
 
 Loopback is used for server setup. Please view common/models folder for models/relationships.
 
+### Using the explorer
+
+In order to use the explorer the admin needs to be logged in and go to /explorer
+keeping the authentication token in the url
+
+
 ### Authorizing Google Authenticated Users
 1.  Create a new user associated with your Google account:
     - With the site running, click the button to log in using your account on Google and follow the instructions to enter your email and password. You will be redirected back to the login page because Google has authenticated you, and LoopBack has created a user for you, but you are not yet authorized to view the pages.

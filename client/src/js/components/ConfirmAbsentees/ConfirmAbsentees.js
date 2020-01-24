@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router";
-import { calculateAbsentees } from '../../utilities';
+import { calculateAbsentees } from '../../../../../common/utilities';
 import moment from 'moment';
 import AbsentStudent from './AbsentStundent';
 

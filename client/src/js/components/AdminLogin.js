@@ -3,6 +3,7 @@ import "../../css/style.scss";
 import Logo from '../../img/sdcs_logo.png'
 
 function AdminLogin(props) {
+  localStorage.removeItem('token')
   return (
     <React.Fragment>
       <div className="flex-center">

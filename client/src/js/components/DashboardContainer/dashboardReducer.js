@@ -4,8 +4,7 @@ const defaultState = {
   standupsBeingViewed: [],
   activeCheckinsBeingViewed: [],
   activeCheckinsToday: [],
-  absences: [],
-  authToken: ""
+  absences: []
 };
 export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -62,12 +61,6 @@ export default function dashboardReducer(state = defaultState, action) {
       return {
         ...state,
         absences: payload
-      };
-    }
-    case "STORE_AUTH_TOKEN": {
-      return {
-        ...state,
-        authToken: payload
       };
     }
 

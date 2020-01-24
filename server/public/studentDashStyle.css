@@ -1,0 +1,148 @@
+* {
+  box-sizing: border-box;
+  padding-top: 1px;
+}
+
+.standup-card {
+  margin-bottom: 0.5em;
+}
+
+.navigation {
+  list-style-type: none;
+  flex-direction: row-reverse;
+}
+
+.header-name {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.wrapper {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.section-label {
+  font-size: 0.9em;
+  letter-spacing: 0.025em;
+}
+
+.standup-container {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.fraction {
+  font-size: 1.15em;
+  color: #777;
+}
+
+.center-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.featured-data {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0 0.05em 0 0;
+}
+
+.data {
+  text-align: center;
+}
+
+.data-section-container-grid {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.data-section-container-flex {
+  -webkit-column-count: 1;
+  -webkit-column-gap: 15px;
+  -moz-column-count: 1;
+  -moz-column-gap: 15px;
+  column-count: 1;
+  column-gap: 15px;
+}
+
+.data-section-flex {
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  padding-top: 1px;
+}
+
+.data-section h2 {
+  width: 100%;
+  margin-top: 0;
+}
+
+.section-label {
+  font-size: 0.9em;
+  letter-spacing: 0.025em;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.data-container {
+  min-height: 6em;
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+}
+
+@media only screen and (max-width: 768px) {
+  .data-container {
+    grid-template-columns: repeat(2, minmax(75px, 1fr)) !important;
+  }
+}
+
+.standup-card-title {
+  background-color: #222;
+  border-radius: 5px 5px 0 0;
+  color: #edf5f4;
+  padding: 0.25em 0.5em;
+}
+
+.hours-container {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+}
+
+.standup-card-content {
+  margin: 0.75em 0.25em;
+}
+
+.missing-info {
+  background: #fa8989;
+}
+
+.standup-question {
+  font-size: 1.05em;
+  font-weight: 700;
+}
+.box {
+  border-radius: 2px;
+  background-image: linear-gradient(#f1f1f1, #ececec);
+}
+
+#logo-style-student-page {
+  max-height: 50px;
+  margin-left: -32px;
+  background-image: url(/sdcs_logo.d80c0c33.png);
+  width: 100%;
+  height: 150px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-bottom: -46px;
+  max-width: 50px;
+  margin-top: -4px;
+}

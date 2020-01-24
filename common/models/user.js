@@ -19,16 +19,60 @@ module.exports = (user) => {
         }
       });
     };
-    user.remoteMethod('isAdminRole', {
-      isStatic: true,
-      accepts: [
-        { arg: 'userId', type: 'string', http: { source: 'query' } }
-      ],
-      returns: [
-        { arg: 'isAdminRole', type: 'boolean' }
-      ],
-      http: { path: '/isAdminRole', verb: 'get' }
-    });
+
+    user.isStudentRole = (userId, cb) => { 
+      const Role = user.app.models.Role;
+      const RoleMapping = user.app.models.RoleMapping;
+      Role.findOne({ where: { name: 'student' } }, (errFindOne, role) => {
+        if (errFindOne) cb(null, false);
+        if (!_.isEmpty(role)) {
+          RoleMapping.find({ where: { roleId: role.id } }, (errFind, allStudents) => { 
+            if (errFind) cb(null, false);
+            const currentUser = allStudents.filter(x => x.principalId === userId.toString());
+            cb(null, currentUser.length > 0);
+          });
+        } else {
+          cb(null, false);
+        }
+      });
+    };
+
+    user.createStudentRoleMapping = slack_id => {
+      const Role = user.app.models.Role.findOne({'where': {'name': 'student'}})
+      const User = user.app.models.User.findOne({'where': {'username': 'slack.' + slack_id}})
+
+      Promise.all([Role, User]).then( result => {
+        let roleId = result[0].id
+        let userId = result[1].id
+        user.app.models.RoleMapping.upsertWithWhere({ principalId: userId},
+          {
+            principalType: "STUDENT",
+            principalId: userId,
+            roleId: roleId
+          })
+      })
+      .catch(err => {
+        console.log(err);
+        return -1;
+      })
+    }
+
+    user.deleteStudentRoleMapping = slack_id => {
+      user.app.models.User.findOne({'where': {'username': 'slack.' + slack_id}})
+      .then(loginUser => {
+        user.app.models.RoleMapping.findOne({'where': {'principalId': loginUser.id}})
+        .then(roleMapping => {
+          if (!!(roleMapping)) {
+            user.app.models.RoleMapping.deleteById(roleMapping.id)
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        return -1;
+      })
+    }
+
     const getAdminByID = x =>
       new Promise((resolve, reject) =>
         user.findById(x.principalId)

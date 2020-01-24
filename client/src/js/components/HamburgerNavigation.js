@@ -8,7 +8,8 @@ function HamburgerNavigation(props) {
       <div className='hamburger' onClick={toggleMenu}><div></div></div>
       <ul className='navigation hamburger-navigation'>
         <li>
-        <Link className='link-btn2' to={`/admin/login`}
+        <Link className='link-btn2' to={`/admin/login`} 
+        onClick={() => localStorage.removeItem('token')}
         >Logout
         </Link>
         </li>
