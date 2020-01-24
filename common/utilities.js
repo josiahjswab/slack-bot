@@ -1,4 +1,7 @@
 'use strict';
+
+const moment = require('moment')
+
 const today = new Date();
 function offsetDate(initialDate, dayOffset) {
   return new Date(initialDate.setDate(initialDate.getDate() + dayOffset));
@@ -186,42 +189,95 @@ function calculateIndividualCheckinData(checkins) {
     }
   ]);
 }
+
 function calculateIndividualWakatimeData(wt) {
-  const moment = require('moment')
 
-  let totalHours = 0;
-  wt.forEach(obj => totalHours += obj.duration);
 
-  let lastSevenDays = wt.filter(obj => moment(obj.date).isAfter(moment().utc().subtract(7, 'days').startOf('day')));
-
-  let totalDaysEnrolled = moment().diff(moment(lastSevenDays[0].date), 'days')
-
-  let timeSpentLastSevenDays = 0;
-  lastSevenDays.forEach(obj => timeSpentLastSevenDays += obj.duration);
-
-  let weeklyAverageHours = timeSpentLastSevenDays / totalDaysEnrolled;
-
-  return ([
-    {
-      featured: `${(timeSpentLastSevenDays/3600).toFixed(2)}`,
-      measurement: 'hrs',
-      footer: 'Time coding past 7 days',
-    }, {
-      featured: `${(weeklyAverageHours/3600).toFixed(2)}`,
-      measurement: 'hrs',
-      footer: 'Time coding weekly average',
-    }, {
-      featured: `${(totalHours/3600).toFixed(2)}`,
-      measurement: 'hrs',
-      footer: 'Time coding total hours',
-    },
-  ]);
-}
+    let totalHours = 0;
+    wt.forEach(obj => totalHours += obj.duration);
+  
+    let lastSevenDays = wt.filter(obj => moment(obj.date).isAfter(moment().utc().subtract(7, 'days').startOf('day')));
+  
+    let totalDaysEnrolled;
+    if (lastSevenDays.length == 0) {
+      totalDaysEnrolled = 0;
+    } else {
+      totalDaysEnrolled = moment().diff(moment(lastSevenDays[0].date), 'days');
+    }
+  
+  
+    let timeSpentLastSevenDays = 0;
+    lastSevenDays.forEach(obj => timeSpentLastSevenDays += obj.duration);
+  
+    let weeklyAverageHours;
+    if (totalDaysEnrolled) {
+      weeklyAverageHours = timeSpentLastSevenDays / totalDaysEnrolled;
+    } else {
+      weeklyAverageHours = 0;
+    }
+  
+    return ([
+      {
+        featured: `${(timeSpentLastSevenDays/3600).toFixed(2)}`,
+        measurement: 'hrs',
+        footer: 'Time coding past 7 days',
+      }, {
+        featured: `${(weeklyAverageHours/3600).toFixed(2)}`,
+        measurement: 'hrs',
+        footer: 'Time coding weekly average',
+      }, {
+        featured: `${(totalHours/3600).toFixed(2)}`,
+        measurement: 'hrs',
+        footer: 'Time coding total hours',
+      },
+    ]);
+  }
+  
+  function calculateIndividualCommitData(commits) {
+    const lastSevenDays = moment().subtract(7,'d').format('YYYY-MM-DD');
+    if (commits.length == 0) {
+      return 0;
+    };    
+    const commitDays = commits.filter(commit => 
+      moment(commit.date).format('YYYY-MM-DD') > lastSevenDays
+    );
+    let commitsLastSevenDays = commitDays.reduce((accumulator, github) => {
+      return accumulator + github.commits;
+    }, 0);				
+    
+    return commitsLastSevenDays
+  }
+  
+  function mergeStudentData(studentStandupsAndCheckins) {
+    let mergedData = {};
+    const checkins = studentStandupsAndCheckins[1];
+    for (let i = 0; i < checkins.length; i++) {
+      const formattedDate = moment(checkins[i].checkin_time).format("L dddd");
+      if (!mergedData[formattedDate]) {
+        mergedData[formattedDate] = {};
+      }
+      mergedData[formattedDate]["checkin"] = checkins[i];
+    }
+  
+    const standups = studentStandupsAndCheckins[0];
+    for (let i = 0; i < standups.length; i++) {
+      const formattedDate = moment(standups[i].date).format("L dddd");
+      if (!mergedData[formattedDate]) {
+        mergedData[formattedDate] = {};
+      }
+      mergedData[formattedDate]["standup"] = standups[i];
+    }
+  
+    return mergedData;
+  }
+  
 module.exports = {
   calculateAbsentees,
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateIndividualStandupsData,
   calculateIndividualCheckinData,
-  calculateIndividualWakatimeData
+  calculateIndividualWakatimeData,
+  calculateIndividualCommitData,
+  mergeStudentData
 };

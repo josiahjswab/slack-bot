@@ -58,9 +58,11 @@
     }
   },
   "files": {
-    "loopback#static": {
+    "loopback#static": [{
       "params": "$!../dist"
-    }
+    }, {
+      "params": "$!./public"
+    }]
   },
   "final": {
     "loopback#urlNotFound": {}

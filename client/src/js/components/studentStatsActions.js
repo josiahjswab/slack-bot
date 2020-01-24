@@ -1,27 +1,4 @@
-import moment from "moment";
-
-function mergeStudentData(studentStandupsAndCheckins) {
-  let mergedData = {};
-  const checkins = studentStandupsAndCheckins[1].value;
-  for (let i = 0; i < checkins.length; i++) {
-    const formattedDate = moment(checkins[i].checkin_time).format("L dddd");
-    if (!mergedData[formattedDate]) {
-      mergedData[formattedDate] = {};
-    }
-    mergedData[formattedDate]["checkin"] = checkins[i];
-  }
-
-  const standups = studentStandupsAndCheckins[0].value;
-  for (let i = 0; i < standups.length; i++) {
-    const formattedDate = moment(standups[i].date).format("L dddd");
-    if (!mergedData[formattedDate]) {
-      mergedData[formattedDate] = {};
-    }
-    mergedData[formattedDate]["standup"] = standups[i];
-  }
-
-  return mergedData;
-}
+import { mergeStudentData } from "../../../../common/utilities";
 
 function getStudentStats(id, authToken, slack_id) {
   return dispatch => {
@@ -74,26 +51,14 @@ function getStudentStats(id, authToken, slack_id) {
     Promise.all([standups, checkins]).then(standupsAndCheckins =>
       dispatch({
         type: "GET_STANDUPS_AND_CHECKINS",
-        payload: mergeStudentData(standupsAndCheckins)
+        payload: mergeStudentData([standupsAndCheckins[0].value, standupsAndCheckins[1].value])
       })
     );
   };
 }
 
-export function getStudentInfo(id, authToken, isSlackId) {
+export function getStudentInfo(id, authToken) {
   return dispatch => {
-    if (isSlackId){
-      return dispatch({
-        type: "GET_STUDENT_INFO",
-        payload: fetch(`/api/students/slackId/${id}?access_token=${authToken}`)
-          .then(response => response.json())
-          .then(data => {
-            return data;
-          })
-      }).then(student => {
-        dispatch(getStudentStats(student.value[0].id, authToken, id));
-      });
-    } else {
       return dispatch({
         type: "GET_STUDENT_INFO",
         payload: fetch(`/api/students/${id}?access_token=${authToken}`)
@@ -104,7 +69,6 @@ export function getStudentInfo(id, authToken, isSlackId) {
       }).then(student => {
         dispatch(getStudentStats(id, authToken, student.value.slack_id));
       });
-    }
   };
 }
 
@@ -128,7 +92,20 @@ export function updateStudentInfo(id, editedStudentInfo, authToken) {
           dispatch({
             type: "UPDATE_STUDENT_INFO",
             payload: data
-          });
+          })
+          switch (editedStudentInfo.type) {
+            case "PAID":
+              console.log("PAID")
+              fetch(`/admin/student-summary/createStudentRoleMapping/${editedStudentInfo.slack_id}?auth_token=${authToken}`).then(res => console.log(res))
+              break;
+            case "DISABLED":
+              console.log("DISABLED")
+              fetch(`/admin/student-summary/deleteStudentRoleMapping/${editedStudentInfo.slack_id}?auth_token=${authToken}`).then(res => console.log(res))
+              break;
+          
+            default:
+              break;
+          }
         }
       });
   };

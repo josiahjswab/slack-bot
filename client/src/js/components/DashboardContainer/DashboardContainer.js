@@ -7,12 +7,11 @@ import {
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateAbsentees
-} from "../../utilities";
+} from "../../../../../common/utilities";
 import {
   saveStudentData,
   getStudentData,
   setStudentsBeingViewed,
-  storeAuthToken,
   sendAbsences
 } from "./dashboardActions";
 import EditStudent from "../EditStudent";
@@ -47,8 +46,10 @@ class DashboardContainer extends Component {
       /^(.*?)\auth_token=/,
       ""
     );
-    dispatch(storeAuthToken(authToken))
-    dispatch(getStudentData(authToken));
+    if (localStorage.getItem('token') == null) {
+      localStorage.setItem('token', authToken);
+    }
+    dispatch(getStudentData(localStorage.getItem('token')));
   }
 
   toggle(panel) {
@@ -94,7 +95,7 @@ class DashboardContainer extends Component {
       showConfirmAbsenteesWindow: false
     });
     const { dispatch } = this.props;
-    dispatch(sendAbsences(slack_ids, this.props.authToken));
+    dispatch(sendAbsences(slack_ids, localStorage.getItem('token')));
   }
 
   handleSaveStudentData(studentData) {
@@ -103,7 +104,7 @@ class DashboardContainer extends Component {
       saveErrorMessage: null
     });
     const { dispatch } = this.props;
-    dispatch(saveStudentData(studentData, this.props.authToken));
+    dispatch(saveStudentData(studentData, localStorage.getItem('token')));
   }
 
   getViewByType(e) {
@@ -116,11 +117,11 @@ class DashboardContainer extends Component {
         student => student.type == "JOBSEEKER"
       );
       let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
-      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, this.props.authToken));
+      dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, localStorage.getItem('token')));
     } else if (typeFilter == "ALL") {
-      dispatch(setStudentsBeingViewed(students, this.props.authToken));
+      dispatch(setStudentsBeingViewed(students, localStorage.getItem('token')));
     } else {
-      dispatch(setStudentsBeingViewed(filtered, this.props.authToken));
+      dispatch(setStudentsBeingViewed(filtered, localStorage.getItem('token')));
     }
   }
 
@@ -230,6 +231,7 @@ class DashboardContainer extends Component {
               <Link
                 className="link-btn1"
                 to={`/admin/login`}
+                onClick={() => localStorage.removeItem('token')}
               >
                 Logout
               </Link>
@@ -281,7 +283,7 @@ class DashboardContainer extends Component {
               >
                 <Roster
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.props.authToken}
+                  auth_token={localStorage.getItem('token')}
                 />
               </div>
             </div>
@@ -305,7 +307,7 @@ class DashboardContainer extends Component {
                     standupsData ? standupsData.delinquents : undefined
                   }
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.props.authToken}
+                  auth_token={localStorage.getItem('token')}
                 />
               </div>
             </div>
@@ -330,7 +332,7 @@ class DashboardContainer extends Component {
                   }
                   delinquentTitle="absentees"
                   students={this.props.studentsBeingViewed}
-                  auth_token={this.props.authToken}
+                  auth_token={localStorage.getItem('token')}
                 />
               </div>
             </div>

@@ -1,44 +1,15 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import StandupAndCheckin from '../StandupAndCheckin';
 import DataSectionForStudentStats from '../DataSectionForStudentStats';
 import {
   calculateIndividualCheckinData,
   calculateIndividualStandupsData,
   calculateIndividualWakatimeData,
   calculateIndividualCommitData,
-  mergeStudentData
 } from '../../../../../common/utilities';
 
-function sortByDate(a, b) {
-  let arrA = a[0].split('/')
-  let arrB = b[0].split('/')
-  if (parseInt(arrA[2].substring(0, 4)) > parseInt(arrB[2].substring(0, 4))) {
-    return -1;
-  }
-  else if (parseInt(arrA[2].substring(0, 4)) < parseInt(arrB[2].substring(0, 4))) {
-    return 1;
-  }
-  else if (parseInt(arrA[0]) > parseInt(arrB[0])){
-    return -1;
-  }
-  else if (parseInt(arrA[0]) < parseInt(arrB[0])){
-    return 1;
-  }
-  else if (parseInt(arrA[1]) > parseInt(arrB[1])){
-    return -1;
-  }
-  else if (parseInt(arrA[1]) < parseInt(arrB[1])){
-    return 1;
-  }
-  else{
-    return 0;
-  }
-};
+export default function PartnerDashboard(props) {
 
-export default function StudentDashboard(props) {
-    
-    let StandupAndCheckinComponent;
     let standupsData = [];
     if (window.student.standups.length) {
       standupsData = calculateIndividualStandupsData(
@@ -62,27 +33,6 @@ export default function StudentDashboard(props) {
     if (window.student.wakatimes) {
       wakatimeData = calculateIndividualWakatimeData(
         window.student.wakatimes
-      );
-    }
-    let standupAndCheckinData = mergeStudentData([window.student.standups, window.student.checkins]);
-    if (Object.keys(standupAndCheckinData).length > 0) {
-      StandupAndCheckinComponent = Object.entries(
-        standupAndCheckinData
-      )
-        .sort(sortByDate)
-        .map(data => (
-          <StandupAndCheckin
-            key={data[0]}
-            date={data[0]}
-            checkin={data[1].checkin}
-            standup={data[1].standup}
-          />
-        ));
-    } else {
-      StandupAndCheckinComponent = (
-        <div className="standup-card">
-          {`${window.student.name} has not submitted any standups and has not checked in.`}
-        </div>
       );
     }
 
@@ -175,24 +125,10 @@ export default function StudentDashboard(props) {
               name={window.student.name}
             />
           </div>
-          <section className="standupAndcheckin">
-            <span
-              className="section-label pointer"
-              onClick={() => this.toggle("standups-panel")}
-            >
-              <h2>Standups and Checkins</h2>
-            </span>
-            <div
-              className={`standup-container`}
-            >
-              {StandupAndCheckinComponent}
-            </div>
-          </section>
         </main>
       </>
     );
   }
 
 
-render(<StudentDashboard />, document.getElementById('root'));
-
+render(<PartnerDashboard />, document.getElementById('root'));

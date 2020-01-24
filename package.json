@@ -6,10 +6,10 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "parcel build client/src/html/index.html client/src/html/login.html",
+    "build": "parcel build client/src/html/index.html client/src/html/login.html && parcel build client/src/js/components/StudentView/StudentDashboard.js && parcel build client/src/js/components/AccountabilityPartner/PartnerDashboard.js --no-content-hash",
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
-    "start": "node .",
+    "start": "node ./server/server.js",
     "test": "jest --no-watchman --verbose --coverage; mocha test/server/*.spec.js --exit",
     "coverage": "nyc npm run test",
     "cy:open": "cypress open",
@@ -33,6 +33,7 @@
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "dotenv": "^8.1.0",
+    "ejs": "^3.0.1",
     "express-flash": "0.0.2",
     "express-session": "^1.16.2",
     "helmet": "^3.10.0",
@@ -67,9 +68,9 @@
     "strong-error-handler": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-react": "^7.7.0",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "chai": "^4.2.0",
