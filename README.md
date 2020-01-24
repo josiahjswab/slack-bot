@@ -99,6 +99,7 @@ EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
         - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
         - Subscribe to Bot Events
            'team_join'
+        DO NOT CLICK ON UPDATE SCOPES this will not be able to use these scopes
 
 6.  Add Environmental Variables to .env
 
