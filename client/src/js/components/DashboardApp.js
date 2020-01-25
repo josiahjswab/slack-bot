@@ -4,6 +4,7 @@ import DashboardContainer from './DashboardContainer/index';
 import StudentStats from './StudentStats';
 import AdminLogin from './AdminLogin';
 import StudentLogin from './StudentView/StudentLogin';
+import PartnerLogin from './AccountabilityPartner/PartnerLogin'
 
 function DashboardApp(props) {
   return (
@@ -12,6 +13,7 @@ function DashboardApp(props) {
       <Route path='/admin/student-summary/:id' component={ StudentStats } />
       <Route path='/admin/login' component={ AdminLogin } />
       <Route path='/login' component={ StudentLogin } />
+      <Route path='/partner/login' component={ PartnerLogin } />
     </Router>
   );
 }
