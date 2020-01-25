@@ -110,7 +110,7 @@ app.get('/admin/login', (req, res) => {
 });
 
 
-app.get('/admin/auth', ensureAdmin, (req, res) => {
+app.get('/admin/auth', (req, res) => {
   const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
   res.redirect(`/admin/dashboard?auth_token=${token}`);
 });
