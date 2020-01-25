@@ -46,7 +46,7 @@ module.exports = (user) => {
         let userId = result[1].id
         user.app.models.RoleMapping.upsertWithWhere({ principalId: userId},
           {
-            principalType: "USER",
+            principalType: "STUDENT",
             principalId: userId,
             roleId: roleId
           })
