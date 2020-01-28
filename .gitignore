@@ -10,6 +10,7 @@
 *.swp
 *.tgz
 *.xml
+.env
 .cache
 .DS_Store
 .env*
