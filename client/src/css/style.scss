@@ -567,6 +567,8 @@ header .date {
   margin-bottom: -46px;
   max-width: 50px;
   margin-top: -4px;
+  position: relative;
+  z-index: 1;
 }
 
 .login-container form input {
