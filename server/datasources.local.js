@@ -2,6 +2,8 @@
 
 module.exports = {
   'mongod': {
-    'connector': 'mongodb'
-  }
+    'url': 'mongodb://localhost:27017/slack-bot-dev',
+    'name': 'mongod',
+    'connector': 'mongodb',
+  },
 };
