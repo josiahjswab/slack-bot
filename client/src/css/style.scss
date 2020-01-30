@@ -908,3 +908,18 @@ req.body.checkin{
   color: $default-text-light;
   text-decoration: none;
 }
+
+.indicator-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex;
+}
+
+.indicator-box {
+  width: 2%;
+  height: 15px;
+  border: 1px solid black;
+  margin: 2px;
+  font-size: 9px;
+}

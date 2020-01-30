@@ -197,7 +197,7 @@ function calculateIndividualWakatimeData(wt) {
     wt.forEach(obj => totalHours += obj.duration);
   
     let lastSevenDays = wt.filter(obj => moment(obj.date).isAfter(moment().utc().subtract(7, 'days').startOf('day')));
-  
+   
     let totalDaysEnrolled;
     if (lastSevenDays.length == 0) {
       totalDaysEnrolled = 0;

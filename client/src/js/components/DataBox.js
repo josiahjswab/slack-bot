@@ -7,6 +7,7 @@ function DataBox(props) {
   } else if (props.data.measurement) {
     midline = <span>{ props.data.measurement }</span>
   }
+
   return(
     <div className='center-data box'>
       <div className='data'>
