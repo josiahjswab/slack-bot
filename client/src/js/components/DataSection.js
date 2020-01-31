@@ -14,12 +14,14 @@ function DataSection(props) {
     boxes = <p>No data available</p>
   }
 
-  if(props.delinquents) {
+  if(props.delinquents || props.presentStudents) {
     delinquents =
       (<Delinquents 
-        title={ props.delinquentTitle ? props.delinquentTitle : 'delinquents' }
+        title={ props.title }
         students={ props.delinquents }
-        auth_token={props.auth_token}
+        auth_token={ props.auth_token }
+        presentStudents={ props.presentStudents }
+
       />)
   }
   
