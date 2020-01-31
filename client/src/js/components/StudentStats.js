@@ -15,6 +15,7 @@ import {
   toggleEditWindow,
 } from './studentStatsActions';
 import StudentStatsDownload from './StudentStatsDownload';
+import DailyCodingIndicator from './DailyCodingIndicator/DailyCodingIndicator';
 
 class Standups extends Component {
   constructor(props) {
@@ -149,7 +150,7 @@ class Standups extends Component {
     let keyClassMetrics = [];
     let keyStandupMetrics = [];
     let keyCodingMetrics = [];
-		let keyCommitMetrics = [];
+    let keyCommitMetrics = [];
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
@@ -208,7 +209,7 @@ class Standups extends Component {
       ...otherCodingMetrics,
       ...otherStandupMetrics
     ];
-
+   
     return (
       <>
         <HamburgerNavigation
@@ -231,6 +232,11 @@ class Standups extends Component {
               data={otherMetrics}
               name={this.props.studentInfo.name}
             />
+            <DailyCodingIndicator
+              title="Coding Indicator"
+              data={this.props.studentWakatimes}
+              name={this.props.studentInfo.name}
+            />
             <StudentStatsDownload 
             title='Checkin Data' 
             checkinData={this.props.studentCheckins}
@@ -239,7 +245,6 @@ class Standups extends Component {
             name={this.props.studentInfo.name}
             />
           </div>
-          
           <section className="standupAndcheckin">
             <span
               className="section-label pointer"

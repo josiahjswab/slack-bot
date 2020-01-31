@@ -10,6 +10,7 @@
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
     "start": "node ./server/server.js",
+    "devstart": "NODE_ENV=development node ./server/server.js",
     "test": "jest --no-watchman --verbose --coverage; mocha test/server/*.spec.js --exit",
     "coverage": "nyc npm run test",
     "cy:open": "cypress open",
@@ -89,6 +90,7 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
     "mocha": "^6.1.4",
+    "mongoose": "^5.8.10",
     "react-test-renderer": "^16.11.0",
     "start-server-and-test": "^1.10.6"
   },
