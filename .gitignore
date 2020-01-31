@@ -29,4 +29,5 @@ data
 data.json
 cypress/videos
 cypress/screenshots
+cypress.env.json
 .nyc_output

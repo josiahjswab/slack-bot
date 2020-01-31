@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "start": "node ./server/server.js",
     "devstart": "NODE_ENV=development node ./server/server.js",
+    "cypress": "./node_modules/.bin/cypress open",
     "test": "jest --no-watchman --verbose --coverage; mocha test/server/*.spec.js --exit",
     "coverage": "nyc npm run test",
     "cy:open": "cypress open",
