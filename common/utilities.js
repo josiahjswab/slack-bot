@@ -54,6 +54,11 @@ function calculateDashboardCheckinData(activeCheckins, students) {
       return student.slack_id === checkin.slack_id;
     });
   });
+  const present = students.filter(student => {
+    return activeCheckins.some(checkin => {
+      return student.slack_id === checkin.slack_id;
+    });
+  });
   return {
     summary: [
       {
@@ -63,6 +68,7 @@ function calculateDashboardCheckinData(activeCheckins, students) {
       },
     ],
     delinquents: absentees,
+    presentStudents: present,
   };
 }
 

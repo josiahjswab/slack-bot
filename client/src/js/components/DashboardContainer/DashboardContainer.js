@@ -302,6 +302,7 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
+                  title='Delinquents'
                   data={standupsData ? standupsData.summary : undefined}
                   delinquents={
                     standupsData ? standupsData.delinquents : undefined
@@ -326,11 +327,14 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
+                  title='Absentees'
                   data={checkinData ? checkinData.summary : undefined}
                   delinquents={
                     checkinData ? checkinData.delinquents : undefined
                   }
-                  delinquentTitle="absentees"
+                  presentStudents={
+                    checkinData ? checkinData.presentStudents : undefined
+                  }
                   students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
