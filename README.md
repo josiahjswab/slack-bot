@@ -139,7 +139,7 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
     /{initials}checkout : {localtunnel url}/slack/checkout
     /{initials}standup : {localtunnel url}/slack/standup
     /{initials}wakatime : {localtunnel url}/slack/wakatime
-	/edit : https://dingdong-slack-bot.herokuapp.com/slack/edit
+    /{initials}edit : {localtunnel url}/slack/edit
     - 'OAuth & Permissions'
         - Permission Scopes:
             chat:write:bot
@@ -148,7 +148,7 @@ Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots 
             bot
             commands
     - 'Event Subscriptions'
-        - https://dingdong-slack-bot.herokuapp.com/slack/events -- this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
+        - {localtunnel url}/slack/events -- this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks.
         - Subscribe to Bot Events
            'team_join'
 
@@ -273,27 +273,18 @@ keeping the authentication token in the url
 
 In order to sign in, go to the url route /login
 
-After you sign in with slack you should get the following objects in your users. 
+After you sign in with slack you should get the following objects like the following in your users.
 
-{
-    "username": "slack.UREHZNDL3",
-    "email": "UREHZNDL3@loopback.Slack.com",
-    "id": "5dfaade86a95a2edf110740a"
-}
+{ "username": "slack.UREHZNDL3", "email": "UREHZNDL3@loopback.Slack.com", "id": "5dfaade86a95a2edf110740a" }
 
-Role mapping is not implemented yet, you need to post a role mapping with the principal id equal to the user id from above.
-Also you need to make up the roleID and principal type. We use STUDENT because it made the most sense.
+Now use the /edit command or the explorer to create a student with a matching slack ID.
 
-{
-    "id": "5dfac549a12a9006eb58cc0c",
-    "principalType": "STUDENT",
-    "principalId": "5dfaade86a95a2edf110740a",
-    "roleId": "5dfaade86a95a2edf110840a"
-}
+In the admin dashboard, if you go to edit a student and change them to paid it will create a role mapping like the following. This will allow the student to view their dashboard.
 
-additionally add the redirect url /student/auth/slack/callback to your slack application
+{ "id": "5dfac549a12a9006eb58cc0c", "principalType": "USER", "principalId": "5dfaade86a95a2edf110740a", "roleId": "5dfaade86a95a2edf110840a" }
 
-Also add SLACK_CLIENT_ID and SLACK_CLIENT_SECRET
-from your slack application credentials in Basic Information
+additionally you will need to add auth/slack/callback to your slack application
+
+Also add SLACK_CLIENT_ID and SLACK_CLIENT_SECRET from your slack application credentials in Basic Information
 
 :copyright: 2019 San Diego Code School

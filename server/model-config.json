@@ -69,7 +69,11 @@
     "dataSource": "mongod",
     "public": true
   },
-	"commits": {
+  "commits": {
+    "dataSource": "mongod",
+    "public": true
+  },
+  "challenges": {
     "dataSource": "mongod",
     "public": true
   }

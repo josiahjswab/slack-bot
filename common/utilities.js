@@ -1,6 +1,5 @@
 'use strict';
-
-const moment = require('moment')
+const moment = require('moment');
 
 const today = new Date();
 function offsetDate(initialDate, dayOffset) {
@@ -126,7 +125,6 @@ function calculateIndividualStandupsData(standups) {
   ]);
 }
 
-
 function calculateIndividualCheckinData(checkins) {
   if (checkins.length === 0) { return null; }
   // total time spent in classroom
@@ -197,7 +195,6 @@ function calculateIndividualCheckinData(checkins) {
 }
 
 function calculateIndividualWakatimeData(wt) {
-
 
     let totalHours = 0;
     wt.forEach(obj => totalHours += obj.duration);
