@@ -269,26 +269,6 @@ keeping the authentication token in the url
         - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google credentials
 
-## Testing with Cypress
-
-Set the Cypress environmental variables by including the CYPRESS_ prefix.
-CYPRESS_ADMIN_EMAIL and CYPRESS_ADMIN_PASSWORD required to run login test.
-
-Command Line Example:
-$ export CYPRESS_ADMIN_EMAIL=<email for the user that is generated on server boot>
-$ export CYPRESS_ADMIN_PASSWORD=<password for the user that is generated on server boot>
-
-OR
-
-Update cypress.json to include the environmental variables.
-Example:
-{
-  "env": {     
-    "ADMIN_EMAIL": "<email for the user that is generated on server boot>",
-    "ADMIN_PASSWORD": "<password for the user that is generated on server boot>"
-  }
-}
-
 ## Using the Student User Dashboard
 
 In order to sign in, go to the url route /login
