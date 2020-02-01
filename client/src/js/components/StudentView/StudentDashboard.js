@@ -9,6 +9,7 @@ import {
   calculateIndividualCommitData,
   mergeStudentData
 } from '../../../../../common/utilities';
+import StandupCheckinVisuals from '../StandupCheckinVisuals/StandupCheckinVisuals';
 
 function sortByDate(a, b) {
   let arrA = a[0].split('/')
@@ -172,6 +173,11 @@ export default function StudentDashboard(props) {
             <DataSectionForStudentStats
               title="Other Metrics"
               data={otherMetrics}
+              name={window.student.name}
+            />
+            <StandupCheckinVisuals
+              title='Standup Checkin Visuals'
+              standupCheckin={standupAndCheckinData}
               name={window.student.name}
             />
           </div>
