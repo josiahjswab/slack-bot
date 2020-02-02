@@ -3,7 +3,7 @@
 This Slack bot allows a student to ring the doorbell to alert the staff to open the door and gives them the ability to click a button to let the staff know they got in. A student will also be able to check in and out of class. The check in and out times will be logged for each student. A student will be able to submit a daily stand up report. Staff can view all submitted stand ups for the day in a private channel. Staff can also view summary data for standups and attendance on a dashboard site.
 
 ## Table Of Contents
--[Setup](#setup)
+-[Setup](#setup)<br/>
 -[Create Tunnel](#create-tunnel)
 -[Create Bot](#create-bot)
 -[Student Dash](#student-dash)
@@ -12,7 +12,7 @@ This Slack bot allows a student to ring the doorbell to alert the staff to open 
 -[Google Setup](#setup-google)
 -[Cypress Testing](#cypress)
 
-#<a name="setup">
+<a name="setup">
 ## Setup
 
 Install all dependencies:
@@ -66,7 +66,7 @@ SLACK_CLIENT_SECRET=
 SLACK_CRON_HOOK=
 
 ```
-#<a name="create-tunnel">
+<a name="create-tunnel">
 ### Create local Tunnel
 
 1.  Install Local Tunnel (or Ngrok)
@@ -104,7 +104,7 @@ npm run dev
 (you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
 Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in your .env file.  Keep this server running at all times.  If it is stopped you will need to redo all of your slack commands, etc.  Because each time that the server is restarted it generates a new tunnel address.
 
-#<a name="create-bot">
+<a name="create-bot">
 ### Create a local dev bot for each coder for testing
 
 1.  Create an app at https://api.slack.com/apps?new_classic_app=1
@@ -174,7 +174,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
     - Save Changes
 10. - Create Admin_Username, Admin_Email, Admin_password in .env file.
 
-#<a name="student-dash">
+<a name="student-dash">
 ## Using the Student User Dashboard
 
 1.  In order to sign in, go to the {localtunnel url}/login
@@ -207,14 +207,14 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - Click on login with Slack
         - Congratulations You are in!
 
-#<a name="explorer">
+<a name="explorer">
 ### Using the explorer
 
 - In order to use the explorer the admin needs to be logged in.
     - save ?auth_token=xxxxx
 - go to http://localhost3000/explorer/?auth_token=xxxxx
 
-#<a name="auth-google">
+<a name="auth-google">
 ### Authorizing Google Authenticated Users
 
 1.  Create a new user associated with your Google account:
@@ -230,7 +230,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google               credentials
 
-#<a name="setup-google">
+<a name="setup-google">
 ### Setup Google Authentication
 
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
@@ -261,7 +261,7 @@ module.exports = {
     - Click on Add
     - Click on Save URLs
 
-#<a name="cypress">
+<a name="cypress">
 ## Cypress Testing
 
 Create a file: `cypress.env.json` in the root directory.
