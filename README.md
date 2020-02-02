@@ -11,8 +11,10 @@ This Slack bot allows a student to ring the doorbell to alert the staff to open 
 -[Google Authorization](#auth-google)<br/>
 -[Google Setup](#setup-google)<br/>
 -[Cypress Testing](#cypress)<br/>
+-[How to set a Cronjob](#cronjob)<br/>
 
 <a name="setup">
+
 ## Setup
 
 Install all dependencies:
@@ -67,6 +69,7 @@ SLACK_CRON_HOOK=
 
 ```
 <a name="create-tunnel">
+
 ### Create local Tunnel
 
 1.  Install Local Tunnel (or Ngrok)
@@ -105,6 +108,7 @@ npm run dev
 Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in your .env file.  Keep this server running at all times.  If it is stopped you will need to redo all of your slack commands, etc.  Because each time that the server is restarted it generates a new tunnel address.
 
 <a name="create-bot">
+
 ### Create a local dev bot for each coder for testing
 
 1.  Create an app at https://api.slack.com/apps?new_classic_app=1
@@ -175,6 +179,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
 10. - Create Admin_Username, Admin_Email, Admin_password in .env file.
 
 <a name="student-dash">
+
 ## Using the Student User Dashboard
 
 1.  In order to sign in, go to the {localtunnel url}/login
@@ -208,6 +213,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - Congratulations You are in!
 
 <a name="explorer">
+
 ### Using the explorer
 
 - In order to use the explorer the admin needs to be logged in.
@@ -215,6 +221,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
 - go to http://localhost3000/explorer/?auth_token=xxxxx
 
 <a name="auth-google">
+
 ### Authorizing Google Authenticated Users
 
 1.  Create a new user associated with your Google account:
@@ -231,6 +238,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
 3.  You should now be able to log in to the site with your Google               credentials
 
 <a name="setup-google">
+
 ### Setup Google Authentication
 
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
@@ -262,6 +270,7 @@ module.exports = {
     - Click on Save URLs
 
 <a name="cypress">
+
 ## Cypress Testing
 
 Create a file: `cypress.env.json` in the root directory.
@@ -279,3 +288,12 @@ Then: `$ npm run cypress` to run the test.
 
 
 :copyright: 2019 San Diego Code School
+
+<a name="cronjob">
+
+## Set a Cronjob
+
+A cron job runs every 5 minutes and will send the first object returned with a timestamp from that moment to 4:59 sec into the future. Cronjob runs a job check every 5 minutes.
+Too add a job open api/explorer and in the challenges model do a post.
+Add the message and url you would like to send.
+Add the time you would like this message to be executed in local military time.
