@@ -3,12 +3,14 @@
 This Slack bot allows a student to ring the doorbell to alert the staff to open the door and gives them the ability to click a button to let the staff know they got in. A student will also be able to check in and out of class. The check in and out times will be logged for each student. A student will be able to submit a daily stand up report. Staff can view all submitted stand ups for the day in a private channel. Staff can also view summary data for standups and attendance on a dashboard site.
 
 ## Table Of Contents
-*[Setup](#setup)
-*[Create Tunnel](#create-tunnel)
-*[Create Bot](#create-bot)
-*[Setup](#setup)
-*[Setup](#setup)
-*[Setup](#setup)
+-[Setup](#setup)
+-[Create Tunnel](#create-tunnel)
+-[Create Bot](#create-bot)
+-[Student Dash](#student-dash)
+-[Explorer](#explorer)
+-[Google Authorization](#auth-google)
+-[Google Setup](#setup-google)
+-[Cypress Testing](#cypress)
 
 #<a name="setup">
 ## Setup
@@ -172,7 +174,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
     - Save Changes
 10. - Create Admin_Username, Admin_Email, Admin_password in .env file.
 
-
+#<a name="student-dash">
 ## Using the Student User Dashboard
 
 1.  In order to sign in, go to the {localtunnel url}/login
@@ -205,14 +207,14 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - Click on login with Slack
         - Congratulations You are in!
 
-
+#<a name="explorer">
 ### Using the explorer
 
 - In order to use the explorer the admin needs to be logged in.
     - save ?auth_token=xxxxx
-- go to {localtunnel}/explorer/?auth_token=xxxxx
+- go to http://localhost3000/explorer/?auth_token=xxxxx
 
-
+#<a name="auth-google">
 ### Authorizing Google Authenticated Users
 
 1.  Create a new user associated with your Google account:
@@ -228,7 +230,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - roleId: \< not required >
 3.  You should now be able to log in to the site with your Google               credentials
 
-
+#<a name="setup-google">
 ### Setup Google Authentication
 
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
@@ -259,22 +261,21 @@ module.exports = {
     - Click on Add
     - Click on Save URLs
 
+#<a name="cypress">
+## Cypress Testing
 
-## Testing with Cypress
+Create a file: `cypress.env.json` in the root directory.
 
-Set the Cypress environmental variables by including the CYPRESS_ prefix.
-CYPRESS_ADMIN_EMAIL and CYPRESS_ADMIN_PASSWORD required to run login test.
-Command Line Example:
-$ export CYPRESS_ADMIN_EMAIL=<email for the user that is generated on server boot>
-$ export CYPRESS_ADMIN_PASSWORD=<password for the user that is generated on server boot>
-OR
-Update cypress.json to include the environmental variables.
-Example:
+It should contain these this object with values from your .env:
+
+```
 {
-  "env": {
-    "ADMIN_EMAIL": "<email for the user that is generated on server boot>",
-    "ADMIN_PASSWORD": "<password for the user that is generated on server boot>"
-  }
+  "ADMIN_EMAIL": "YOUR ENV VALUE",
+  "ADMIN_PASSWORD": "YOUR ENV VALUE"
 }
+```
+Start server: `$ npm run build && npm run devstart`
+Then: `$ npm run cypress` to run the test.
+
 
 :copyright: 2019 San Diego Code School
