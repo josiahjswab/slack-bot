@@ -4,13 +4,13 @@ This Slack bot allows a student to ring the doorbell to alert the staff to open 
 
 ## Table Of Contents
 -[Setup](#setup)<br/>
--[Create Tunnel](#create-tunnel)
--[Create Bot](#create-bot)
--[Student Dash](#student-dash)
--[Explorer](#explorer)
--[Google Authorization](#auth-google)
--[Google Setup](#setup-google)
--[Cypress Testing](#cypress)
+-[Create Tunnel](#create-tunnel)<br/>
+-[Create Bot](#create-bot)<br/>
+-[Student Dash](#student-dash)<br/>
+-[Explorer](#explorer)<br/>
+-[Google Authorization](#auth-google)<br/>
+-[Google Setup](#setup-google)<br/>
+-[Cypress Testing](#cypress)<br/>
 
 <a name="setup">
 ## Setup
