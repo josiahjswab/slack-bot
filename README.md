@@ -287,7 +287,6 @@ Start server: `$ npm run build && npm run devstart`
 Then: `$ npm run cypress` to run the test.
 
 
-:copyright: 2019 San Diego Code School
 
 <a name="cronjob">
 
@@ -297,3 +296,5 @@ A cron job runs every 5 minutes and will send the first object returned with a t
 Too add a job open api/explorer and in the challenges model do a post.
 Add the message and url you would like to send.
 Add the time you would like this message to be executed in local military time.
+
+:copyright: 2019 San Diego Code School
