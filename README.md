@@ -2,7 +2,15 @@
 
 This Slack bot allows a student to ring the doorbell to alert the staff to open the door and gives them the ability to click a button to let the staff know they got in. A student will also be able to check in and out of class. The check in and out times will be logged for each student. A student will be able to submit a daily stand up report. Staff can view all submitted stand ups for the day in a private channel. Staff can also view summary data for standups and attendance on a dashboard site.
 
+## Table Of Contents
+*[Setup](#setup)
+*[Create Tunnel](#create-tunnel)
+*[Create Bot](#create-bot)
+*[Setup](#setup)
+*[Setup](#setup)
+*[Setup](#setup)
 
+#<a name="setup">
 ## Setup
 
 Install all dependencies:
@@ -56,7 +64,7 @@ SLACK_CLIENT_SECRET=
 SLACK_CRON_HOOK=
 
 ```
-
+#<a name="create-tunnel">
 ### Create local Tunnel
 
 1.  Install Local Tunnel (or Ngrok)
@@ -94,7 +102,7 @@ npm run dev
 (you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
 Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in your .env file.  Keep this server running at all times.  If it is stopped you will need to redo all of your slack commands, etc.  Because each time that the server is restarted it generates a new tunnel address.
 
-
+#<a name="create-bot">
 ### Create a local dev bot for each coder for testing
 
 1.  Create an app at https://api.slack.com/apps?new_classic_app=1
