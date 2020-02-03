@@ -18,6 +18,11 @@ function HamburgerNavigation(props) {
             Edit Student
 					</div>
         </li>
+        <li onClick={props.openStudentAccountabilityPartnerInfo()}>
+          <div className='secondary-btn acc-partner-btn'>
+            Accountability Partner
+					</div>
+        </li>
         <li className='dashboard-link'>
           <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
             <p id='logo-style-student-page'></p></Link>

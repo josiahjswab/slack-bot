@@ -1,17 +1,27 @@
-# SDCS Slack Bot
+# SDCS Slack Bot 
 
 This Slack bot allows a student to ring the doorbell to alert the staff to open the door and gives them the ability to click a button to let the staff know they got in. A student will also be able to check in and out of class. The check in and out times will be logged for each student. A student will be able to submit a daily stand up report. Staff can view all submitted stand ups for the day in a private channel. Staff can also view summary data for standups and attendance on a dashboard site.
+
+## Table Of Contents
+-[Setup](#setup)<br/>
+-[Create Tunnel](#create-tunnel)<br/>
+-[Create Bot](#create-bot)<br/>
+-[Student Dash](#student-dash)<br/>
+-[Explorer](#explorer)<br/>
+-[Google Authorization](#auth-google)<br/>
+-[Google Setup](#setup-google)<br/>
+-[Cypress Testing](#cypress)<br/>
+-[How to set a Cronjob](#cronjob)<br/>
+
+<a name="setup">
 
 ## Setup
 
 Install all dependencies:
-
 ```
 $ npm install
 ```
-
 Add environment variables to a new file named `.env`. See engineers for credentials. The STUDENTS_CHANNEL is where the students make requests from. The KEY_CHANNEL is where the staff is alerted if somebody rings the door. The ADMIN_REPORTS_CHANNEL is where the staff can view the daily standups that have been submitted.
-
 ```
 OAUTH_ACCESS_TOKEN=
 BOT_USER_OAUTH_ACCESS_TOKEN=
@@ -24,6 +34,7 @@ SLACK_URL= <base url for Slack Workspace>
 BASE_URL= <server host base url>
 
 API_ROOT=<base url for API recieving new user info related to event hook>
+
 X_API_KEY=<API key for above transaction>
 X_USER_ID=<user ID for above transaction>
 X_BUSINESS_ID=<business ID for above transaction>
@@ -47,123 +58,196 @@ NODE_ENV=<development or production>
 TZ="America/Tijuana"
 
 Optional
+
 EXTERNAL_LOGGING= <truthy - only runs if value is present>
 EXTERNAL_LOGGING_URL= <url to send external logs>
 EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
 
+SLACK_CLIENT_ID=
+SLACK_CLIENT_SECRET=
+SLACK_CRON_HOOK=
+
+```
+<a name="create-tunnel">
+
+### Create local Tunnel
+
+1.  Install Local Tunnel (or Ngrok)
+
 ```
 
-### Create a production bot
+npm install -g localtunnel
 
-1.  Create an app at https://api.slack.com/apps
-    - Add a distinct app name
+```
 
-2.  Create a bot in ‘Bot Users’
-    - Add a distinct bot Display Name
-    - Add a bot Default Name (should be same or similar to Display Name)
+2.  Run Local Tunnel
 
-3.  Invite bot to workplace
-    - Go to ‘Basic Information
-    - Select ‘Install your app to your workspace’
-    - Click ‘Install App to Workspace’ button
-    - Confirm identity
+```
 
-4.  Invite bot to current students, key, and admin reports channels
-    - Go to workplace in the Slack App
-    - Click on current students channel
-    - Click on settings (gear icon)
-    - Select Apps and click on ‘Add app’
-    - Select your bot and click ‘Add’
-    - Repeat for key channel and admin reports channel
-    - NOTE: Save student, key, and admin reports channel IDs for environment variables: right click on the channel and open the url (channel ID will be at the end of the url after '/messages')
+lt --port 3000 --subdomain <devsubdomain>
 
-5.  Add Button and Slash Command urls in the Slack API
-    - Return to https://api.slack.com/apps
-    - ‘Interactive Components’\
-    Request Url: https://dingdong-slack-bot.herokuapp.com/slack/interactive
-    - ‘Slash Commands’\
-    /doorbell : https://dingdong-slack-bot.herokuapp.com/slack/doorbell \
-    /checkin : https://dingdong-slack-bot.herokuapp.com/slack/checkin \
-    /checkout : https://dingdong-slack-bot.herokuapp.com/slack/checkout \
-    /standup : https://dingdong-slack-bot.herokuapp.com/slack/standup \
-		/edit : https://dingdong-slack-bot.herokuapp.com/slack/edit \
-        /wakatime : https://dingdong-slack-bot.herokuapp.com/slack/wakatime \
-    - 'OAuth & Permissions'
-        - Permission Scopes:
-            chat:write:bot
-            users:read
-            users:read.email
-            bot
-            commands
-    - 'Event Subscriptions'
-        - https://dingdong-slack-bot.herokuapp.com/slack/events --this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks. if testing this will be your tunnel address.
-        - Subscribe to Bot Events
-           'team_join'
+```
 
-6.  Add Environmental Variables to .env
+3.  Run Dev Server (on 2nd terminal)
+
+```
+
+npm start
+
+```
+
+-- or, to have parcel watch your files for changes:
+
+```
+
+npm run dev
+
+```
+
+(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
+Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in your .env file.  Keep this server running at all times.  If it is stopped you will need to redo all of your slack commands, etc.  Because each time that the server is restarted it generates a new tunnel address.
+
+<a name="create-bot">
 
 ### Create a local dev bot for each coder for testing
-Note - Names for App, Bot, Interactivity, and Slash Commands for local dev bots must be distinct from production bot (use your initials example: jssdcs-slack-bot or /jsdoorbell)
 
-1.  Create an app at https://api.slack.com/apps
+1.  Create an app at https://api.slack.com/apps?new_classic_app=1
+        GOOD UNTIL FEBUARY 21, 2020 AND THEN ALL SCOPES WILL NEED TO BE
+        GRANULAR
     - Add a distinct app name
+    - Choose workspace to apply bot to.
 
-2.  Create a bot in ‘Bot Users’
-    - Add a distinct bot Display Name
-    - Add a bot Default Name (should be same or similar to Display Name)
+2.  Go to basic info and copy CLIENT_ID and CLIENT_SECRET to the env. file
+        under SLACK_CLIENT_ID and SLACK_CLIENT_SECRET
 
-3.  Invite bot to workplace
+        1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
+
+        2. Get your client id and client secret by selecting create credentials and then selecting Oauth Client Id in the dropdown menu (https://console.developers.google.com/apis/credentials).
+
+            - Click other under Application type and a name
+            - Click create
+            - Copy Your Client ID and Your Client Secret and add them to your .env file
+
+3.  Go to basic info
+    - Click on add features and functionality
+    - Click bots
+    - Add legacy bot user
+    - Give it a display name and default username
+
+4.  Go to OAuth & Permissions
+    - DO NOT HIT UPDATE SCOPES
+    - Add an Oauth Scope
+    - Click Admin
+    - Add Scope
+5.  Go to Interactive Components
+    - Turn on
+    - Add {localtunnel url}/slack/interactive to the Request URL
+    - Save Changes
+5.  Go to Slash Commands
+    - Click Create New Command
+    - Add short description for each
+    - ‘Slash Commands’
+    Command = /{dev}doorbell : Request URL = {localtunnel url}/slack/doorbell
+    Command = /{dev}checkin : Request URL = {localtunnel url}/slack/checkin
+    Command = /{dev}checkout : Request URL = {localtunnel url}/slack/checkout
+    Command = /{dev}standup : Request URL = {localtunnel url}/slack/standup
+    Command = /{dev}wakatime : Request URL = {localtunnel url}/slack/wakatime
+    Command = /{dev}edit : Request URL = {localtunnel url}/slack/edit
+6.  Invite bot to workplace
     - Go to ‘Basic Information
     - Select ‘Install your app to your workspace’
     - Click ‘Install App to Workspace’ button
     - Confirm identity
-
-4.  Invite bot to current students, key, and admin reports channels
+7.  Invite bot to current-students, key, and admin-reports channels
     - Go to workplace in the Slack App
-    - Click on students channel
+    - Click on current-students channel
     - Click on settings (gear icon)
     - Select Apps and click on ‘Add app’
     - Select your bot and click ‘Add’
-    - Repeat for key channel and admin reports channel
-    - NOTE: Save student, key, and admin reports channel IDs for environment variables: right click on the channel and open the url (channel ID will be at the end of the url after '/messages')
+    - Repeat for key channel and admin-reports channel
+    - NOTE: Save student, key, and admin reports channel IDs for environment variables: right click on the channel and open the url (channel ID will be at the end of the url. example: /CTE2GOOQ4)
+8.  Go back to OAuths & Permissions and put the Oauth Access Token and the Bot User Oauth Token into the .env file
+9.  Go to Event Subscriptions
+    - Turn on
+    - Start your server (npm run build && npm start)
+    - Verify your request url
+     {localtunnel url}/slack/events
+    - Which in turn processes the event info and disperses via hooks.
+    - Subscibe to Bot Events
+        'team_join'
+    - Save Changes
+10. - Create Admin_Username, Admin_Email, Admin_password in .env file.
 
-5.  Add Button and Slash Command localtunnel urls in the Slack API
-    Remember - use initials for the local dev bot Slash Commands.
+<a name="student-dash">
 
-    - Return to https://api.slack.com/apps
-    - ‘Interactive Components’
-    Request Url: {localtunnel url}/slack/interactive
-    - ‘Slash Commands’
-    /{initials}doorbell : {localtunnel url}/slack/doorbell
-    /{initials}checkin : {localtunnel url}/slack/checkin
-    /{initials}checkout : {localtunnel url}/slack/checkout
-    /{initials}standup : {localtunnel url}/slack/standup
-    /{initials}wakatime : {localtunnel url}/slack/wakatime
-    /{initials}edit : {localtunnel url}/slack/edit
-    - 'OAuth & Permissions'
-        - Permission Scopes:
-            chat:write:bot
-            users:read
-            users:read.email
-            bot
-            commands
-    - 'Event Subscriptions'
-        - {localtunnel url}/slack/events -- this URL recieves the event updates from slack, which in turn processes the event info and disperses via hooks.
-        - Subscribe to Bot Events
-           'team_join'
+## Using the Student User Dashboard
 
-6.  Add Environmental Variables to .env
+1.  In order to sign in, go to the {localtunnel url}/login
+    - Click sign in with Slack
+    - It should say something went wrong. Copy the Passed URI:
+    - Go to OAuth & Permissions and click Add New Redirect URL
+    - Paste in the Passed URI: and click Add
+    - DON'T FOGET TO SAVE URLs
+    - Go back to the {localtunnel url}/login page and log back in with slack
+    - Allow permissions
+    - You should be redirected to the slack login proceed to next step
+2.  Go to {localtunnel url}/admin/login
+    - Sign in with Admin_Username, Admin_Email, Admin_password that was created in the .env file.
+    - Click on Add Student
+        - Student type: free
+        - Student Name: {Your name}
+        - Slack ID: {Slack ID is Copy member ID}
+            - Go to your slack workspace
+            - Click on development slackbot and go to 'Profile & account'
+            - Click on three dots to right of 'Edit Profile'
+            - Copy member ID
+        - Save
+    - Click on View Data For and select FREE
+        - Click on {Your name}
+    - Click Edit Student
+        - Toggle student type from Free to Paid and click Save.
+        - Repeat above step a few times.
+        - Leave on paid
+    - Go back to {localtunnel}/login
+        - Click on login with Slack
+        - Congratulations You are in!
+
+<a name="explorer">
+
+### Using the explorer
+
+- In order to use the explorer the admin needs to be logged in.
+    - save ?auth_token=xxxxx
+- go to http://localhost3000/explorer/?auth_token=xxxxx
+
+<a name="auth-google">
+
+### Authorizing Google Authenticated Users
+
+1.  Create a new user associated with your Google account:
+    - With the site running, click the button to log in using your account on Google and follow the instructions to enter your email and password. You will be redirected back to the login page because Google has authenticated you, and LoopBack has created a user for you, but you are not yet authorized to view the pages.
+2.  Grant the new user admin privilege using either `/explorer` or your         MongoDB instance:
+    - If in explorer, log in with the admin credentials you created on server boot and set the access token with the response id.
+    - Go to /users, do a GET request, copy the "id" field of the only user(you) that the db should have.
+    - Create a new RoleMapping:
+        - Go to /RoleMapping
+        - POST /Rolemapping
+        - principalType: "USER"
+        - principalId: \< the user id copied from /users db >
+        - roleId: \< not required >
+3.  You should now be able to log in to the site with your Google               credentials
+
+<a name="setup-google">
 
 ### Setup Google Authentication
 
 1. Create a [developer account](https://console.developers.google.com/apis/dashboard) on Google.
-
 2. Get your client id and client secret by selecting create credentials and then selecting Oauth Client Id in the dropdown menu (https://console.developers.google.com/apis/credentials).
-
+    - Click other under Application type and a name
+    - Click create
+    - Copy Your Client ID and Your Client Secret and add them to your .env file
 3. Google Auth requires the following dependencies: Loopback component passport, passport, passport google auth, and passport oauth2.
-
 4. Create a providers.js in your root folder and paste this in and add your google id and secret to an env file:
-
 module.exports = {
     'google-login': {
     'provider': 'google',
@@ -180,111 +264,37 @@ module.exports = {
     'failureFlash': true,
   },
 };
+5. Once you have your routes setup in server and everything is connected to your button, when you go to {localtunnel url}/admin/login for the first time login in with the ADMIN_EMAIL= and the ADMIN_PASSWORD= you create in the .env file.  You're going to get a redirect uri mismatch. Don't freak out. This just means you set it up right and there's just one more step you need to do.
+6. Copy the redirect uri that it's telling you is not authorized, go back to OAuth & Permissions, click on Add New Redirect URL add the URI that it said was a mismatch
+    - Click on Add
+    - Click on Save URLs
 
-5. Once you have your routes setup in server and everything is connected to your button, when you go to login for the first time you're going to get a redirect uri mismatch. Don't freak out. This just means you set it up right and there's just one more step you need to do.
+<a name="cypress">
 
-6. Copy the redirect uri that it's telling you is not authorized, go back to your Google developers control panel, click on the app that you created, scroll down to authorized redirect uris, and paste the uri you copied from before. Click save. Sometimes it doesn't save the first time and needs to be pasted in again.
+## Cypress Testing
 
-7. Once you've done that you should have a fully functioning Google Authorization button for your app. Every time the uri changes you will have to add that new uri to the authorized uri list.
+Create a file: `cypress.env.json` in the root directory.
 
-## Start Server
-### Production Server
+It should contain these this object with values from your .env:
+
 ```
-npm start
+{
+  "ADMIN_EMAIL": "YOUR ENV VALUE",
+  "ADMIN_PASSWORD": "YOUR ENV VALUE"
+}
 ```
-
-### Dev Server
-1.  Install Local Tunnel (or Ngrok)
-```
-npm install -g localtunnel
-```
-
-2.  Run Local Tunnel
-```
-lt --port 3000 --subdomain <devsubdomain>
-```
-3.  Run Dev Server (on 2nd terminal)
-```
-npm start
-```
--- or, to have parcel watch your files for changes:
-```
-npm run dev
-```
-(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
-
-## Usage
- sdcs-slack-bot lives in *Slack*
-  Upon installation it has access to the *Current Students* (Students Channel), *Key* channel and *Admin Reports* channel (where the magic happens).
-
- ## The commands are entered: ##
- >in the *message input* in any sdcs slack channel.
-
-**Type in**
-> **/doorbell**
-- To ring the bell (This sends a message to the *key* channel - alerting the staff to open front door).
-- A *"Got in"* button will be displayed in a private channel to the user, this is pressed to notify the staff that the user is or is not in the building.
-
-> **/checkin**
-- To check in.
-- A link to the geolocation landing page to verify location and checkin ability will be displayed. Click the link to go to the Geolocation website.  Click the find me button, wait for the coordinates to appear, and then click submit to check in.
-- This creates a timestamp on the server, the user will also be sent a reminder by 9:00am to checkin, if they haven't beforehand.
-
-> **/checkout**
-- To check out.
-- This creates a timestamp on the server, the user will also be sent a reminder by 5:50PM to checkout before they leave.
-- Click the link to go to the Geolocation website.  Click the find me button, wait for the coordinates to appear, and then click submit to check out.
-- If they haven't fully checked out by 6:15pm another reminder will be sent (Are you still here?) with two buttons (Yes/No).
-    - If **yes** is selected (they will be sent a link to the geolocation landing page to verify location and checkout will be displayed.)
-    - If **no** it will automatically check them out and add a location penalty to their log.
-- If the user is still not checked out by 6:20pm,  a message will be displayed informing them that they are automatically checked out. Also a penalty will added to their log.
-
-> **/standup**
-- To trigger the standup dialog.
-- A survey form will appear with three standup questions for the students to submit to the staff. Students can cancel the form and be prompted to remember to submit later on in the day.
-- All submitted standups will be cleared from cache at 11:59pm.
-
-## Back End
-
-Loopback is used for server setup. Please view common/models folder for models/relationships.
-
-### Using the explorer
-
-In order to use the explorer the admin needs to be logged in and go to /explorer
-keeping the authentication token in the url
+Start server: `$ npm run build && npm run devstart`
+Then: `$ npm run cypress` to run the test.
 
 
-### Authorizing Google Authenticated Users
-1.  Create a new user associated with your Google account:
-    - With the site running, click the button to log in using your account on Google and follow the instructions to enter your email and password. You will be redirected back to the login page because Google has authenticated you, and LoopBack has created a user for you, but you are not yet authorized to view the pages.
 
-2.  Grant the new user admin privilege using either `/explorer` or your MongoDB instance:
-    - If in explorer, log in with the admin credentials you created on server boot and set the access token with the response id.
-    - Go to /users, do a GET request, copy the "id" field of the only user(you) that the db should have.
-    - Create a new RoleMapping:
-        - Go to /RoleMapping
-        - POST /Rolemapping
-        - principalType: "USER"
-        - principalId: \< the user id copied from /users db >
-        - roleId: \< not required >
-3.  You should now be able to log in to the site with your Google credentials
+<a name="cronjob">
 
-## Using the Student User Dashboard
+## Set a Cronjob
 
-In order to sign in, go to the url route /login
-
-After you sign in with slack you should get the following objects like the following in your users.
-
-{ "username": "slack.UREHZNDL3", "email": "UREHZNDL3@loopback.Slack.com", "id": "5dfaade86a95a2edf110740a" }
-
-Now use the /edit command or the explorer to create a student with a matching slack ID.
-
-In the admin dashboard, if you go to edit a student and change them to paid it will create a role mapping like the following. This will allow the student to view their dashboard.
-
-{ "id": "5dfac549a12a9006eb58cc0c", "principalType": "USER", "principalId": "5dfaade86a95a2edf110740a", "roleId": "5dfaade86a95a2edf110840a" }
-
-additionally you will need to add auth/slack/callback to your slack application
-
-Also add SLACK_CLIENT_ID and SLACK_CLIENT_SECRET from your slack application credentials in Basic Information
+A cron job runs every 5 minutes and will send the first object returned with a timestamp from that moment to 4:59 sec into the future. Cronjob runs a job check every 5 minutes.
+Too add a job open api/explorer and in the challenges model do a post.
+Add the message and url you would like to send.
+Add the time you would like this message to be executed in local military time.
 
 :copyright: 2019 San Diego Code School

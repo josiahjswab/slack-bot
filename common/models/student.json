@@ -25,6 +25,15 @@
     "type": {
       "type": "string",
       "require": true
+    },
+    "partner_name": {
+      "type": "string"
+    },
+    "partner_email": {
+      "type": "string"
+    },
+    "partner_relationship": {
+      "type": "string"
     }
   },
   "validations": [],

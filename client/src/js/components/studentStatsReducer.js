@@ -6,7 +6,8 @@ const defaultState = {
 	studentCommits: [],
   studentStandupsAndCheckins: [],
   errMessage: "",
-  editWindowOpen: false
+  editWindowOpen: false,
+  accPartnerWindowOpen: false,
 };
 export default function studentStatsReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -65,6 +66,13 @@ export default function studentStatsReducer(state = defaultState, action) {
       return {
         ...state,
         editWindowOpen: payload
+      }
+    }
+    case "TOGGLE_ACC_PARTNER_WINDOW": {
+
+      return {
+        ...state,
+        accPartnerWindowOpen: payload,
       }
     }
     default: {

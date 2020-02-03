@@ -119,3 +119,12 @@ export function toggleEditWindow(isOpen) {
     });
   };
 }
+
+export function toggleAccWindow(isOpen) {
+  return dispatch => {
+    dispatch({
+      type: "TOGGLE_ACC_PARTNER_WINDOW",
+      payload: isOpen
+    });
+  };
+}
