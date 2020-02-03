@@ -9,23 +9,23 @@
     "name": {
       "type": "string",
       "required": true
-		},
+    },
     "slack_id": {
       "type": "string",
       "required": true
     },
-		"github_id": {
+    "github_id": {
       "type": "string",
       "required": false
     },
-		"wakatime_key": {
-			"type": "string",
-			"required": false
-		},
-		"type": {
-			"type": "string",
-			"require": true
-		}
+    "wakatime_key": {
+      "type": "string",
+      "required": false
+    },
+    "type": {
+      "type": "string",
+      "require": true
+    }
   },
   "validations": [],
   "relations": {

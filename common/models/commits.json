@@ -41,7 +41,6 @@
       "principalId": "admin",
       "permission": "ALLOW"
     },
-
     {
       "accessType": "*",
       "principalType": "ROLE",

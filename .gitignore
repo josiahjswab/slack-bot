@@ -24,10 +24,10 @@ lib-cov
 logs
 node_modules
 npm-debug.log
-package-lock.json
 data
 data.json
 cypress/videos
 cypress/screenshots
 cypress.env.json
 .nyc_output
+.prettierrc
