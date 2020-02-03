@@ -9,10 +9,12 @@ import {
   calculateIndividualWakatimeData,
 } from '../../../../common/utilities';
 import EditStudent from './EditStudent';
+import AccPartnerInfo from './AccPartnerInfo'
 import {
   getStudentInfo,
   updateStudentInfo,
   toggleEditWindow,
+  toggleAccWindow,
 } from './studentStatsActions';
 import StudentStatsDownload from './StudentStatsDownload';
 import DailyCodingIndicator from './DailyCodingIndicator/DailyCodingIndicator';
@@ -26,6 +28,7 @@ class Standups extends Component {
     this.saveStudentData = this.saveStudentData.bind(this);
     this.openEditWindow = this.openEditWindow.bind(this);
     this.closeEditWindow = this.closeEditWindow.bind(this);
+    this.toggleAccPartnerWindow = this.toggleAccPartnerWindow.bind(this);
   }
 
   componentDidMount() {
@@ -41,6 +44,11 @@ class Standups extends Component {
         [panel]: !this.state.display[panel]
       }
     });
+  }
+
+  toggleAccPartnerWindow() {
+      const { dispatch } = this.props;
+      dispatch(toggleAccWindow(!this.props.accPartnerWindowOpen));
   }
 
   closeEditWindow(event, override) {
@@ -146,6 +154,16 @@ class Standups extends Component {
       );
     }
 
+    let accPartnerWindow = null;
+    if (this.props.accPartnerWindowOpen) {
+      accPartnerWindow = (
+        <AccPartnerInfo
+          accPartnerData={this.props.studentInfo}
+          closeWindow={() => this.toggleAccPartnerWindow}
+        />
+      )
+    }
+
     let keyMetrics = [];
     let keyClassMetrics = [];
     let keyStandupMetrics = [];
@@ -214,9 +232,11 @@ class Standups extends Component {
       <>
         <HamburgerNavigation
           openStudentEditWindow={() => this.openEditWindow}
+          openStudentAccountabilityPartnerInfo={() => this.toggleAccPartnerWindow}
           auth_token={localStorage.getItem('token')}
         />
         {editStudentWindow}
+        {accPartnerWindow}
         <div className="header-name">
           <h4>{this.props.studentInfo.name}</h4>
         </div>
@@ -278,7 +298,8 @@ function mapStoreToProps(store) {
     studentStandupsAndCheckins: store.studentStats.studentStandupsAndCheckins,
     errMessage: store.studentStats.errMessage,
     editWindowOpen: store.studentStats.editWindowOpen,
-    authToken: store.dashboard.authToken
+    authToken: store.dashboard.authToken,
+    accPartnerWindowOpen: store.studentStats.accPartnerWindowOpen,
   };
 }
 
