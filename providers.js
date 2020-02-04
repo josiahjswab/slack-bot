@@ -25,7 +25,7 @@ module.exports = {
     'callbackPath': '/auth/slack/callback',
     'successRedirect': '/auth',
     'failureRedirect': '/login',
-    'scope': ['identity.basic'],
+    'scope': ['identity.basic', 'identity.email'],
     'failureFlash': true,
   }
 };

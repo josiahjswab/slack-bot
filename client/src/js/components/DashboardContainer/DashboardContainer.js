@@ -223,6 +223,7 @@ class DashboardContainer extends Component {
           <div className="row">
             <div className="col-sm-2">
               <div className="card">
+              <div className="red-stripe-1"></div>
                 <p className="sdcs-logo" id="logo-style"></p>
                 <p className="date red-date">{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
               </div>

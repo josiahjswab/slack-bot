@@ -8,9 +8,9 @@ function HamburgerNavigation(props) {
       <div className='hamburger' onClick={toggleMenu}><div></div></div>
       <ul className='navigation hamburger-navigation'>
         <li>
-        <Link className='link-btn2' to={`/admin/login`} 
-        onClick={() => localStorage.removeItem('token')}
-        >Logout
+          <Link className='link-btn2' to={`/admin/login`}
+            onClick={() => localStorage.removeItem('token')}
+          >Logout
         </Link>
         </li>
         <li onClick={props.openStudentEditWindow()}>
@@ -23,9 +23,10 @@ function HamburgerNavigation(props) {
             Accountability Partner
 					</div>
         </li>
+        {/* <div className="red-stripe"></div> */}
         <li className='dashboard-link'>
-          <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
-            <p id='logo-style-student-page'></p></Link>
+         <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
+            <div id='logo-style-student-page'></div></Link>
           <p className='dash-btn'></p>
         </li>
       </ul>
