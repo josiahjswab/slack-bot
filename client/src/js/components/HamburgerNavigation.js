@@ -5,41 +5,31 @@ function HamburgerNavigation(props) {
 
   return (
     <React.Fragment>
-      <div className='hamburger' onClick={toggleMenu}><div></div></div>
-      <ul className='navigation hamburger-navigation'>
+      <ul className='navigation'>
         <li>
-        <Link className='link-btn2' to={`/admin/login`} 
-        onClick={() => localStorage.removeItem('token')}
-        >Logout
+          <Link className='link-btn2' to={`/admin/login`}
+            onClick={() => localStorage.removeItem('token')}
+          >Logout
         </Link>
         </li>
-        <li onClick={props.openStudentEditWindow()}>
-          <div className='secondary-btn'>
+        <li>
+          <div className='secondary-btn' onClick={props.openStudentEditWindow()}>
             Edit Student
 					</div>
         </li>
-        <li onClick={props.openStudentAccountabilityPartnerInfo()}>
-          <div className='secondary-btn acc-partner-btn'>
+        <li>
+          <div className='secondary-btn acc-partner-btn' onClick={props.openStudentAccountabilityPartnerInfo()}>
             Accountability Partner
 					</div>
         </li>
         <li className='dashboard-link'>
-          <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
-            <p id='logo-style-student-page'></p></Link>
+         <Link className='sdcs-logo' to={`/admin/dashboard?auth_token=${props.auth_token}`}>
+            <div id='logo-style-student-page'></div></Link>
           <p className='dash-btn'></p>
         </li>
       </ul>
     </React.Fragment>
   );
-}
-
-function toggleMenu() {
-  const nav = document.getElementsByClassName('hamburger-navigation')[0];
-  if (nav.classList.contains('visible')) {
-    nav.classList.remove('visible')
-  } else {
-    nav.classList.add('visible');
-  }
 }
 
 export default HamburgerNavigation;

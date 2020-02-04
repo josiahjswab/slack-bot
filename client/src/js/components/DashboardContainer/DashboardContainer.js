@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DataSection from "../DataSection";
-import Roster from "../Roster";
+import StudentList from "../StudentList"
 import { Link } from "react-router-dom";
 import ConfirmAbsentees from "../ConfirmAbsentees/index";
 import {
@@ -223,6 +223,7 @@ class DashboardContainer extends Component {
           <div className="row">
             <div className="col-sm-2">
               <div className="card">
+              <div className="red-stripe-1"></div>
                 <p className="sdcs-logo" id="logo-style"></p>
                 <p className="date red-date">{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
               </div>
@@ -281,7 +282,7 @@ class DashboardContainer extends Component {
                     : "toggleContent-display"
                 }
               >
-                <Roster
+                <StudentList
                   students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
@@ -302,12 +303,15 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
-                  title='Delinquents'
+                  title1 ='Not Completed'
+                  title2 ='Completed'
                   data={standupsData ? standupsData.summary : undefined}
-                  delinquents={
+                  studentsList1={
                     standupsData ? standupsData.delinquents : undefined
                   }
-                  students={this.props.studentsBeingViewed}
+                  studentsList2={
+                    standupsData ? standupsData.nonDelinquents : undefined
+                  }
                   auth_token={localStorage.getItem('token')}
                 />
               </div>
@@ -327,15 +331,15 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
-                  title='Absentees'
+                  title1='Absentees'
+                  title2='Present'
                   data={checkinData ? checkinData.summary : undefined}
-                  delinquents={
+                  studentsList1={
                     checkinData ? checkinData.delinquents : undefined
                   }
-                  presentStudents={
+                  studentsList2={
                     checkinData ? checkinData.presentStudents : undefined
                   }
-                  students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
               </div>

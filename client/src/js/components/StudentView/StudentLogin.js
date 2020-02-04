@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../css/style.scss";
 import Logo from "../../../img/sdcs_logo.png";
+import slackLogo from "../../../img/smallSlackLogo.png";
 
 function StudentLogin(props) {
   return (
@@ -24,8 +25,7 @@ function StudentLogin(props) {
               alt="Sign in with Slack"
               height="40"
               width="172"
-              src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
-              srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
+              src={slackLogo}
             />
           </a>
         </div>
