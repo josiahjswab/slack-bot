@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DataSection from "../DataSection";
-import Roster from "../Roster";
+import StudentList from "../StudentList"
 import { Link } from "react-router-dom";
 import ConfirmAbsentees from "../ConfirmAbsentees/index";
 import {
@@ -282,7 +282,7 @@ class DashboardContainer extends Component {
                     : "toggleContent-display"
                 }
               >
-                <Roster
+                <StudentList
                   students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
@@ -303,12 +303,11 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
-                  title='Delinquents'
+                  title1 ='Delinquents'
                   data={standupsData ? standupsData.summary : undefined}
-                  delinquents={
+                  studentsList1={
                     standupsData ? standupsData.delinquents : undefined
                   }
-                  students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
               </div>
@@ -328,15 +327,15 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
-                  title='Absentees'
+                  title1='Absentees'
+                  title2='Present'
                   data={checkinData ? checkinData.summary : undefined}
-                  delinquents={
+                  studentsList1={
                     checkinData ? checkinData.delinquents : undefined
                   }
-                  presentStudents={
+                  studentsList2={
                     checkinData ? checkinData.presentStudents : undefined
                   }
-                  students={this.props.studentsBeingViewed}
                   auth_token={localStorage.getItem('token')}
                 />
               </div>

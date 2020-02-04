@@ -1,6 +1,6 @@
 import React from 'react';
 import DataBox from './DataBox';
-import Delinquents from './Delinquents';
+import StudentList from './StudentList';
 
 function DataSectionForStudentStats(props) {
   let delinquents;
@@ -8,7 +8,7 @@ function DataSectionForStudentStats(props) {
 
   if (props.delinquents) {
     delinquents = (
-      <Delinquents
+      <StudentList
         title={props.delinquentTitle ? props.delinquentTitle : 'delinquents'}
         students={props.delinquents}
       />
