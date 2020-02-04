@@ -1015,6 +1015,8 @@ req.body.checkin{
 }
 
 .indicator-container {
+  justify-content: flex-start;
+  flex-direction: row-reverse;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -1026,5 +1028,26 @@ req.body.checkin{
   height: 15px;
   border: 1px solid black;
   margin: 2px;
-  font-size: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.6em;
+}
+
+.standup-checkin-label {
+  font-size: smaller;
+}
+
+.standup-checkin-label.right {
+  float: right;
+}
+
+.indicator-box:hover {
+  cursor: default;
+}
+
+.indicator-selector {
+  margin-left: 10px;
+  float: right;
+  font-size: smaller;
 }
