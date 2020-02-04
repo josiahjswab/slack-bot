@@ -303,10 +303,14 @@ class DashboardContainer extends Component {
                 }
               >
                 <DataSection
-                  title1 ='Delinquents'
+                  title1 ='Not Completed'
+                  title2 ='Completed'
                   data={standupsData ? standupsData.summary : undefined}
                   studentsList1={
                     standupsData ? standupsData.delinquents : undefined
+                  }
+                  studentsList2={
+                    standupsData ? standupsData.nonDelinquents : undefined
                   }
                   auth_token={localStorage.getItem('token')}
                 />

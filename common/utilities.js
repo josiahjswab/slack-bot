@@ -30,6 +30,11 @@ function calculateDashboardStandupsData(standups, students) {
       return student.slack_id === slackId;
     });
   });
+  const nonDelinquents = students.filter(student => {
+    return uniqueStandupsToday.some(slackId => {
+      return student.slack_id === slackId;
+    });
+  });
   const todaysStandupPercent = Math.round((uniqueStandupsToday.length /
     students.length) * 100);
   return {
@@ -41,6 +46,7 @@ function calculateDashboardStandupsData(standups, students) {
       },
     ],
     delinquents,
+    nonDelinquents,
   };
 }
 function calculateDashboardCheckinData(activeCheckins, students) {
