@@ -183,3 +183,14 @@ body {
 .indicator-box:hover {
   cursor: default;
 }
+
+.dials-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 1em;
+  margin-bottom: -80px;
+}
+
+.dial {
+  text-align: center;
+}
