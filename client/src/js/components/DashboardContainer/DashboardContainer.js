@@ -332,13 +332,17 @@ class DashboardContainer extends Component {
               >
                 <DataSection
                   title1='Absentees'
-                  title2='Present'
+                  title2='At School'
+                  title3='At Home'
                   data={checkinData ? checkinData.summary : undefined}
                   studentsList1={
                     checkinData ? checkinData.delinquents : undefined
                   }
                   studentsList2={
-                    checkinData ? checkinData.presentStudents : undefined
+                    checkinData ? checkinData.atSchool : undefined
+                  }
+                  studentsList3={
+                    checkinData ? checkinData.atHome : undefined
                   }
                   auth_token={localStorage.getItem('token')}
                 />

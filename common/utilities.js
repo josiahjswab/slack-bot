@@ -59,9 +59,18 @@ function calculateDashboardCheckinData(activeCheckins, students) {
       return student.slack_id === checkin.slack_id;
     });
   });
-  const present = students.filter(student => {
+  const presentAtHome = students.filter(student => {
     return activeCheckins.some(checkin => {
-      return student.slack_id === checkin.slack_id;
+      student.notAtSchool = checkin.notAtSchool;
+      return (student.slack_id === checkin.slack_id &&
+              checkin.notAtSchool === true );
+    });
+  });
+  const presentAtSchool = students.filter(student => {
+    return activeCheckins.some(checkin => {
+      student.notAtSchool = checkin.notAtSchool;
+      return (student.slack_id === checkin.slack_id &&
+              checkin.notAtSchool === false );
     });
   });
   return {
@@ -73,7 +82,8 @@ function calculateDashboardCheckinData(activeCheckins, students) {
       },
     ],
     delinquents: absentees,
-    presentStudents: present,
+    atHome: presentAtHome,
+    atSchool: presentAtSchool,
   };
 }
 

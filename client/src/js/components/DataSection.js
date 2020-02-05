@@ -6,6 +6,7 @@ function DataSection(props) {
   let boxes;
   let studentsList1;
   let studentsList2;
+  let studentsList3;
 
   if(props.data) {
     boxes = props.data.map(data => (
@@ -32,7 +33,16 @@ function DataSection(props) {
         auth_token={props.auth_token}
         />)
   }
-  
+
+  if(props.studentsList3) {
+    studentsList3 =
+      (<StudentList
+        title={props.title3}
+        students={props.studentsList3}
+        auth_token={props.auth_token}
+        />)
+  }
+
   return(
     <section className='data-section data-section-flex'>
       <div className='data-container'>
@@ -40,6 +50,7 @@ function DataSection(props) {
       </div>
         {studentsList1}
         {studentsList2}
+        {studentsList3}
     </section>
   );
 }
