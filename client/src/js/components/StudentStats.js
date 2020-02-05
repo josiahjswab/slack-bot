@@ -175,7 +175,7 @@ class Standups extends Component {
         return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
       });
     }
-    
+
 		if (!!commitData) {
       keyCommitMetrics = [commitData];
     }
@@ -227,7 +227,7 @@ class Standups extends Component {
       ...otherCodingMetrics,
       ...otherStandupMetrics
     ];
-   
+
     return (
       <>
         <HamburgerNavigation
@@ -257,12 +257,12 @@ class Standups extends Component {
               data={this.props.studentWakatimes}
               name={this.props.studentInfo.name}
             />
-            <StudentStatsDownload 
-            title='Checkin Data' 
-            checkinData={this.props.studentCheckins}
-            standupData={this.props.studentStandups}
-            wakatimeData={this.props.studentWakatimes}
-            name={this.props.studentInfo.name}
+            <StudentStatsDownload
+              title='Checkin Data'
+              checkinData={this.props.studentCheckins}
+              standupData={this.props.studentStandups}
+              wakatimeData={this.props.studentWakatimes}
+              name={this.props.studentInfo.name}
             />
           </div>
           <section className="standupAndcheckin">

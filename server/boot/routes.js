@@ -104,6 +104,10 @@ module.exports = app => {
   app.post("/slack/interactive", (req, res) => {
     const body = JSON.parse(req.body.payload);
     switch (body.callback_id) {
+      case "ringCampus":
+        handleEvent(body, "ringCampus");
+        res.send("Have a nice day");
+        break;
       case "gotin":
         handleEvent(body, "gotin");
         res.send("Have a nice day");
@@ -234,8 +238,11 @@ module.exports = app => {
       case "submitStandup":
         submitStandup(user, channel, body.submission);
         break;
+      case "ringCampus":
+        ringCampus(body, user, channel);
+        break;
       case "gotin":
-        gotIn(user, channel);
+        gotIn(body, user, channel);
         break;
       case "checkin":
         checkIn(user, loc, channel);
@@ -544,7 +551,36 @@ module.exports = app => {
     var params = {
       icon_url: path.join(__dirname, "../icon.png")
     };
-    var message = {
+    let message = {
+      attachments: [
+        {
+          text: "Which campus do you want to ring?",
+          callback_id: "ringCampus",
+          color: "#3AA3E3",
+          attachment_type: "default",
+          actions: [
+            {
+              name: "North Campus",
+              text: "North Campus",
+              type: "button",
+              value: "North Campus"
+            },
+            {
+              name: "South Campus",
+              text: "South Campus",
+              type: "button",
+              value: "South Campus"
+            }
+          ]
+        }
+      ]
+    };
+    bot.postEphemeral(channel, user, null, message);
+  }
+
+  function ringCampus(body, user, channel) {
+    let ringLocation = body.actions[0].value
+    let message = {
       attachments: [
         {
           text: "Once inside please click the button below",
@@ -562,15 +598,10 @@ module.exports = app => {
         }
       ]
     };
-    bot
-      .postMessage(
-        process.env.KEY_CHANNEL,
-        `<@${user}> is at the door.`,
-        params
-      )
-      .then(response => {
-        bot.postEphemeral(channel, user, "Did you get in?", message);
-      });
+    bot.postMessage(process.env.KEY_CHANNEL, `${ringLocation}: <@${user}> is ringing.`, {})
+    .then(() => {
+      bot.postEphemeral(channel, user, "Did you get in?", message);
+    });
   }
 
   function gotIn(user, channel) {

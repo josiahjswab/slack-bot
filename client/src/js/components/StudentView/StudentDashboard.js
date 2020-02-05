@@ -9,6 +9,8 @@ import {
   calculateIndividualCommitData,
   mergeStudentData
 } from '../../../../../common/utilities';
+import StudentProgressDials from '../StudentProgressDials';
+
 import StandupCheckinVisuals from '../StandupCheckinVisuals/StandupCheckinVisuals';
 
 function sortByDate(a, b) {
@@ -38,7 +40,7 @@ function sortByDate(a, b) {
 };
 
 export default function StudentDashboard(props) {
-    
+
     let StandupAndCheckinComponent;
     let standupsData = [];
     if (window.student.standups.length) {
@@ -175,6 +177,7 @@ export default function StudentDashboard(props) {
               data={otherMetrics}
               name={window.student.name}
             />
+            <StudentProgressDials checkins={checkinData} wakatime={wakatimeData} commits={commitData} />
             <StandupCheckinVisuals
               title='Standup Checkin Visuals'
               standupCheckin={standupAndCheckinData}
@@ -188,9 +191,7 @@ export default function StudentDashboard(props) {
             >
               <h2>Standups and Checkins</h2>
             </span>
-            <div
-              className={`standup-container`}
-            >
+            <div className={`standup-container`}>
               {StandupAndCheckinComponent}
             </div>
           </section>
