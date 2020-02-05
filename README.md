@@ -226,7 +226,7 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
 
 1.  Create a new user associated with your Google account:
     - With the site running, click the button to log in using your account on Google and follow the instructions to enter your email and password. You will be redirected back to the login page because Google has authenticated you, and LoopBack has created a user for you, but you are not yet authorized to view the pages.
-2.  Grant the new user admin privilege using either `/explorer` or your         MongoDB instance:
+2.  Grant the new user admin privilege using either `/explorer` or your MongoDB instance
     - If in explorer, log in with the admin credentials you created on server boot and set the access token with the response id.
     - Go to /users, do a GET request, copy the "id" field of the only user(you) that the db should have.
     - Create a new RoleMapping:
