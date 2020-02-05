@@ -19,4 +19,3 @@ export default function IndicatorBox(props) {
       <div style={{ backgroundColor: bc }} className='indicator-box' >{index}</div>
     );
   }
-  
