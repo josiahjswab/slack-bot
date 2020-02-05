@@ -11,7 +11,7 @@ import {
 } from '../../../../../common/utilities';
 import StudentProgressDials from '../StudentProgressDials';
 
-import StandupCheckinVisuals from '../StandupCheckinVisuals/StandupCheckinVisuals';
+import StandupCheckinIndicator from '../DailyIndicators/StandupCheckinIndicator';
 
 function sortByDate(a, b) {
   let arrA = a[0].split('/')
@@ -178,7 +178,7 @@ export default function StudentDashboard(props) {
               name={window.student.name}
             />
             <StudentProgressDials checkins={checkinData} wakatime={wakatimeData} commits={commitData} />
-            <StandupCheckinVisuals
+            <StandupCheckinIndicator
               title='Standup Checkin Visuals'
               standupCheckin={standupAndCheckinData}
               name={window.student.name}

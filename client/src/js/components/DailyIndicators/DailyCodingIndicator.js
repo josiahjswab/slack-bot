@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import IndicatorBox from './IndicatorBox';
 
-export default function Container(props) {
+export default function DailyCodingIndicator(props) {
   const [selectValue, setSelectValue] = useState(7);
   const wakaDay = props.data;
   let array = [];
@@ -25,7 +26,7 @@ export default function Container(props) {
   }
 
   const display = array.map((item, i) =>
-    <Box key={i} item={item} index={(wakaDay.length) - i}/>,
+    <IndicatorBox key={i} item={item} index={(wakaDay.length) - i}/>,
   );
 
   return (
@@ -42,25 +43,5 @@ export default function Container(props) {
         {display}
       </div>
     </div>
-  );
-}
-
-function Box(props) {
-  const { item, index } = props;
-  let bc;
-
-  switch (item) {
-    case 1:
-      bc = '#92C060';
-      break;
-    case 2:
-      bc = 'rgb(218, 230, 117)';
-      break;
-    default:
-      bc = '#ececec';
-      break;
-  }
-  return (
-    <div style={{ backgroundColor: bc }} className='indicator-box' >{index}</div>
   );
 }

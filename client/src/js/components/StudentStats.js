@@ -17,7 +17,7 @@ import {
   toggleAccWindow,
 } from './studentStatsActions';
 import StudentStatsDownload from './StudentStatsDownload';
-import DailyCodingIndicator from './DailyCodingIndicator/DailyCodingIndicator';
+import DailyCodingIndicator from './DailyIndicators/DailyCodingIndicator';
 
 class Standups extends Component {
   constructor(props) {

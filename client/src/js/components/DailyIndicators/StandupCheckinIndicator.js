@@ -1,8 +1,9 @@
 import React from 'react';
+import IndicatorBox from './IndicatorBox';
 
 const moment = require('moment');
 
-export default function Container(props) {
+export default function StandupCheckinIndicator(props) {
   const { standupCheckin } = props;
   let firstDay = Object.keys(standupCheckin)[0];
   let today = moment().format('L');
@@ -31,7 +32,7 @@ export default function Container(props) {
   }
 
   const display = array.map((item, i) =>
-    <Box key={i} item={item} index={(totalDaysEnrolled - 1) - i} />,
+    <IndicatorBox key={i} item={item} index={(totalDaysEnrolled) - i} />,
   );
 
   return (
@@ -43,25 +44,5 @@ export default function Container(props) {
         {display}
       </div>
     </div>
-  );
-}
-
-function Box(props) {
-  const { item, index } = props;
-  let bc;
-
-  switch (item) {
-    case 1:
-      bc = '#92C060';
-      break;
-    case 2:
-      bc = 'rgb(218, 230, 117)';
-      break;
-    default:
-      bc = '#ececec';
-      break;
-  }
-  return (
-    <div style={{ backgroundColor: bc }} className='indicator-box'>{index + 1}</div>
   );
 }
