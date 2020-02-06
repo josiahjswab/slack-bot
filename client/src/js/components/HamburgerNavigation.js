@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 function HamburgerNavigation(props) {
 
   return (
+    
     <React.Fragment>
       <ul className='navigation'>
         <li>
@@ -33,3 +34,4 @@ function HamburgerNavigation(props) {
 }
 
 export default HamburgerNavigation;
+

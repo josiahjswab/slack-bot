@@ -4,7 +4,7 @@ const defaultState = {
   standupsBeingViewed: [],
   activeCheckinsBeingViewed: [],
   activeCheckinsToday: [],
-  absences: []
+  absences: [],
 };
 export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;

@@ -46,7 +46,16 @@ function getStudentStats(id, authToken, slack_id) {
 				.then(commits => {
 					return commits;
 			})
-		});
+    });
+
+    dispatch({
+        type: 'GET_ABSENCES',
+        payload: fetch(`/api/absences?access_token=${authToken}&filter=${userFilter}`)
+          .then(response => response.json())
+          .then(absences => {
+            return absences;
+          })
+      })
 
     Promise.all([standups, checkins]).then(standupsAndCheckins =>
       dispatch({

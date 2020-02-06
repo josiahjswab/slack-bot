@@ -47,8 +47,8 @@ class Standups extends Component {
   }
 
   toggleAccPartnerWindow() {
-      const { dispatch } = this.props;
-      dispatch(toggleAccWindow(!this.props.accPartnerWindowOpen));
+    const { dispatch } = this.props;
+    dispatch(toggleAccWindow(!this.props.accPartnerWindowOpen));
   }
 
   closeEditWindow(event, override) {
@@ -79,19 +79,19 @@ class Standups extends Component {
       else if (parseInt(arrA[2].substring(0, 4)) < parseInt(arrB[2].substring(0, 4))) {
         return 1;
       }
-      else if (parseInt(arrA[0]) > parseInt(arrB[0])){
+      else if (parseInt(arrA[0]) > parseInt(arrB[0])) {
         return -1;
       }
-      else if (parseInt(arrA[0]) < parseInt(arrB[0])){
+      else if (parseInt(arrA[0]) < parseInt(arrB[0])) {
         return 1;
       }
-      else if (parseInt(arrA[1]) > parseInt(arrB[1])){
+      else if (parseInt(arrA[1]) > parseInt(arrB[1])) {
         return -1;
       }
-      else if (parseInt(arrA[1]) < parseInt(arrB[1])){
+      else if (parseInt(arrA[1]) < parseInt(arrB[1])) {
         return 1;
       }
-      else{
+      else {
         return 0;
       }
     };
@@ -103,14 +103,23 @@ class Standups extends Component {
         this.props.studentStandups
       );
     }
-		let commitData = [];
+    let commitData = [];
     if (this.props.studentCommits) {
       commitData = {
         featured: this.props.studentCommits,
         measurement: '',
         footer: 'Commits past 7 days',
       }
-		}
+    }
+    let absencesData = [];
+    if (this.props.studentAbsences) {
+      absencesData = {
+        featured: this.props.studentAbsences.length,
+        measurement: '',
+        footer: 'Total Absences'
+      }
+    }
+
     let checkinData = [];
     if (this.props.studentCheckins) {
       checkinData = calculateIndividualCheckinData(this.props.studentCheckins);
@@ -169,6 +178,7 @@ class Standups extends Component {
     let keyStandupMetrics = [];
     let keyCodingMetrics = [];
     let keyCommitMetrics = [];
+    let keyAbsenceMetrics = [];
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
@@ -176,7 +186,7 @@ class Standups extends Component {
       });
     }
 
-		if (!!commitData) {
+    if (!!commitData) {
       keyCommitMetrics = [commitData];
     }
 
@@ -192,11 +202,16 @@ class Standups extends Component {
       });
     }
 
+    if (!!absencesData) {
+      keyAbsenceMetrics = [absencesData];
+    }
+
     keyMetrics = [
       ...keyClassMetrics,
       ...keyCodingMetrics,
       ...keyStandupMetrics,
-			...keyCommitMetrics
+      ...keyCommitMetrics,
+      ...keyAbsenceMetrics
     ];
 
     let otherMetrics = [];
@@ -227,7 +242,6 @@ class Standups extends Component {
       ...otherCodingMetrics,
       ...otherStandupMetrics
     ];
-
     return (
       <>
         <HamburgerNavigation
@@ -237,6 +251,7 @@ class Standups extends Component {
         />
         {editStudentWindow}
         {accPartnerWindow}
+
         <div className="header-name">
           <h4>{this.props.studentInfo.name}</h4>
         </div>
@@ -277,7 +292,7 @@ class Standups extends Component {
                 this.state.display["standups-panel"]
                   ? "toggleContent-hidden"
                   : ""
-              }`}
+                }`}
             >
               {StandupAndCheckinComponent}
             </div>
@@ -294,12 +309,13 @@ function mapStoreToProps(store) {
     studentStandups: store.studentStats.studentStandups,
     studentCheckins: store.studentStats.studentCheckins,
     studentWakatimes: store.studentStats.studentWakatimes,
-		studentCommits: store.studentStats.studentCommits,
+    studentCommits: store.studentStats.studentCommits,
     studentStandupsAndCheckins: store.studentStats.studentStandupsAndCheckins,
     errMessage: store.studentStats.errMessage,
     editWindowOpen: store.studentStats.editWindowOpen,
     authToken: store.dashboard.authToken,
     accPartnerWindowOpen: store.studentStats.accPartnerWindowOpen,
+    studentAbsences: store.studentStats.studentAbsences,
   };
 }
 

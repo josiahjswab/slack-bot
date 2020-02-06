@@ -8,6 +8,7 @@ const defaultState = {
   errMessage: "",
   editWindowOpen: false,
   accPartnerWindowOpen: false,
+  studentAbsences: [],
 };
 export default function studentStatsReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -75,6 +76,14 @@ export default function studentStatsReducer(state = defaultState, action) {
         accPartnerWindowOpen: payload,
       }
     }
+
+    case "GET_ABSENCES_FULFILLED": {
+      return {
+        ...state,
+        studentAbsences: payload
+      };
+    }
+
     default: {
       return state;
     }

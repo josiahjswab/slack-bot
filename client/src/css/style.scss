@@ -622,6 +622,7 @@ header .date {
 
 .dashboard-link {
   width: 50px;
+
 }
 
 .login-container {
@@ -1048,4 +1049,74 @@ req.body.checkin{
   margin-left: 10px;
   float: right;
   font-size: smaller;
+}
+
+.nameCentering {
+  align-items: center !important;
+}
+
+th {
+  align-self: auto;
+}
+
+.x {
+  position: relative;
+  width: 30px;
+  cursor: pointer;
+  margin: auto;
+  margin-bottom: 0px;
+  margin-top: 17px;
+  padding-right: 30px;
+}
+
+.x::before,
+.x::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 4px;
+  background-color: #900;
+}
+
+.x::before {
+  transform: rotate(45deg);
+}
+
+.x::after {
+  transform: rotate(-45deg);
+}
+
+.nameCentering {
+  align-items: center !important;
+}
+
+th {
+  align-self: auto;
+}
+
+.x {
+  position: relative;
+  width: 30px;
+  cursor: pointer;
+  margin: auto;
+  margin-bottom: 0px;
+  margin-top: 17px;
+  padding-right: 30px;
+}
+
+.x::before,
+.x::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 4px;
+  background-color: #900;
+}
+
+.x::before {
+  transform: rotate(45deg);
+}
+
+.x::after {
+  transform: rotate(-45deg);
 }
