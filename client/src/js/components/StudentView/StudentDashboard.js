@@ -176,7 +176,11 @@ export default function StudentDashboard(props) {
               data={otherMetrics}
               name={window.student.name}
             />
-            <StudentProgressDials checkins={checkinData} wakatime={wakatimeData} commits={commitData} />
+            <StudentProgressDials
+              checkins={checkinData}
+              wakatime={wakatimeData}
+              commits={commitData}
+            />
             <StandupCheckinIndicator
               title='Standup Checkin Visuals'
               standupCheckin={standupAndCheckinData}
