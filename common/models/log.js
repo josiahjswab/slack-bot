@@ -3,8 +3,10 @@
 module.exports = (Log) => {
   Log.checkIn = (user, lat, long, cb) => {
     Log.find({where: {and: [{user: user}, {exit: null}]}}, (err, log) => {
-      if (err) console.log(err);
-      if (log && !log[0]) {
+      if (err) {
+        console.log(err)
+        throw err
+      } else {
         Log.create(
           {user, entry: new Date(), exit: null, entryLat: lat, entryLong: long},
           (newLogErr, newLog) => {
@@ -12,7 +14,7 @@ module.exports = (Log) => {
             cb(newLogErr, newLog);
           }
         );
-      } else cb('Currently logged in', null);
+      }
     });
   };
 
