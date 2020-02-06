@@ -10,7 +10,6 @@ import {
   mergeStudentData
 } from '../../../../../common/utilities';
 import StudentProgressDials from '../StudentProgressDials';
-
 import StandupCheckinIndicator from '../DailyIndicators/StandupCheckinIndicator';
 
 function sortByDate(a, b) {
@@ -199,7 +198,6 @@ export default function StudentDashboard(props) {
       </>
     );
   }
-
 
 render(<StudentDashboard />, document.getElementById('root'));
 

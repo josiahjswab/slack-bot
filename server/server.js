@@ -4,7 +4,7 @@ const loopback = require('loopback');
 const boot = require('loopback-boot');
 const path = require('path');
 const session = require('express-session');
-const explorer = require('loopback-component-explorer')
+const explorer = require('loopback-component-explorer');
 require('dotenv').config()
 const app = module.exports = loopback();
 
@@ -33,7 +33,6 @@ const ensureAdmin = (req, res, next) => {
           })
         }
     })
-  
   } else {
     res.redirect('/admin/login')
   }
@@ -55,11 +54,45 @@ const ensureStudent = (req, res, next) => {
           })
         }
     })
-  
   } else {
     res.redirect('/login')
   }
 }
+
+function sendDataToStudentDash(req, res) {
+  let studentSlackId = req.params.slack_id
+  let studentObject = {
+    name: '',
+    standups: [],
+    checkins: [],
+    wakatimes: [],
+    commits: ''
+  }
+  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
+    if(student.length == 0 ) {
+      res.send("No Student Found")
+    }
+    studentObject.name = student[0].name;
+    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
+      studentObject.standups = standups
+      return standups
+    })
+    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
+      studentObject.checkins = checkins
+      return checkins
+    })
+    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
+      studentObject.wakatimes = wakatimes
+    })
+    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
+      studentObject.commits = commits
+    })
+
+    return Promise.all([wakatimes, commits, standups, checkins]).then(() => {
+      res.render('dash', {studentObject})
+    })
+  }
+)};  
 
 app.use('/explorer/$', ensureAdmin, explorer.routes(app, { basePath: '/api' }));
 
@@ -112,18 +145,7 @@ app.get('/admin/login', (req, res) => {
 
 app.get('/admin/auth', (req, res) => {
   const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.redirect(`/admin/dashboard?auth_token=${token}`);
-      } else {
-        res.redirect('/admin/login');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/admin/login');
-    });
+  res.redirect(`/admin/dashboard?auth_token=${token}`);
 });
 
 app.get('/admin/dashboard', ensureAdmin, (req, res) => {
@@ -188,123 +210,37 @@ if (require.main === module) {
   app.start();
 }
 
-function ensureAuthorized(authToken) {
-  return app.models.accessToken.find({'where': {id: authToken}})
-    .then(tokens => {
-      if (tokens.length > 0) {
-        return app.models.user.find({'where': {id: tokens[0].userId}})
-          .then(users => {
-            if (users.length > 0) {
-              return app.models.RoleMapping.find(
-                {'where': {principalId: users[0].id}})
-                .then(roleMaps => {
-                  if (roleMaps.length > 0) {
-                    return 'AUTHORIZED';
-                  } else {
-                    // role map does not exist for user. User is unauthorized
-                    return 'UNAUTHORIZED';
-                  }
-                });
-            } else {
-              // there is no user associated with this access token
-              return 'UNAUTHORIZED';
-            }
-          });
-      } else {
-        // no access token exists with this id.
-        return 'UNAUTHORIZED';
-      }
-    });
-}
-
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.get('/auth', (req, res) => {
-
-  const slack_id = req.user.username.replace(/^.*\./, '');
   const token = req.headers.cookie.match(/\access_token=(.*?)(;|$)/)[1];
-  ensureAuthorized(token)
-    .then(response => {
-      if (response === 'AUTHORIZED') {
-        res.redirect(`/dashboard/${slack_id}?auth_token=${token}`);
-      } else {
-        res.redirect('/login');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect('/login');
-    });
+  const slack_id = req.user.username.replace(/^.*\./, '');
+
+  app.models.user.isStudentRole(req.user.id, (err, isStudent) => {
+    if (isStudent) {
+      res.redirect(`/dashboard/${slack_id}?auth_token=${token}`)
+    } else {
+      app.models.userIdentity.findOne({'where': { externalId: slack_id}}).then((identity) => {
+        let email = identity.profile.user.email
+        let partner_slackId = identity.profile.user.id
+        app.models.student.upsertWithWhere({partner_email: email}, {partner_slackId}).then((result) => 
+            res.redirect(`/partner/${result.slack_id}?auth_token=${token}`)
+        )
+        .catch((err) => {
+          console.log(err + " Not a partner")
+          res.redirect('/login')
+        })
+      })
+    }
+  })
 });
 
 app.get('/dashboard/:slack_id', ensureStudent, (req, res) => {
-  let studentSlackId = req.params.slack_id
-  let studentObject = {
-    name: '',
-    standups: [],
-    checkins: [],
-    wakatimes: [],
-    commits: ''
-  }
-  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
-    if(student.length == 0 ) {
-      res.send("No Student Found")
-    }
-    studentObject.name = student[0].name;
-    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
-      studentObject.standups = standups
-      return standups
-    })
-    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
-      studentObject.checkins = checkins
-      return checkins
-    })
-    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
-      studentObject.wakatimes = wakatimes
-    })
-    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
-      studentObject.commits = commits
-    })
-
-    Promise.all([wakatimes, commits, standups, checkins]).then(() => {
-      res.render('dash', {studentObject})
-    })
-  });
+  sendDataToStudentDash(req, res);
 });
 
 app.get('/partner/:slack_id', (req, res) => {
-  let studentSlackId = req.params.slack_id
-  let studentObject = {
-    name: '',
-    standups: [],
-    checkins: [],
-    wakatimes: [],
-    commits: ''
-  }
-  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
-    if(student.length == 0 ) {
-      res.send("No Student Found")
-    }
-    studentObject.name = student[0].name;
-    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
-      studentObject.standups = standups
-      return standups
-    })
-    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
-      studentObject.checkins = checkins
-      return checkins
-    })
-    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
-      studentObject.wakatimes = wakatimes
-    })
-    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
-      studentObject.commits = commits
-    })
-
-    Promise.all([wakatimes, commits, standups, checkins]).then(() => {
-      res.render('partner', {studentObject})
-    })
-  });
-});
+  sendDataToStudentDash(req, res);
+})

@@ -182,16 +182,16 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
 
 ## Using the Student User Dashboard
 
-1.  In order to sign in, go to the {localtunnel url}/login
+1.  In order to sign in, go to the https://localhost:3000/login
     - Click sign in with Slack
     - It should say something went wrong. Copy the Passed URI:
     - Go to OAuth & Permissions and click Add New Redirect URL
     - Paste in the Passed URI: and click Add
     - DON'T FOGET TO SAVE URLs
-    - Go back to the {localtunnel url}/login page and log back in with slack
+    - Go back to the https://localhost:3000/login page and log back in with slack
     - Allow permissions
     - You should be redirected to the slack login proceed to next step
-2.  Go to {localtunnel url}/admin/login
+2.  Go to https://localhost:3000/admin/login
     - Sign in with Admin_Username, Admin_Email, Admin_password that was created in the .env file.
     - Click on Add Student
         - Student type: free
@@ -208,9 +208,18 @@ Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in y
         - Toggle student type from Free to Paid and click Save.
         - Repeat above step a few times.
         - Leave on paid
-    - Go back to {localtunnel}/login
+    - Go back to https://localhost:3000/login
         - Click on login with Slack
         - Congratulations You are in!
+
+<a name="partner-dash">
+
+## Login to the Partner Dashboard
+
+!important a student must have the partners email used for slack set in their student object's "partner_email"
+
+1. Star by going to signin at https://localhost:3000/partner/login
+    - Click sign in with Slack. _This creates a Rolemapping object which is associated to the slack_id of a student object's partner_email which contains the partner users slack email._
 
 <a name="explorer">
 
