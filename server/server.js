@@ -59,6 +59,41 @@ const ensureStudent = (req, res, next) => {
   }
 }
 
+function sendDataToStudentDash(req, res) {
+  let studentSlackId = req.params.slack_id
+  let studentObject = {
+    name: '',
+    standups: [],
+    checkins: [],
+    wakatimes: [],
+    commits: ''
+  }
+  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
+    if(student.length == 0 ) {
+      res.send("No Student Found")
+    }
+    studentObject.name = student[0].name;
+    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
+      studentObject.standups = standups
+      return standups
+    })
+    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
+      studentObject.checkins = checkins
+      return checkins
+    })
+    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
+      studentObject.wakatimes = wakatimes
+    })
+    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
+      studentObject.commits = commits
+    })
+
+    return Promise.all([wakatimes, commits, standups, checkins]).then(() => {
+      res.render('dash', {studentObject})
+    })
+  }
+)};  
+
 app.use('/explorer/$', ensureAdmin, explorer.routes(app, { basePath: '/api' }));
 
 let config = {};
@@ -209,38 +244,3 @@ app.get('/dashboard/:slack_id', ensureStudent, (req, res) => {
 app.get('/partner/:slack_id', (req, res) => {
   sendDataToStudentDash(req, res);
 })
-
-function sendDataToStudentDash(req, res) {
-let studentSlackId = req.params.slack_id
-let studentObject = {
-  name: '',
-  standups: [],
-  checkins: [],
-  wakatimes: [],
-  commits: ''
-}
-  app.models.student.find({'where':{slack_id: studentSlackId}}).then(student => {
-    if(student.length == 0 ) {
-      res.send("No Student Found")
-    }
-    studentObject.name = student[0].name;
-    const standups = app.models.standup.find({'where':{slack_id: studentSlackId}}).then(standups => {
-      studentObject.standups = standups
-      return standups
-    })
-    const checkins = app.models.checkin.find({'where':{slack_id: studentSlackId}}).then(checkins => {
-      studentObject.checkins = checkins
-      return checkins
-    })
-    const wakatimes = app.models.wakatime.find({'where':{slack_id: studentSlackId}}).then(wakatimes => {
-      studentObject.wakatimes = wakatimes
-    })
-    const commits = app.models.commits.find({'where':{slack_id: studentSlackId}}).then(commits => {
-      studentObject.commits = commits
-    })
-
-    return Promise.all([wakatimes, commits, standups, checkins]).then(() => {
-      res.render('dash', {studentObject})
-    })
-  }
-)};
