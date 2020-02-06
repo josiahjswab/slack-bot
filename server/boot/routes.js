@@ -177,13 +177,13 @@ module.exports = app => {
     if (req.body.token == process.env.token || "0") {
       if (req.body.checkin === "true") {
         handleEvent(req.body, "checkin");
-        res.sendStatus(
-          "Congratulations! You have just checked into San Diego Code School."
+        res.status(200).send(
+          "You have just checked into San Diego Code School."
         );
       } else {
         handleEvent(req.body, "checkout");
-        res.sendStatus(
-          "Congratulations! You have just checked out of San Diego Code School."
+        res.status(200).send(
+          "You have just checked out of San Diego Code School."
         );
       }
     } else {
@@ -696,22 +696,20 @@ module.exports = app => {
   }
 
   function checkIn(slackId, loc, channel) {
-    // check the active checkins to see if the current user is already checked in
     app.models.checkin.active((err, response) => {
       if (err) {
         console.log(err);
       } else if (response.filter(e => e.slack_id === slackId).length > 0) {
         var params = {
-          icon_emoji: ":x:"
+          icon_emoji: ":heavy_check_mark:"
         };
         bot.postEphemeral(
           channel,
           slackId,
-          "You have already checked in!",
+          "You already checked in today.",
           params
         );
       } else {
-        // post message "you have checked in"
         const isNearby =
           loc.lat &&
           loc.long &&
@@ -725,20 +723,8 @@ module.exports = app => {
             checkout_time: null,
             hours: 0
           })
-          .then(response => {
-            app.models.log.checkIn(slackId, loc.lat, loc.long, (err, resp) => {
-              if (err) {
-                console.log(err);
-                var params = {
-                  icon_emoji: ":x:"
-                };
-                bot.postEphemeral(
-                  channel,
-                  slackId,
-                  "You have already checked in!",
-                  params
-                );
-              } else {
+          .then(() => {
+            app.models.log.checkIn(slackId, loc.lat, loc.long, () => {
                 var params = {
                   icon_emoji: ":heavy_check_mark:"
                 };
@@ -758,7 +744,7 @@ module.exports = app => {
                   });
                 }
               }
-            });
+            );
           })
           .catch(err => {
             console.log(err);
