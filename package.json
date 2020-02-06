@@ -6,7 +6,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "parcel build client/src/html/index.html client/src/html/login.html && parcel build client/src/js/components/StudentView/StudentDashboard.js && parcel build client/src/js/components/AccountabilityPartner/PartnerDashboard.js --no-content-hash",
+    "build": "parcel build client/src/html/index.html client/src/html/login.html && parcel build client/src/js/components/StudentView/StudentDashboard.js",
     "dev": "parcel watch client/src/html/index.html client/src/html/login.html",
     "lint": "eslint .",
     "start": "node ./server/server.js",

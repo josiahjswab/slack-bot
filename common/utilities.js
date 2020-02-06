@@ -13,11 +13,13 @@ function midnight(date) {
     date.getDate()
   );
 }
+
 const todayMidnight = midnight(new Date(today));
 const tomorrowMidnight = midnight(offsetDate(new Date(today), 1));
 const sevenDaysAgoMidnight = midnight(offsetDate(new Date(today), -6));
 const millisecondsToHours = 1000 * 60 * 60;
 const millisecondsToDays = 1000 * 60 * 60 * 24;
+
 function calculateDashboardStandupsData(standups, students) {
   const todaysStandups = standups.filter(standup => {
     return new Date(standup.date) > todayMidnight;
