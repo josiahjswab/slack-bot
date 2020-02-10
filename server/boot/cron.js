@@ -3,35 +3,37 @@ const request = require('request-promise');
 const cron = require('node-cron');
 
 module.exports = function(app) {
-  var Challenge = app.models.challenges;
+  var Messages = app.models.messages;
 
   cron.schedule('*/5 * * * *', () => {
-    Challenge.find({}, (err, data) => {
+    Messages.find({}, (err, data) => {
       if (err) throw err;
       createQueue(data)
     });
 
-    function createQueue(d) {
+    function createQueue(messages) {
       let result = []
-      d.map((chal) => {
-        let challengeTime = parseInt(chal.date.toISOString().replace(/[-,:,a-zA-Z]/ig,'').substring(0, 14));
-        let currentTime = parseInt(moment().format().replace(/[-,:,a-zA-Z]/ig,'').substring(0,14));
-        let cutOffTime = parseInt(moment().format().replace(/[-,:,a-zA-Z]/ig,'').substring(0,14)) + 459;
-        if(challengeTime >= currentTime && challengeTime < cutOffTime) {
-          result.push(chal)
-        }
-      })
+      if(messages.length > 0) {
+        messages.map((message) => {
+          let challengeTime = parseInt(message.date.replace(/[-,:,a-zA-Z]/ig,'').substring(0, 12));
+          let currentTime = parseInt(moment().format().replace(/[-,:,a-zA-Z]/ig,'').substring(0,12));
+          let cutOffTime = parseInt(moment().format().replace(/[-,:,a-zA-Z]/ig,'').substring(0,12)) + 459;
+          if(challengeTime >= currentTime && challengeTime <= cutOffTime) {
+            result.push(message)
+          }
+        })
+      }
       return cronJob(result)
     }
 
-    function cronJob(r) {
-      if (r.length > 0) {
+    function cronJob(messageArray) {
+      if (messageArray.length > 0) {
         const slackBody = {
           mkdwn: true,
-          text: `${r[0].message}`,
+          text: `${messageArray[0].message}`,
           attachments: [
             {
-              title: `${r[0].url}`
+              title: `${messageArray[0].url}`
             }
           ]
         };
@@ -47,6 +49,6 @@ module.exports = function(app) {
     }
   },
   {
-    timezone: process.env.TZ ||"America/Tijuana"
+    timezone: process.env.TZ || "America/Tijuana"
   });
 }

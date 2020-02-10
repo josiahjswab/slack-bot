@@ -11,101 +11,83 @@ This Slack bot allows a student to ring the doorbell to alert the staff to open 
 -[Google Authorization](#auth-google)<br/>
 -[Google Setup](#setup-google)<br/>
 -[Cypress Testing](#cypress)<br/>
--[How to set a Cronjob](#cronjob)<br/>
+-[Slack Blast - Cronjob](#cronjob)<br/>
 
 <a name="setup">
 
 ## Setup
+Hey the setup can be a bear but hang in there you'll get it!
 
 Install all dependencies:
 ```
 $ npm install
 ```
-Add environment variables to a new file named `.env`. See engineers for credentials. The STUDENTS_CHANNEL is where the students make requests from. The KEY_CHANNEL is where the staff is alerted if somebody rings the door. The ADMIN_REPORTS_CHANNEL is where the staff can view the daily standups that have been submitted.
+Add environment variables to a new file named `.env`. The STUDENTS_CHANNEL is where the students make requests from. The KEY_CHANNEL is where the staff is alerted if somebody rings the door. The ADMIN_REPORTS_CHANNEL is where the staff can view the daily standups that have been submitted.
 ```
-OAUTH_ACCESS_TOKEN=
-BOT_USER_OAUTH_ACCESS_TOKEN=
+OAUTH_ACCESS_TOKEN= <comes from the slack app>
+BOT_USER_OAUTH_ACCESS_TOKEN= <comes from the slack app>
+SLACK_CLIENT_ID= <comes from the slack app>
+SLACK_CLIENT_SECRET= <comes from the slack app>
 
+# Found in slack app options. Used only for the cronjob messages from staff.
+SLACK_CRON_HOOK= <slack webhook that allows cronjob to post to a message to slack channel>
+
+# Used by the slack to choose which channel to send messages.
 STUDENTS_CHANNEL= <current students channel ID>
 KEY_CHANNEL= <key channel ID>
-ADMIN_REPORTS_CHANNEL=< admin reports channel ID>
+ADMIN_REPORTS_CHANNEL= <admin reports channel ID>
 
+# Your slack workspace url.
 SLACK_URL= <base url for Slack Workspace>
-BASE_URL= <server host base url>
 
-API_ROOT=<base url for API recieving new user info related to event hook>
+# This is your ngrok link make sure it ends with a trailing slash. Needed for testing and developing '/' commands.
+BASE_URL= <ngrok tunnel>
 
-X_API_KEY=<API key for above transaction>
-X_USER_ID=<user ID for above transaction>
-X_BUSINESS_ID=<business ID for above transaction>
-
-TEST_USER_ID= <any user ID in knock channel>
-
-LAT= <Latitude for checkin/checkout location>
-LONG= <Longitude for checkin/checkout location>
-
+# Only use these when working with google oauth. Not necessary to access the admin dash.
 GOOGLE_ID=<Required for Google login (authentication)>
 GOOGLE_SECRET=<Required for Google login (authentication)>
 
-MONGODB_URI=<mongo database url>
+# Upon booting with an empty database these become the credentials that you log into the admin dash with.
+ADMIN_USERNAME= admin
+ADMIN_EMAIL= admin@fake.com
+ADMIN_PASSWORD= 1234
 
-ADMIN_USERNAME=<optional: name of the user that is generated on server boot>
-ADMIN_EMAIL=<email for the user that is generated on server boot>
-ADMIN_PASSWORD=<password for the user that is generated on server boot>
+# This value should be development to use the local slack-bot-dev db which is generated upon boot.
+NODE_ENV= development
 
-NODE_ENV=<development or production>
-
+TEST_USER_ID= <any user ID in knock channel>
 TZ="America/Tijuana"
 
-Optional
-
+# We didn't use these in development.
 EXTERNAL_LOGGING= <truthy - only runs if value is present>
 EXTERNAL_LOGGING_URL= <url to send external logs>
 EXTERNAL_LOGGING_TOKEN= <token sent in Post body to external logging url>
+API_ROOT= <base url for API recieving new user info related to event hook>
+X_API_KEY= <API key for above transaction>
+X_USER_ID= <user ID for above transaction>
+X_BUSINESS_ID= <business ID for above transaction>
 
-SLACK_CLIENT_ID=
-SLACK_CLIENT_SECRET=
-SLACK_CRON_HOOK=
-
+# Only used in production.
+MONGODB_URI=<mongo database url>
 ```
 <a name="create-tunnel">
 
-### Create local Tunnel
+### Create Ngrok Tunnel
+Ngrok is used to test the slash commands and slack to app interactivity such as cronjob messages.
+Every time you restart Ngrok the url changes so we recommend keeping it in a terminal running for the duration of your sprint as it is a hassel to change the url in all the places that require it.
+A couple of places you will be putting the ngrok link will be.
+    - slack app: interactive components
+    - slack app: slash commands
+    - slack app: event Subscriptions
+    - .env BASE_URL
 
-1.  Install Local Tunnel (or Ngrok)
+1.  Install ngrok: https://ngrok.com/
 
-```
+2.  Run ngrok: `./ngrok http 3000`
 
-npm install -g localtunnel
+3.  Copy the https ngrok link that is generated for use.
 
-```
-
-2.  Run Local Tunnel
-
-```
-
-lt --port 3000 --subdomain <devsubdomain>
-
-```
-
-3.  Run Dev Server (on 2nd terminal)
-
-```
-
-npm start
-
-```
-
--- or, to have parcel watch your files for changes:
-
-```
-
-npm run dev
-
-```
-
-(you may need to ctrl-c out of your localtunnel and refresh it by using the command lt --port 3000 --subdomain <devsubdomain> every time you ctrl-c and redo npm start)
-Copy you new ngrok.io address you are given the new tunnel to your BASE_URL in your .env file.  Keep this server running at all times.  If it is stopped you will need to redo all of your slack commands, etc.  Because each time that the server is restarted it generates a new tunnel address.
+4.  Start server in a second terminal: `$ npm start`
 
 <a name="create-bot">
 
@@ -295,15 +277,18 @@ It should contain these this object with values from your .env:
 Start server: `$ npm run build && npm run devstart`
 Then: `$ npm run cypress` to run the test.
 
-
-
 <a name="cronjob">
 
-## Set a Cronjob
+## Cronjob Slack Blast
 
 A cron job runs every 5 minutes and will send the first object returned with a timestamp from that moment to 4:59 sec into the future. Cronjob runs a job check every 5 minutes.
-Too add a job open api/explorer and in the challenges model do a post.
-Add the message and url you would like to send.
-Add the time you would like this message to be executed in local military time.
+
+To send a slack blast go to the admin dashboard `Slack Blast` Button. Fill in the fields and hit submit.
+
+For the Slack Bot to know which channel to post to we used a webhook from the slack api. A slack webhook is generated from the slack app website. Generate one then copy and paste it into your .env file
+
+![slack app website](readme-cron.png)
+
+`SLACK_CRON_HOOK=TSV3B6203/BTSPBQ9PH/28FBNyFjtlXCwainZ6fn5dWG`
 
 :copyright: 2019 San Diego Code School

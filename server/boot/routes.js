@@ -7,6 +7,14 @@ let students = [];
 let url = process.env.BASE_URL
   ? process.env.BASE_URL
   : "http://localhost:3000/";
+let northCampus = {
+  lat: 33.1244961,
+  long: -117.0785738,
+};
+let southCampus = {
+  lat: 32.7105475,
+  long: -117.0514572
+};
 
 var schedule = require("node-schedule");
 
@@ -177,9 +185,8 @@ module.exports = app => {
     if (req.body.token == process.env.token || "0") {
       if (req.body.checkin === "true") {
         handleEvent(req.body, "checkin");
-        res.status(200).send(
-          "You have just checked into San Diego Code School."
-        );
+        // In development you will have to add your http://<ngrok-tunnel>/auth/slack/callback as a valid redirect url.
+        res.status(200).redirect("/login");
       } else {
         handleEvent(req.body, "checkout");
         res.status(200).send(
@@ -713,8 +720,8 @@ module.exports = app => {
         const isNearby =
           loc.lat &&
           loc.long &&
-          Math.abs(loc.lat - process.env.LAT) < 0.0001 &&
-          Math.abs(loc.long - process.env.LONG) < 0.0001;
+          Math.abs(loc.lat - northCampus.lat) < 0.0001 &&
+          Math.abs(loc.long - northCampus.long) < 0.0001;
 
         app.models.checkin
           .create({
@@ -778,8 +785,8 @@ module.exports = app => {
           const isNearby =
             loc.lat &&
             loc.long &&
-            Math.abs(loc.lat - process.env.LAT) < 0.0001 &&
-            Math.abs(loc.long - process.env.LONG) < 0.0001;
+            Math.abs(loc.lat - northCampus.lat) < 0.0001 &&
+            Math.abs(loc.long - northCampus.long) < 0.0001;
           if (penalty === "none" && !isNearby) {
             penalty = "notAtSchool";
           }

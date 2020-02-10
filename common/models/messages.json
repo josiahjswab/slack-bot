@@ -1,5 +1,5 @@
 {
-  "name": "challenges",
+  "name": "messages",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -8,14 +8,14 @@
   "properties": {
     "url": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "message": {
       "type": "string",
       "required": true
     },
     "date": {
-      "type": "date",
+      "type": "string",
       "required": true
     }
   },

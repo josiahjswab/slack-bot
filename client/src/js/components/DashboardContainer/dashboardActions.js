@@ -111,3 +111,17 @@ export function sendAbsences(slack_ids, authToken) {
       .then(response => response.json())
   }
 }
+
+export function sendCronJob(post ,authToken) {
+  return {
+    type: 'POST_CRONJOB',
+    payload: fetch(`/api/messages?access_token=${authToken}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(post)
+    })
+    .then(response => response.json())
+  }
+}

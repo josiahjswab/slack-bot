@@ -9,6 +9,7 @@ const defaultState = {
   editWindowOpen: false,
   accPartnerWindowOpen: false,
   studentAbsences: [],
+  absenteeWindowOpen: false,
 };
 export default function studentStatsReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -84,6 +85,24 @@ export default function studentStatsReducer(state = defaultState, action) {
       };
     }
 
+    case "TOGGLE_ABSENTEE_WINDOW": {
+
+      return {
+        ...state,
+        absenteeWindowOpen: payload,
+      }
+    }
+    case "UPDATES_ABSENT_STUDENTS_FULFILLED": {
+      return {
+          ...state,
+          studentAbsences: payload
+      }
+    }
+    case "PUT_ABSENCE_FULFILLED": {
+      return {
+        ...state
+      }
+    }
     default: {
       return state;
     }

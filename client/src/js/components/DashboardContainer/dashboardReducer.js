@@ -5,6 +5,7 @@ const defaultState = {
   activeCheckinsBeingViewed: [],
   activeCheckinsToday: [],
   absences: [],
+  cronjob: [],
 };
 export default function dashboardReducer(state = defaultState, action) {
   const { type, payload } = action;
@@ -61,6 +62,12 @@ export default function dashboardReducer(state = defaultState, action) {
       return {
         ...state,
         absences: payload
+      };
+    }
+    case "POST_CRONJOB_FULLFILLED": {
+      return {
+        ...state,
+        cronjob: payload
       };
     }
 

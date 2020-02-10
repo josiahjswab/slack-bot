@@ -93,10 +93,17 @@ export default function StudentDashboard(props) {
     let keyStandupMetrics = [];
     let keyCodingMetrics = [];
     let keyCommitMetrics = [];
+    let keyAbsenceMetrics = [];
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
         return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
+      });
+    }
+
+    if (!!checkinData) {
+      keyClassMetrics = checkinData.filter(function (obj) {
+        return (obj.footer == "absences");
       });
     }
 
@@ -120,7 +127,8 @@ export default function StudentDashboard(props) {
       ...keyClassMetrics,
       ...keyCodingMetrics,
       ...keyStandupMetrics,
-      ...keyCommitMetrics
+      ...keyCommitMetrics,
+      ...keyAbsenceMetrics
     ];
 
     let otherMetrics = [];

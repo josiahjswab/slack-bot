@@ -13,6 +13,14 @@
     "date": {
       "type": "Date",
       "require": true
+    },
+    "excused": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "notes": {
+      "type": "string"
     }
   },
   "validations": [],

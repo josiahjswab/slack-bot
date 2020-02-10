@@ -14,7 +14,6 @@ h4 {
 }
 
 h2 {
-  margin-top: 0px;
   margin-bottom: 10px;
 }
 
@@ -98,6 +97,7 @@ h2 {
 	justify-content: center;
   align-items: center;
   margin-top: 1%;
+  position: relative;
 }
 
 .acc-partner-window {
@@ -111,6 +111,7 @@ h2 {
 	justify-content: center;
   align-items: center;
   margin-top: 1%;
+  position: relative;
 }
 
 .add-edit-student-container {
@@ -132,6 +133,23 @@ h2 {
   justify-content: space-around;
   margin-top: 25px;
   text-align: center;
+}
+
+.saveNoteEdit {
+  margin-top: 6px;
+}
+
+.acc-partner-container1 {
+  background-image: linear-gradient(#f1f1f1,#ececec);
+	border: 2px solid black;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+  justify-content: space-around;
+  margin-top: 25px;
+  text-align: center;
+  padding-bottom: 90px;
+  margin-top: 10px;
 }
 
 .add-edit-student-row{
@@ -159,6 +177,33 @@ h2 {
   flex-direction: column;
 	justify-content: space-around;
 	align-content: center;
+}
+
+.slack-blast-row {
+  width: 300px;
+	height: 60px;
+	box-sizing: border-box;
+	margin: 5px 10px;
+	padding: 5px 5px 0px 5px;
+  display: flex;
+  flex-direction: column;
+	justify-content: space-around;
+	align-content: center;
+}
+
+.slack-blast-row-textarea {
+  width: 300px;
+	height: 100px;
+	box-sizing: border-box;
+	margin: 5px 10px;
+	padding: 5px 5px 0px 5px;
+  display: flex;
+  flex-direction: column;
+	justify-content: space-around;
+  align-content: center;
+  textarea {
+    height: 100px;
+  }
 }
 
 hr {
@@ -263,6 +308,11 @@ body {
   text-decoration: none;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+  margin-top: -4px;
+}
+
 #cancel-btn:hover{
   background-color: #797575;
   background-image: linear-gradient(#b9b8b8,#d4d1d1);
@@ -288,6 +338,10 @@ body {
 
 .data {
   text-align: center;
+}
+
+.dateAhref {
+   cursor: pointer;
 }
 
 .data-section-container-flex {
@@ -549,6 +603,11 @@ header .date {
   text-decoration: none;
 }
 
+button {
+  position: relative;
+  z-index: 3;
+}
+
 .loginBtn {
   box-sizing: border-box;
   position: relative;
@@ -622,6 +681,7 @@ header .date {
 
 .dashboard-link {
   width: 50px;
+
 }
 
 .login-container {
@@ -636,11 +696,12 @@ header .date {
   height: 150px;
   background-repeat: no-repeat;
   background-size: contain;
-  margin-bottom: -46px;
+  margin-bottom: -97px;
   max-width: 50px;
-  margin-top: 0;
+  margin-top: 90px;
+  margin-left: 40px;
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 .login-container form input {
@@ -660,6 +721,8 @@ header .date {
   background-size: contain;
   text-align: center;
   margin-top: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 #logo-admin-style > img {
@@ -706,6 +769,7 @@ name-margin {
 .navigation {
   list-style-type: none;
   flex-direction: row-reverse;
+  text-align: right;
 }
 
 .pointer {
@@ -765,6 +829,8 @@ name-margin {
   max-width: 4px;
   margin-left: 10px;
   margin-bottom: -55px;
+  position: relative;
+  z-index: 1;
 }
 
 
@@ -798,8 +864,7 @@ req.body.checkin{
 
 .student-links {
   padding: 0.5em 0;
-  list-style-type: none;
-  padding-right: 50px;
+  list-style-type: none
 }
 
 .shifting {
@@ -860,6 +925,7 @@ req.body.checkin{
   display: block;
   float: left;
   padding: 0.5em;
+  margin-top: -2px;
 }
 
 .standup-container {
@@ -925,7 +991,7 @@ req.body.checkin{
   background-image: linear-gradient(#d3d3d3,#f5f5f5);
   border: 1.3px solid maroon;
   float: right;
-  margin-top: 10px;
+  margin-top: 25px;
   margin-right: 20px;
 }
 
@@ -991,6 +1057,10 @@ req.body.checkin{
   display: grid;
   grid-gap: $grid-gap-smaller;
   grid-template-columns: minmax(0, 1fr);
+}
+
+.white-space-reducer {
+  margin-bottom: 20px;
 }
 
 #add-part-btn {
@@ -1118,4 +1188,331 @@ th {
 
 .x::after {
   transform: rotate(-45deg);
+}
+
+
+.nameCentering {
+  align-items: center !important;
+}
+
+th {
+  align-self: auto;
+}
+
+
+.x {
+  position: relative;
+  width: 30px;
+  cursor: pointer;
+  margin: auto;
+  margin-bottom: 0px;
+  margin-top: 17px;
+  padding-right: 30px;
+}
+
+.x::before,
+.x::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 4px;
+  background-color: #900;
+}
+
+.x::before {
+  transform: rotate(45deg);
+}
+
+.x::after {
+  transform: rotate(-45deg);
+}
+
+@media screen and (min-width: 769px){
+#page-nav,
+.hamCentering3 {
+  margin-right: 0px;
+  // position: sticky;
+  top: 0;
+  }
+}
+
+.right1 {
+  padding-right: 40px;
+  margin-top: -2px;
+}
+
+.right {
+  padding-right: 40px;
+  margin-top: -1px;
+}
+
+.pad1 {
+  margin-top: -53px;
+}
+
+.hamCentering2 {
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+  margin-top: -20px;
+  margin-bottom: -20px;
+}
+
+.hamCentering20 {
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+  margin-top: -7px;
+  margin-bottom: -20px;
+}
+
+#page-nav label, #hamburger {
+  display: none;
+}
+
+#page-nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; 
+}
+
+#page-nav ul li {
+  display: inline-block;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#page-nav ul li a {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 768px){
+ 
+  .edit-button-mobile {
+    border: 1px black;
+  }
+
+  #page-nav label {
+    float: right;
+    display: inline-block;
+    color: #fff;
+    background: #a02620;
+    font-style: normal;
+    font-size: 1.2em;
+    padding: 12px;
+    margin-top: -7px;
+    margin-right: -1px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .red-date {
+    color: #900;
+    padding-left: 90px;
+    margin-top: -88px;
+    min-width: 1px;
+    padding-bottom: 28px;
+  }
+
+  .right1 {
+    padding-right: 0px;
+    margin-top: -2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .right {
+    padding-right: 0px;
+  }
+
+  #page-nav1 label {
+    float: right;
+    display: inline-block;
+    color: #fff;
+    background: #a02620;
+    font-style: normal;
+    font-size: 1.2em;
+    padding: 12px;
+    margin-top: -7px;
+    margin-right: -1px;
+  }
+
+  .hamCentering2 {
+    text-align: center;
+    font-weight: bolder;
+    cursor: pointer;
+    margin-top: 19px;
+    margin-bottom: -20px;
+  }
+
+  .hamCentering20 {
+    text-align: center;
+    font-weight: bolder;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: -20px;
+  }
+
+  .pad {
+    margin-top: 12px;
+  }
+
+  #page-nav {
+    margin-top: -65px;
+  }
+
+  .hamburgerMargin {
+    margin-top: 1px;
+  }
+
+  #page-nav ul li {
+    display: block;
+  }
+
+  #page-nav ul li {
+    border-top: 1px solid #333;
+  }
+
+  #page-nav ul {
+    display: none;
+  }
+
+  #page-nav input:checked ~ ul {
+    display: block;
+
+  }
+
+  #page-nav1 ul li {
+    display: block;
+  }
+
+  #page-nav1 ul li {
+    border-top: 1px solid #333;
+  }
+
+  #page-nav1 ul {
+    display: none;
+  }
+
+  #page-nav1 input:checked ~ ul {
+    display: block;
+
+  }
+  #lineDecorating {
+    display: none;
+    }
+
+  #lineDecorating1 {
+    display: none;
+    }
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: arial, sans-serif;
+}
+
+.hamCentering {
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+.hamCentering1 {
+  text-align: center;
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+
+
+.hamCentering3 {
+  text-align: center;
+  font-weight: bolder;
+  background: green($color: #8d2c2c);
+  cursor: pointer;
+  margin-top:19px;
+}
+
+.hamCentering:hover {
+  color: rgb(161, 161, 161);
+  text-align: center;
+  font-weight: bolder;
+}
+
+.hamCentering1:hover {
+  color: rgb(161, 161, 161);
+  text-align: center;
+  font-weight: bolder;
+}
+
+.hamCentering2:hover {
+  color: rgb(161, 161, 161);
+  text-align: center;
+  font-weight: bolder;
+}
+
+.hamCentering20:hover {
+  color: rgb(161, 161, 161);
+  text-align: center;
+  font-weight: bolder;
+}
+
+.hamCentering3:hover {
+  text-align: center;
+  font-weight: bolder;
+  background: green($color: #8d2c2c);
+  color: rgb(161, 161, 161);
+  cursor: pointer;
+}
+
+a {
+  color: #900;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(161, 161, 161);
+  text-decoration: none;
+}
+
+.row {
+  margin-right: -15px;
+  margin-left: -15px;
+  margin-top: 15px;
+}
+
+#lineDecorating {
+  color: red;
+  max-width: 382px;
+  margin-right: 36px;
+  margin-top: 3px;
+}
+
+#lineDecorating1 {
+  color: red;
+  max-width: 296px;
+  margin-right: 5px;
+  margin-top: 0px;
+}
+
+.up {
+  margin-top: 1px;
+}
+
+.adminDashStyle {
+  margin-top: 19px;
+}
+
+.linePad {
+  margin-top: 10px;
+}
+
+.namePad {
+  margin-top: -10px;
+}
+
+a {
+  cursor: pointer;
 }

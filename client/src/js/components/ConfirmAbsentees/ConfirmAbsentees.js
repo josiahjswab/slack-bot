@@ -20,7 +20,9 @@ class ConfirmAbsentees extends React.Component {
                 let today = moment().format();
                 let absence = {
                     "slack_id": absentee.slack_id,
-                    "date": today
+                    "date": today,
+                    "notes": "",
+                    "excused": false
                 };
                 return absence;
         });

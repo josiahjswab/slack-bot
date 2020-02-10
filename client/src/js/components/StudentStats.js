@@ -9,12 +9,14 @@ import {
   calculateIndividualWakatimeData,
 } from '../../../../common/utilities';
 import EditStudent from './EditStudent';
-import AccPartnerInfo from './AccPartnerInfo'
+import AccPartnerInfo from './AccPartnerInfo';
+import AbsenteeInfo from './AbsenteeInfo';
 import {
   getStudentInfo,
   updateStudentInfo,
   toggleEditWindow,
   toggleAccWindow,
+  toggleAbsenceWindow,
 } from './studentStatsActions';
 import StudentStatsDownload from './StudentStatsDownload';
 import DailyCodingIndicator from './DailyIndicators/DailyCodingIndicator';
@@ -29,6 +31,7 @@ class Standups extends Component {
     this.openEditWindow = this.openEditWindow.bind(this);
     this.closeEditWindow = this.closeEditWindow.bind(this);
     this.toggleAccPartnerWindow = this.toggleAccPartnerWindow.bind(this);
+    this.toggleAbsenteeWindow = this.toggleAbsenteeWindow.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +52,11 @@ class Standups extends Component {
   toggleAccPartnerWindow() {
     const { dispatch } = this.props;
     dispatch(toggleAccWindow(!this.props.accPartnerWindowOpen));
+  }
+
+  toggleAbsenteeWindow() {
+    const { dispatch } = this.props;
+    dispatch(toggleAbsenceWindow(!this.props.absenteeWindowOpen));
   }
 
   closeEditWindow(event, override) {
@@ -173,6 +181,17 @@ class Standups extends Component {
       )
     }
 
+    let absenteeWindow = null;
+    if (this.props.absenteeWindowOpen) {
+     
+      absenteeWindow = (
+        <AbsenteeInfo
+          closeWindow={() => this.toggleAbsenteeWindow}
+          auth_token={localStorage.getItem('token')}
+        />
+      )
+    }
+
     let keyMetrics = [];
     let keyClassMetrics = [];
     let keyStandupMetrics = [];
@@ -247,10 +266,12 @@ class Standups extends Component {
         <HamburgerNavigation
           openStudentEditWindow={() => this.openEditWindow}
           openStudentAccountabilityPartnerInfo={() => this.toggleAccPartnerWindow}
+          openStudentAbsenteeInfo={() => this.toggleAbsenteeWindow}
           auth_token={localStorage.getItem('token')}
         />
         {editStudentWindow}
         {accPartnerWindow}
+        {absenteeWindow}
 
         <div className="header-name">
           <h4>{this.props.studentInfo.name}</h4>
@@ -315,7 +336,9 @@ function mapStoreToProps(store) {
     editWindowOpen: store.studentStats.editWindowOpen,
     authToken: store.dashboard.authToken,
     accPartnerWindowOpen: store.studentStats.accPartnerWindowOpen,
+    absenteeWindowOpen: store.studentStats.absenteeWindowOpen,
     studentAbsences: store.studentStats.studentAbsences,
+    absenteeInfo: store.absenteeInfo.toggleWindow
   };
 }
 

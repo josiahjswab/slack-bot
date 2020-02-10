@@ -73,7 +73,7 @@
     "dataSource": "mongod",
     "public": true
   },
-  "challenges": {
+  "messages": {
     "dataSource": "mongod",
     "public": true
   }

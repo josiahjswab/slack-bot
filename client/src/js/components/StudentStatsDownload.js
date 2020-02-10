@@ -1,5 +1,4 @@
 import React from 'react';
-import DataBox from './DataBox';
 
 function handleClickDataToCSV(data, name) {
   // transfer student data into CSV file
