@@ -7,8 +7,8 @@ function StudentProgressDials(props) {
   const codingHours = props.wakatime[0].featured > 30 ? 30 : props.wakatime[0].featured;
   const commits = props.commits.featured > 7 ? 7 : props.commits.featured;
   return (
-    <div className="dials-container">
-      <div className="dial">
+    <div className='dials-container'>
+      <div className='dial'>
         <label>Time In Class Past 7 Days</label>
         <ReactSpeedometer
           maxValue={60}
@@ -19,14 +19,14 @@ function StudentProgressDials(props) {
           height={200}
           needleHeightRatio={0.7}
           value={inClassHours}
-          currentValueText="${value} hours"
-          needleColor="black"
+          currentValueText='${value} hours'
+          needleColor='black'
           segments={3}
-          startColor="#FF471A"
-          endColor="#33CC33"
+          startColor='#FF471A'
+          endColor='#33CC33'
         />
       </div>
-      <div className="dial">
+      <div className='dial'>
         <label>Time Coding Past 7 Days</label>
         <ReactSpeedometer
           maxValue={30}
@@ -37,14 +37,14 @@ function StudentProgressDials(props) {
           height={200}
           needleHeightRatio={0.7}
           value={codingHours}
-          currentValueText="${value} hours"
-          needleColor="black"
+          currentValueText='${value} hours'
+          needleColor='black'
           segments={3}
-          startColor="#FF471A"
-          endColor="#33CC33"
+          startColor='#FF471A'
+          endColor='#33CC33'
         />
       </div>
-      <div className="dial">
+      <div className='dial'>
         <label>Commits Past 7 Days</label>
         <ReactSpeedometer
           maxValue={7}
@@ -55,11 +55,11 @@ function StudentProgressDials(props) {
           height={200}
           needleHeightRatio={0.7}
           value={commits}
-          currentValueText={props.commits.featured > 7 ? "More than ${value}" : "${value} commits"}
-          needleColor="black"
+          currentValueText={props.commits.featured > 7 ? 'More than ${value}' : '${value} commits'}
+          needleColor='black'
           segments={3}
-          startColor="#FF471A"
-          endColor="#33CC33"
+          startColor='#FF471A'
+          endColor='#33CC33'
         />
       </div>
     </div>

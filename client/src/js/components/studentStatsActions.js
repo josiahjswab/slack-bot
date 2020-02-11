@@ -1,9 +1,9 @@
-import { mergeStudentData } from "../../../../common/utilities";
+import { mergeStudentData } from '../../../../common/utilities';
 
 function getStudentStats(id, authToken, slack_id) {
   return dispatch => {
     const standups = dispatch({
-      type: "GET_STUDENT_STANDUPS",
+      type: 'GET_STUDENT_STANDUPS',
       payload: fetch(`/api/students/${id}/standups?access_token=${authToken}`)
         .then(response => response.json())
         .then(standups => {
@@ -12,7 +12,7 @@ function getStudentStats(id, authToken, slack_id) {
     });
 
     const checkins = dispatch({
-      type: "GET_STUDENT_CHECKINS",
+      type: 'GET_STUDENT_CHECKINS',
       payload: fetch(
         `/api/checkins/slackId/${slack_id}?access_token=${authToken}`
       )
@@ -29,7 +29,7 @@ function getStudentStats(id, authToken, slack_id) {
     });
 
     dispatch({
-      type: "GET_STUDENT_WAKATIMES",
+      type: 'GET_STUDENT_WAKATIMES',
       payload: fetch(
         `/api/wakatimes/?access_token=${authToken}&filter=${userFilter}`
       )
@@ -40,7 +40,7 @@ function getStudentStats(id, authToken, slack_id) {
     });
 
     dispatch({
-      type: "GET_STUDENT_COMMITS",
+      type: 'GET_STUDENT_COMMITS',
       payload: fetch(`/api/commits/getWeeklyCommits/${slack_id}?isNumber=true&access_token=${authToken}`)
         .then(response => response.json())
         .then(commits => {
@@ -59,7 +59,7 @@ function getStudentStats(id, authToken, slack_id) {
 
     Promise.all([standups, checkins]).then(standupsAndCheckins =>
       dispatch({
-        type: "GET_STANDUPS_AND_CHECKINS",
+        type: 'GET_STANDUPS_AND_CHECKINS',
         payload: mergeStudentData([standupsAndCheckins[0].value, standupsAndCheckins[1].value])
       })
     );
@@ -69,7 +69,7 @@ function getStudentStats(id, authToken, slack_id) {
 export function getStudentInfo(id, authToken) {
   return dispatch => {
     return dispatch({
-      type: "GET_STUDENT_INFO",
+      type: 'GET_STUDENT_INFO',
       payload: fetch(`/api/students/${id}?access_token=${authToken}`)
         .then(response => response.json())
         .then(data => {
@@ -84,9 +84,9 @@ export function getStudentInfo(id, authToken) {
 export function updateStudentInfo(id, editedStudentInfo, authToken) {
   return dispatch => {
     fetch(`/api/students/${id}?access_token=${authToken}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(editedStudentInfo)
     })
@@ -94,21 +94,21 @@ export function updateStudentInfo(id, editedStudentInfo, authToken) {
       .then(data => {
         if (data.error) {
           dispatch({
-            type: "GET_EDIT_ERROR",
+            type: 'GET_EDIT_ERROR',
             payload: data.error.message
           });
         } else {
           dispatch({
-            type: "UPDATE_STUDENT_INFO",
+            type: 'UPDATE_STUDENT_INFO',
             payload: data
           })
           switch (editedStudentInfo.type) {
-            case "PAID":
-              console.log("PAID")
+            case 'PAID':
+              console.log('PAID')
               fetch(`/admin/student-summary/createStudentRoleMapping/${editedStudentInfo.slack_id}?auth_token=${authToken}`).then(res => console.log(res))
               break;
-            case "DISABLED":
-              console.log("DISABLED")
+            case 'DISABLED':
+              console.log('DISABLED')
               fetch(`/admin/student-summary/deleteStudentRoleMapping/${editedStudentInfo.slack_id}?auth_token=${authToken}`).then(res => console.log(res))
               break;
 
@@ -123,7 +123,7 @@ export function updateStudentInfo(id, editedStudentInfo, authToken) {
 export function toggleEditWindow(isOpen) {
   return dispatch => {
     dispatch({
-      type: "TOGGLE_EDIT_WINDOW",
+      type: 'TOGGLE_EDIT_WINDOW',
       payload: isOpen
     });
   };
@@ -132,7 +132,7 @@ export function toggleEditWindow(isOpen) {
 export function toggleAccWindow(isOpen) {
   return dispatch => {
     dispatch({
-      type: "TOGGLE_ACC_PARTNER_WINDOW",
+      type: 'TOGGLE_ACC_PARTNER_WINDOW',
       payload: isOpen
     });
   };
@@ -141,7 +141,7 @@ export function toggleAccWindow(isOpen) {
 export function toggleAbsenceWindow(isOpen) {
   return dispatch => {
     dispatch({
-      type: "TOGGLE_ABSENTEE_WINDOW",
+      type: 'TOGGLE_ABSENTEE_WINDOW',
       payload: isOpen
     });
   };
@@ -155,11 +155,11 @@ export function updateAbsence(id, notes, excused, authToken, slack_id, date) {
   });
   return dispatch => {
     dispatch({
-      type: "PUT_ABSENCE",
+      type: 'PUT_ABSENCE',
       payload: fetch(`/api/absences?access_token=${authToken}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           slack_id: slack_id,

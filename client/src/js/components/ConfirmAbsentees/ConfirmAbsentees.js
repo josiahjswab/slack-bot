@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router';
 import { calculateAbsentees } from '../../../../../common/utilities';
 import moment from 'moment';
 import AbsentStudent from './AbsentStundent';
@@ -19,10 +19,10 @@ class ConfirmAbsentees extends React.Component {
         let slack_ids = unexcusedAbsentees.map(absentee => {
                 let today = moment().format();
                 let absence = {
-                    "slack_id": absentee.slack_id,
-                    "date": today,
-                    "notes": "",
-                    "excused": false
+                    'slack_id': absentee.slack_id,
+                    'date': today,
+                    'notes': '',
+                    'excused': false
                 };
                 return absence;
         });
@@ -65,8 +65,8 @@ class ConfirmAbsentees extends React.Component {
                         ))}
                     </div>
                     <div className='absentees-btn'>
-                        <button id="cap" onClick={() => this.props.saveAbsentees(this.confirm())}>Confirm Absences</button>
-                        <button id="cap1" onClick={this.props.closeWindow(event, true)}>Cancel</button>
+                        <button id='cap' onClick={() => this.props.saveAbsentees(this.confirm())}>Confirm Absences</button>
+                        <button id='cap1' onClick={this.props.closeWindow(event, true)}>Cancel</button>
                     </div>
                 </div>
             </div>

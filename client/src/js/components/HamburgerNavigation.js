@@ -21,37 +21,36 @@ function HamburgerNavigation(props) {
               className='navigation'>
               <li
                 className='hamCentering2'>
-                <button>
                   <div
+                    className='student-stats-other-buttons size-adjust'
                     onClick={props.openStudentAbsenteeInfo()}>
                     Absences
-            </div>
-                </button>
+                  </div>
               </li>
               <li
                 className='hamCentering2'>
-                <button>
                   <div
+                    className='student-stats-other-buttons size-adjust'
                     onClick={props.openStudentAccountabilityPartnerInfo()}>
                     Partner
                 </div>
-                </button>
               </li>
               <li
                 className='hamCentering2'>
-                <button>
                   <div
+                    className='student-stats-edit-student'
                     onClick={props.openStudentEditWindow()}>
                     Edit Student
-				    </div>
-                </button>
+				          </div>
               </li>
               <li
                 className='hamCentering3'>
-                <Link className='' to={`/admin/login`}
+                <Link
+                  to={`/admin/login`}
+                  className='student-stats-other-buttons size-adjust-logout'
                   onClick={() => localStorage.removeItem('token')}
                 >Logout
-        </Link>
+                </Link>
               </li>
             </ul>
           </div>

@@ -87,10 +87,10 @@ export default class SlackChatBlast extends React.Component {
             </select>
           </div>
           <div className='acc-partner-row'>
-            <button className='edit-button-mobile' onClick={this.clickHandler}>Submit</button>
+            <button className='student-stats-edit-student' onClick={this.clickHandler}>Submit</button>
           </div>
           <div className='acc-partner-row'>
-            <button className='return-btn' onClick={this.props.closeWindow()}>Return</button>
+            <button className='student-stats-other-buttons' onClick={this.props.closeWindow()}>Return</button>
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ class AbsenteeInfo extends React.Component {
 						/>}
 					<br />
 					<div className='acc-partner-row'>
-						<button className='return-btn' onClick={!this.props.toggleWindow ?
+						<button className='student-stats-other-buttons' onClick={!this.props.toggleWindow ?
 							this.props.closeWindow() : this.closeEditWindow}>{!this.props.toggleWindow ? 'Return' : 'Cancel'}</button>
 					</div>
 					<br />

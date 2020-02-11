@@ -11,9 +11,9 @@ function handleClickDataToCSV(data, name) {
         return keys
           .map(k => {
             let cell = row[k];
-            cell = cell.toString().replace(/"/g, '""');
-            if (cell.search(/("|,|\n)/g) >= 0) {
-              cell = `"${cell}"`;
+            cell = cell.toString().replace(/'/g, '""');
+            if (cell.search(/('|,|\n)/g) >= 0) {
+              cell = `'${cell}'`;
             }
             return cell;
           })
@@ -28,20 +28,20 @@ function handleClickDataToCSV(data, name) {
     hiddenElement.download = `${studentName}.csv`;
     hiddenElement.click();
   } else {
-    alert("no data");
+    alert('no data');
   }
 }
 
 function StudentStatsDownload(props) {
 
   return (
-    <section className="data-section data-section-flex">
-      <h2 className="section-label inline-block">Downloads</h2>
-      <div className="data-container">
+    <section className='data-section data-section-flex'>
+      <h2 className='section-label inline-block'>Downloads</h2>
+      <div className='data-container'>
         <div className='center-data box'>
           <div className='data'>
             <span className='featured-data'>
-              <span className="glyphicon glyphicon-download-alt"
+              <span className='glyphicon glyphicon-download-alt'
                 onClick={() => handleClickDataToCSV(props.checkinData, props.name)}>
               </span>
             </span>
@@ -51,7 +51,7 @@ function StudentStatsDownload(props) {
         <div className='center-data box'>
           <div className='data'>
             <span className='featured-data'>
-              <span className="glyphicon glyphicon-download-alt"
+              <span className='glyphicon glyphicon-download-alt'
                 onClick={() => handleClickDataToCSV(props.standupData, props.name)}>
               </span>
             </span>
@@ -61,7 +61,7 @@ function StudentStatsDownload(props) {
         <div className='center-data box'>
           <div className='data'>
             <span className='featured-data'>
-              <span className="glyphicon glyphicon-download-alt"
+              <span className='glyphicon glyphicon-download-alt'
                 onClick={() => handleClickDataToCSV(props.wakatimeData, props.name)}>
               </span>
             </span>

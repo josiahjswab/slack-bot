@@ -35,7 +35,7 @@ class Standups extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.location.pathname.replace("/admin/student-summary/", "");
+    const id = this.props.location.pathname.replace('/admin/student-summary/', '');
     const { dispatch } = this.props;
     dispatch(getStudentInfo(id, localStorage.getItem('token')));
   }
@@ -72,7 +72,7 @@ class Standups extends Component {
   }
 
   saveStudentData(studentData) {
-    const id = this.props.location.pathname.replace("/admin/student-summary/", "");
+    const id = this.props.location.pathname.replace('/admin/student-summary/', '');
     const { dispatch } = this.props;
     dispatch(updateStudentInfo(id, studentData, localStorage.getItem('token')));
   }
@@ -153,7 +153,7 @@ class Standups extends Component {
         ));
     } else {
       StandupAndCheckinComponent = (
-        <div className="standup-card">
+        <div className='standup-card'>
           {`${this.props.studentInfo.name} has not submitted any standups and has not checked in.`}
         </div>
       );
@@ -182,8 +182,7 @@ class Standups extends Component {
     }
 
     let absenteeWindow = null;
-    if (this.props.absenteeWindowOpen) {
-     
+    if (this.props.absenteeWindowOpen) {  
       absenteeWindow = (
         <AbsenteeInfo
           closeWindow={() => this.toggleAbsenteeWindow}
@@ -201,7 +200,7 @@ class Standups extends Component {
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
-        return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
+        return (obj.footer == 'Time in class past 7 days') || (obj.footer == 'weekly auto-checkouts');
       });
     }
 
@@ -211,13 +210,13 @@ class Standups extends Component {
 
     if (!!wakatimeData) {
       keyCodingMetrics = wakatimeData.filter(function (obj) {
-        return (obj.footer == "Time coding past 7 days");
+        return (obj.footer == 'Time coding past 7 days');
       });
     }
 
     if (!!standupsData) {
       keyStandupMetrics = standupsData.filter(function (obj) {
-        return (obj.footer == "Standups completed past 7 days");
+        return (obj.footer == 'Standups completed past 7 days');
       });
     }
 
@@ -240,19 +239,19 @@ class Standups extends Component {
 
     if (!!checkinData) {
       otherClassMetrics = checkinData.filter(function (obj) {
-        return (obj.footer == "Time in class weekly average") || (obj.footer == "Time in class total hours");
+        return (obj.footer == 'Time in class weekly average') || (obj.footer == 'Time in class total hours');
       });
     }
 
     if (!!wakatimeData) {
       otherCodingMetrics = wakatimeData.filter(function (obj) {
-        return (obj.footer == "Time coding weekly average") || (obj.footer == "Time coding total hours");
+        return (obj.footer == 'Time coding weekly average') || (obj.footer == 'Time coding total hours');
       });
     }
 
     if (!!standupsData) {
       otherStandupMetrics = standupsData.filter(function (obj) {
-        return (obj.footer == "Standups completed total hours");
+        return (obj.footer == 'Standups completed total hours');
       });
     }
 
@@ -273,23 +272,23 @@ class Standups extends Component {
         {accPartnerWindow}
         {absenteeWindow}
 
-        <div className="header-name">
+        <div className='header-name'>
           <h4>{this.props.studentInfo.name}</h4>
         </div>
-        <main className="wrapper">
-          <div className="data-section-container-grid">
+        <main className='wrapper'>
+          <div className='data-section-container-grid'>
             <DataSectionForStudentStats
-              title="Key Metrics"
+              title='Key Metrics'
               data={keyMetrics}
               name={this.props.studentInfo.name}
             />
             <DataSectionForStudentStats
-              title="Other Metrics"
+              title='Other Metrics'
               data={otherMetrics}
               name={this.props.studentInfo.name}
             />
             <DailyCodingIndicator
-              title="Coding Indicator"
+              title='Coding Indicator'
               data={this.props.studentWakatimes}
               name={this.props.studentInfo.name}
             />
@@ -301,18 +300,18 @@ class Standups extends Component {
               name={this.props.studentInfo.name}
             />
           </div>
-          <section className="standupAndcheckin">
+          <section className='standupAndcheckin'>
             <span
-              className="section-label pointer"
-              onClick={() => this.toggle("standups-panel")}
+              className='section-label pointer'
+              onClick={() => this.toggle('standups-panel')}
             >
               <h2>Standups and Checkins</h2>
             </span>
             <div
               className={`standup-container ${
-                this.state.display["standups-panel"]
-                  ? "toggleContent-hidden"
-                  : ""
+                this.state.display['standups-panel']
+                  ? 'toggleContent-hidden'
+                  : ''
                 }`}
             >
               {StandupAndCheckinComponent}

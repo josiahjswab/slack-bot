@@ -35,7 +35,7 @@ class AbsenteeEdit extends React.Component {
                         </select>
                     </div>
                     <br />
-                    <button className='edit-button-mobile' onClick={this.handleSave}>Save</button>
+                    <button className='student-stats-edit-student' onClick={this.handleSave}>Save</button>
                 </div>
             </React.Fragment>
         );

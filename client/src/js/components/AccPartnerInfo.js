@@ -24,7 +24,7 @@ function AccPartnerInfo (props) {
 				</div>
 				<br/>
 				<div className='acc-partner-row'>
-					<button className='return-btn' onClick={props.closeWindow()}>Return</button>
+					<button className='student-stats-other-buttons' onClick={props.closeWindow()}>Return</button>
 				</div>
 				<br/>
 			</div>

@@ -82,7 +82,7 @@ export default function StudentDashboard(props) {
         ));
     } else {
       StandupAndCheckinComponent = (
-        <div className="standup-card">
+        <div className='standup-card'>
           {`${window.student.name} has not submitted any standups and has not checked in.`}
         </div>
       );
@@ -97,13 +97,13 @@ export default function StudentDashboard(props) {
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
-        return (obj.footer == "Time in class past 7 days") || (obj.footer == "weekly auto-checkouts");
+        return (obj.footer == 'Time in class past 7 days') || (obj.footer == 'weekly auto-checkouts');
       });
     }
 
     if (!!checkinData) {
       keyClassMetrics = checkinData.filter(function (obj) {
-        return (obj.footer == "absences");
+        return (obj.footer == 'absences');
       });
     }
 
@@ -113,13 +113,13 @@ export default function StudentDashboard(props) {
 
     if (!!wakatimeData) {
       keyCodingMetrics = wakatimeData.filter(function (obj) {
-        return (obj.footer == "Time coding past 7 days");
+        return (obj.footer == 'Time coding past 7 days');
       });
     }
 
     if (!!standupsData) {
       keyStandupMetrics = standupsData.filter(function (obj) {
-        return (obj.footer == "Standups completed past 7 days");
+        return (obj.footer == 'Standups completed past 7 days');
       });
     }
 
@@ -138,19 +138,19 @@ export default function StudentDashboard(props) {
 
     if (!!checkinData) {
       otherClassMetrics = checkinData.filter(function (obj) {
-        return (obj.footer == "Time in class weekly average") || (obj.footer == "Time in class total hours");
+        return (obj.footer == 'Time in class weekly average') || (obj.footer == 'Time in class total hours');
       });
     }
 
     if (!!wakatimeData) {
       otherCodingMetrics = wakatimeData.filter(function (obj) {
-        return (obj.footer == "Time coding weekly average") || (obj.footer == "Time coding total hours");
+        return (obj.footer == 'Time coding weekly average') || (obj.footer == 'Time coding total hours');
       });
     }
 
     if (!!standupsData) {
       otherStandupMetrics = standupsData.filter(function (obj) {
-        return (obj.footer == "Standups completed total hours");
+        return (obj.footer == 'Standups completed total hours');
       });
     }
 
@@ -169,18 +169,18 @@ export default function StudentDashboard(props) {
             </li>
           </ul>
         </div>
-        <div className="header-name">
+        <div className='header-name'>
           <h4>{window.student.name}</h4>
         </div>
-        <main className="wrapper">
-          <div className="data-section-container-grid">
+        <main className='wrapper'>
+          <div className='data-section-container-grid'>
             <DataSectionForStudentStats
-              title="Key Metrics"
+              title='Key Metrics'
               data={keyMetrics}
               name={window.student.name}
             />
             <DataSectionForStudentStats
-              title="Other Metrics"
+              title='Other Metrics'
               data={otherMetrics}
               name={window.student.name}
             />
@@ -195,10 +195,10 @@ export default function StudentDashboard(props) {
               name={window.student.name}
             />
           </div>
-          <section className="standupAndcheckin">
+          <section className='standupAndcheckin'>
             <span
-              className="section-label pointer"
-              onClick={() => this.toggle("standups-panel")}
+              className='section-label pointer'
+              onClick={() => this.toggle('standups-panel')}
             >
               <h2>Standups and Checkins</h2>
             </span>

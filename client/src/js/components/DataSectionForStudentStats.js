@@ -26,11 +26,11 @@ function DataSectionForStudentStats(props) {
   }
 
   return (
-    <section className="data-section data-section-flex">
-      <h2 className="section-label inline-block">
+    <section className='data-section data-section-flex'>
+      <h2 className='section-label inline-block'>
         {props.title}
       </h2>
-      <div className="data-container">{boxes}</div>
+      <div className='data-container'>{boxes}</div>
       {delinquents}
     </section>
   );

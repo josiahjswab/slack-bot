@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import DataSection from "../DataSection";
-import StudentList from "../StudentList"
-import { Link } from "react-router-dom";
-import ConfirmAbsentees from "../ConfirmAbsentees/index";
+import React, { Component } from 'react';
+import DataSection from '../DataSection';
+import StudentList from '../StudentList'
+import { Link } from 'react-router-dom';
+import ConfirmAbsentees from '../ConfirmAbsentees/index';
 import {
   calculateDashboardCheckinData,
   calculateDashboardStandupsData,
   calculateAbsentees
-} from "../../../../../common/utilities";
+} from '../../../../../common/utilities';
 import {
   saveStudentData,
   getStudentData,
   setStudentsBeingViewed,
   sendAbsences,
   sendCronJob
-} from "./dashboardActions";
-import SlackChatBlast from "../CronMessage/SlackChatBlast";
-import EditStudent from "../EditStudent";
+} from './dashboardActions';
+import SlackChatBlast from '../CronMessage/SlackChatBlast';
+import EditStudent from '../EditStudent';
 
 class DashboardContainer extends Component {
   constructor(props) {
@@ -24,11 +24,11 @@ class DashboardContainer extends Component {
     this.state = {
       showStudentEditWindow: false,
       editedStudentInfo: {},
-      saveErrorMessage: "",
+      saveErrorMessage: '',
       display: {},
       showConfirmAbsenteesWindow: false,
       showSlackBlast: false,
-      absenteesErrorMessage: ""
+      absenteesErrorMessage: ''
     };
     this.hideStudentEditWindow = this.hideStudentEditWindow.bind(this);
     this.handleSaveStudentData = this.handleSaveStudentData.bind(this);
@@ -50,7 +50,7 @@ class DashboardContainer extends Component {
     const { dispatch } = this.props;
     let authToken = this.props.location.search.replace(
       /^(.*?)\auth_token=/,
-      ""
+      ''
     );
     if (localStorage.getItem('token') == null) {
       localStorage.setItem('token', authToken);
@@ -135,14 +135,14 @@ class DashboardContainer extends Component {
     const typeFilter = e.target.value;
     const { students, dispatch } = this.props;
     let filtered = students.filter(student => student.type == typeFilter);
-    if (typeFilter == "PAID_JOBSEEKING") {
-      let studentsPaid = students.filter(student => student.type == "PAID");
+    if (typeFilter == 'PAID_JOBSEEKING') {
+      let studentsPaid = students.filter(student => student.type == 'PAID');
       let studentsJobseeking = students.filter(
-        student => student.type == "JOBSEEKER"
+        student => student.type == 'JOBSEEKER'
       );
       let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
       dispatch(setStudentsBeingViewed(studentsPaidAndJobseeking, localStorage.getItem('token')));
-    } else if (typeFilter == "ALL") {
+    } else if (typeFilter == 'ALL') {
       dispatch(setStudentsBeingViewed(students, localStorage.getItem('token')));
     } else {
       dispatch(setStudentsBeingViewed(filtered, localStorage.getItem('token')));
@@ -151,27 +151,27 @@ class DashboardContainer extends Component {
 
   render() {
     const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday'
     ];
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
 
     const today = new Date();
@@ -253,45 +253,46 @@ class DashboardContainer extends Component {
 
     return (
       <React.Fragment>
-        <div className="container col-sm-12 white-space-reducer">
-          <div className="row">
-            <div className="col-sm-2">
-              <div className="card adminDashStyle">
-                <div className="red-stripe-1"></div>
-                <p className="sdcs-logo" id="logo-style"></p>
-                <p className="date red-date">{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
+        <div className='container col-sm-12 white-space-reducer'>
+          <div className='row'>
+            <div className='col-sm-2'>
+              <div className='card adminDashStyle'>
+                <div className='red-stripe-1'></div>
+                <p className='sdcs-logo' id='logo-style'></p>
+                <p className='date red-date'>{`${dayOfWeek}, ${month} ${dayOfMonth}`}</p>
               </div>
             </div>
-            <nav id="page-nav">
-              <label for="hamburger">&#9776;</label>
+            <nav id='page-nav'>
+              <label for='hamburger'>&#9776;</label>
               <div className='right1'>
-                <input type="checkbox" id="hamburger" />
+                <input type='checkbox' id='hamburger' />
                 <br></br>
                 <ul className='navigation'>
-                  <li className="hamCentering20">
-                    <button>
-                      <div onClick={() => this.showSlackBlast()}>Slack Blast</div>
-                    </button>
+                  <li className='hamCentering20'>
+                      <div 
+                        className='dashboard-other-buttons size-adjust-admin-dash'
+                        onClick={() => this.showSlackBlast()}>
+                        Slack Blast
+                      </div>
                   </li>
-                  <li className="hamCentering20">
-                    <button>
+                  <li className='hamCentering20'>
                       <div
+                        className='dashboard-other-buttons size-adjust-admin-dash'
                         onClick={() => this.showConfirmAbsenteesWindow()}>
                         Absences
                       </div>
-                    </button>
                   </li>
-                  <li className="hamCentering20">
-                    <button>
+                  <li className='hamCentering20'>
                       <div
+                        className='dashboard-add-student add-student-size-adjust'
                         onClick={() => this.showStudentEditWindow({})}>
                         Add Student
                       </div>
-                    </button>
                   </li>
                   <li className='hamCentering20'>
                     <Link
                       to={`/admin/login`}
+                      className='dashboard-other-buttons size-adjust-logout-admin-dash'
                       onClick={() => localStorage.removeItem('token')}>
                       Logout
                     </Link>
@@ -301,34 +302,34 @@ class DashboardContainer extends Component {
             </nav>
           </div>
         </div>
-        <div className="container col-sm-12">
+        <div className='container col-sm-12'>
           {editStudentWindow}
           {confirmAbsenteesWindow}
           {slackBlask}
-          <div className="row">
-            <div className="col-sm-4 student-col-size">
-              <div className="card">
-                <select className="type-drop" onChange={this.getViewByType}>
-                  <option value={"PAID_JOBSEEKING"}>PAID/JOBSEEK</option>
-                  <option value={"FREE"}>FREE</option>
-                  <option value={"PAID"}>PAID</option>
-                  <option value={"JOBSEEKER"}>JOBSEEKING</option>
-                  <option value={"ALUMNI"}>ALUMNI</option>
-                  <option value={"DISABLED"}>DISABLED</option>
-                  <option value={"ALL"}>ALL</option>
+          <div className='row'>
+            <div className='col-sm-4 student-col-size'>
+              <div className='card'>
+                <select className='type-drop' onChange={this.getViewByType}>
+                  <option value={'PAID_JOBSEEKING'}>PAID/JOBSEEK</option>
+                  <option value={'FREE'}>FREE</option>
+                  <option value={'PAID'}>PAID</option>
+                  <option value={'JOBSEEKER'}>JOBSEEKING</option>
+                  <option value={'ALUMNI'}>ALUMNI</option>
+                  <option value={'DISABLED'}>DISABLED</option>
+                  <option value={'ALL'}>ALL</option>
                 </select>
                 <div
-                  className="card cursor-pointer"
-                  onClick={() => this.toggle("view-data-panel")}
+                  className='card cursor-pointer'
+                  onClick={() => this.toggle('view-data-panel')}
                 >
                   <h2>View data for</h2>
                 </div>
               </div>
               <div
                 className={
-                  this.state.display["view-data-panel"]
-                    ? "toggleContent-hidden"
-                    : "toggleContent-display"
+                  this.state.display['view-data-panel']
+                    ? 'toggleContent-hidden'
+                    : 'toggleContent-display'
                 }
               >
                 <StudentList
@@ -337,18 +338,18 @@ class DashboardContainer extends Component {
                 />
               </div>
             </div>
-            <div className="col-sm-4 student-col-size">
+            <div className='col-sm-4 student-col-size'>
               <span
-                className="card cursor-pointer"
-                onClick={() => this.toggle("standups-panel")}
+                className='card cursor-pointer'
+                onClick={() => this.toggle('standups-panel')}
               >
                 <h2>Standups</h2>
               </span>
               <div
                 className={
-                  this.state.display["standups-panel"]
-                    ? "toggleContent-hidden"
-                    : ""
+                  this.state.display['standups-panel']
+                    ? 'toggleContent-hidden'
+                    : ''
                 }
               >
                 <DataSection
@@ -365,18 +366,18 @@ class DashboardContainer extends Component {
                 />
               </div>
             </div>
-            <div className="col-sm-4 student-col-size">
+            <div className='col-sm-4 student-col-size'>
               <span
-                className="card cursor-pointer"
-                onClick={() => this.toggle("checkins-panel")}
+                className='card cursor-pointer'
+                onClick={() => this.toggle('checkins-panel')}
               >
                 <h2>Checkins</h2>
               </span>
               <div
                 className={
-                  this.state.display["checkins-panel"]
-                    ? "toggleContent-hidden"
-                    : ""
+                  this.state.display['checkins-panel']
+                    ? 'toggleContent-hidden'
+                    : ''
                 }
               >
                 <DataSection

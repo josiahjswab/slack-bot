@@ -11,9 +11,9 @@ export function getStudentData(authToken) {
         return students;
       })
     }).then((students)=>{
-      let studentsPaid = students.value.filter(student => student.type == "PAID");
+      let studentsPaid = students.value.filter(student => student.type == 'PAID');
       let studentsJobseeking = students.value.filter(
-        student => student.type == "JOBSEEKER"
+        student => student.type == 'JOBSEEKER'
       );
       let studentsPaidAndJobseeking = studentsPaid.concat(studentsJobseeking);
       dispatch(getCheckinsToday(authToken));
